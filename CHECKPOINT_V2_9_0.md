@@ -53,13 +53,14 @@
      - `modules/subscriptions/manifest.json`
 3. **Test Suite & Production Readiness:**
    - Resolved test database migration dependencies (`parties` app & manifest range filters).
-   - Executed `python manage.py test --noinput`: **All 87 tests passed (`OK` in 49.4s)**.
+   - Executed `python manage.py test --noinput`: **All 87 Django default-discovered backend tests passed (`OK` in 49.4s)** (covers core `backbone` security, IAM, gateway, outbox, and module integration suites).
    - Executed `python manage.py collectstatic --noinput`: **276 static files copied** to `erp-backbone/staticfiles`.
    - Executed `python manage.py erp_preflight`: **`Module compatibility preflight passed.`**
 
 ---
 
-## 3. Architecture & Active Modules Map (19 Modules)
+## 3. Architecture & Active Modules Map (19 Django Apps / 28 Module Contracts)
+> **Note on Counts:** `erp-backbone/modules/` contains **19 physical Django app directories**, exposing **28 modular manifests/contracts** (e.g., `hr` includes `payroll`, `accounting` includes `supplier_invoices`, `purchasing` includes `purchase_orders` & `suppliers`, `sales` includes `customers`).
 All modules reside under `erp-backbone/modules/` and follow the strict module contract (`backbone/module_contract.py`):
 - **Core Financials:** `accounting` (GL, budgeting, cost centers, payables), `billing_core`, `bank_reconciliation`, `expenses`, `subscriptions`.
 - **Operations & Supply Chain:** `inventory`, `purchasing`, `sales`, `supply`, `manufacturing`, `assets`, `workorders`.
