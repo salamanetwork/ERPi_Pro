@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{% if arabic %}ar{% else %}en{% endif %}" dir="{% if arabic %}rtl{% else %}ltr{% endif %}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{% if arabic %}كشف الراتب{% else %}Payslip{% endif %}</title>
+<style>body{font-family:Arial,sans-serif;margin:2rem auto;max-width:42rem;padding:1rem}table{width:100%;border-collapse:collapse}th,td{text-align:start;padding:.7rem;border-bottom:1px solid #999}@media print{button{display:none}}</style></head>
+<body>
+<h1>{% if arabic %}كشف الراتب{% else %}Payslip{% endif %}</h1>
+<p><bdi>{{ slip.number }}</bdi> · {{ slip.name }} · <bdi>{{ slip.month }}</bdi></p>
+<p>{{ slip.department }} · {{ slip.center }} · {% if arabic %}تشغيل تجريبي{% else %}Parallel run{% endif %}</p>
+{% if slip.state == "reversed" %}<p>{% if arabic %}كشف معكوس{% else %}Reversed payslip{% endif %}</p>{% endif %}
+<table><tbody>
+<tr><th>{% if arabic %}الأساسي{% else %}Basic salary{% endif %}</th><td><bdi>{{ slip.basic }} AED</bdi></td></tr>
+<tr><th>{% if arabic %}البدلات{% else %}Allowances{% endif %}</th><td><bdi>{{ slip.allowance }} AED</bdi></td></tr>
+<tr><th>{% if arabic %}الإضافات{% else %}Variable earnings{% endif %}</th><td><bdi>{{ slip.extra }} AED</bdi></td></tr>
+<tr><th>{% if arabic %}الإجمالي{% else %}Gross salary{% endif %}</th><td><bdi>{{ slip.gross }} AED</bdi></td></tr>
+<tr><th>{% if arabic %}الخصومات{% else %}Deductions{% endif %}</th><td><bdi>{{ slip.deduction }} AED</bdi></td></tr>
+<tr><th>{% if arabic %}الصافي{% else %}Net salary{% endif %}</th><td><bdi>{{ slip.net }} AED</bdi></td></tr>
+</tbody></table>
+<ul>{% for item in slip.inputs %}<li><bdi>{{ item.reference }}</bdi> · {{ item.reason }} · <bdi>{{ item.amount }} AED</bdi></li>{% endfor %}</ul>
+<button onclick="window.print()">{% if arabic %}طباعة أو حفظ PDF{% else %}Print or save PDF{% endif %}</button>
+</body></html>

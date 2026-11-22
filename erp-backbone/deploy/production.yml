@@ -1,0 +1,6 @@
+# Production uses the same built application image and its own environment and volumes.
+services:
+  nginx:
+    environment:
+      ERP_HOST: ${ERP_HOST:?Set the production hostname}
+      ERP_AUTHORITY: ${ERP_AUTHORITY:?Set the production HTTPS authority}

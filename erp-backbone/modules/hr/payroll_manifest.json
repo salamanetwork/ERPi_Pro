@@ -1,0 +1,148 @@
+{
+  "id": "payroll",
+  "version": "1.0.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "hr",
+    "accounting"
+  ],
+  "optional_dependencies": [],
+  "requested_service_permissions": [],
+  "permissions": [
+    "payroll.prepare",
+    "payroll.approve",
+    "payroll.post",
+    "payroll.pay",
+    "payroll.summary",
+    "payroll.payslip",
+    "payroll.payslip.self"
+  ],
+  "ui_entries": [
+    "/payroll/runs",
+    "/payroll/payslips"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Payroll",
+    "ar": "الرواتب"
+  },
+  "description": {
+    "en": "Compensation, monthly payroll runs and payslips",
+    "ar": "الأجور ودورات الرواتب الشهرية وكشوف الرواتب"
+  },
+  "group": "Payroll",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [
+    "hr",
+    "accounting"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "payroll.prepare": {
+      "name_en": "Prepare payroll runs",
+      "name_ar": "إعداد مسيرات الرواتب",
+      "description_en": "Allows the role holder to prepare payroll runs within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد مسيرات الرواتب ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "payroll.approve": {
+      "name_en": "Approve payroll runs",
+      "name_ar": "اعتماد مسيرات الرواتب",
+      "description_en": "Allows the role holder to approve payroll runs within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد مسيرات الرواتب ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "payroll.post": {
+      "name_en": "Post payroll to the ledger",
+      "name_ar": "ترحيل الرواتب للدفتر",
+      "description_en": "Allows the role holder to post payroll to the ledger within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ترحيل الرواتب للدفتر ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "payroll.pay": {
+      "name_en": "Record payroll payments",
+      "name_ar": "تسجيل دفع الرواتب",
+      "description_en": "Allows the role holder to record payroll payments within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل دفع الرواتب ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "payroll.summary": {
+      "name_en": "View payroll totals",
+      "name_ar": "عرض إجماليات الرواتب",
+      "description_en": "Allows the role holder to view payroll totals within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض إجماليات الرواتب ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "payroll.payslip": {
+      "name_en": "View employee payslips",
+      "name_ar": "عرض كشوف رواتب الموظفين",
+      "description_en": "Allows the role holder to view employee payslips within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض كشوف رواتب الموظفين ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "payroll.payslip.self": {
+      "name_en": "View own payslip",
+      "name_ar": "عرض كشف الراتب الشخصي",
+      "description_en": "Allows the role holder to view own payslip within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض كشف الراتب الشخصي ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/payroll/runs",
+      "label": {
+        "en": "Payroll",
+        "ar": "الرواتب"
+      },
+      "required_permission": "payroll.prepare"
+    },
+    {
+      "route": "/payroll/payslips",
+      "label": {
+        "en": "Payroll",
+        "ar": "الرواتب"
+      },
+      "required_permission": "payroll.prepare"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Prepare a payroll run",
+      "title_ar": "إعداد كشف رواتب",
+      "keywords_en": [
+        "prepare",
+        "a",
+        "payroll",
+        "run"
+      ],
+      "keywords_ar": [
+        "إعداد",
+        "كشف",
+        "رواتب"
+      ],
+      "required_permission": "payroll.prepare",
+      "route": "/payroll/runs",
+      "prerequisites_en": "An active account with payroll.prepare in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية payroll.prepare في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Select the payroll period and site, then calculate the run.",
+          "text_ar": "حدد فترة الرواتب والموقع ثم احسب الكشف.",
+          "screenshot": "docs/screenshots/payroll/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Review net pay and deductions and submit for independent approval.",
+          "text_ar": "راجع الصافي والاستقطاعات وأرسل الكشف للاعتماد.",
+          "id": "step-2"
+        }
+      ]
+    }
+  ]
+}

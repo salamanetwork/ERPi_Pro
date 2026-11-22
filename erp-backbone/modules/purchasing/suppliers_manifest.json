@@ -1,0 +1,85 @@
+{
+  "id": "suppliers",
+  "version": "1.8.3",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "group": "Procurement",
+  "required_dependencies": [],
+  "optional_dependencies": [],
+  "permissions": [
+    "suppliers.view",
+    "suppliers.manage"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/suppliers"
+  ],
+  "name": {
+    "en": "Suppliers",
+    "ar": "الموردون"
+  },
+  "description": {
+    "en": "Manage the supplier directory.",
+    "ar": "إدارة دليل الموردين."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "global",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "suppliers.view": {
+      "name_en": "View supplier records",
+      "name_ar": "عرض بيانات الموردين",
+      "description_en": "Allows the role holder to view supplier records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض بيانات الموردين ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "suppliers.manage": {
+      "name_en": "Maintain supplier records",
+      "name_ar": "إدارة بيانات الموردين",
+      "description_en": "Allows the role holder to maintain supplier records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة بيانات الموردين ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/suppliers",
+      "label": {
+        "en": "Suppliers",
+        "ar": "الموردون"
+      },
+      "required_permission": "suppliers.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "directory",
+      "title_en": "Work with Suppliers",
+      "title_ar": "دليل الموردون",
+      "route": "/suppliers",
+      "required_permission": "suppliers.view",
+      "keywords_en": [
+        "Suppliers"
+      ],
+      "keywords_ar": [
+        "الموردون"
+      ],
+      "steps": [
+        {
+          "text_en": "Open Suppliers and choose the site.",
+          "text_ar": "افتح الموردون واختر الموقع.",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Inspect the record details before saving changes.",
+          "text_ar": "راجع تفاصيل السجل قبل حفظ التعديلات.",
+          "id": "step-2"
+        }
+      ]
+    }
+  ]
+}

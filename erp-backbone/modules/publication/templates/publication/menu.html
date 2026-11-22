@@ -1,0 +1,1 @@
+<nav>{% for n in nodes %}<span><a href="{{n.href}}">{{n.label}}</a>{% for c in n.children %} · <a href="{{c.href}}">{{c.label}}</a>{% endfor %}</span>{% endfor %}</nav>

@@ -1,0 +1,8 @@
+<!doctype html><html lang="{% if ar %}ar{% else %}en{% endif %}" dir="{% if ar %}rtl{% else %}ltr{% endif %}"><meta charset="utf-8"><title>{{ receipt.number|default:doc.number }}</title><style>body{font:16px system-ui;max-width:52rem;margin:3rem auto;padding:1rem}table{width:100%;border-collapse:collapse}td,th{padding:.7rem;border-bottom:1px solid #aaa;text-align:start}@media print{button{display:none}}</style>
+<h1>{% if receipt %}{% if ar %}إيصال{% else %}Receipt{% endif %} {{receipt.number}}{% else %}{% if ar %}فاتورة{% else %}Invoice{% endif %} {{doc.number}}{% endif %}</h1>
+<p>{{doc.site.name}} · {% if ar %}{{doc.party.name_ar}}{% else %}{{doc.party.name_en}}{% endif %}</p>
+{% if receipt %}<p>{{receipt.created_at}} · {{doc.number}}</p><strong>{{receipt.amount}} {{doc.currency}}</strong>{% else %}
+<table><tr>{% if ar %}<th>الوصف</th><th>الكمية</th><th>السعر</th><th>الضريبة %</th><th>القيمة</th>{% else %}<th>Description</th><th>Quantity</th><th>Price</th><th>Tax %</th><th>Amount</th>{% endif %}</tr>
+{% for line in doc.lines.all %}<tr><td>{{line.description}}</td><td>{{line.quantity}}</td><td>{{line.unit_price}}</td><td>{{line.tax_rate}}</td><td>{{line.line_total}}</td></tr>{% endfor %}</table>
+<p>{% if ar %}قبل الضريبة{% else %}Subtotal{% endif %} {{doc.subtotal}} · {% if ar %}الضريبة{% else %}Tax{% endif %} {{doc.tax}}</p>{% if doc.applied_credit %}<p>{% if ar %}رصيد دائن مستخدم{% else %}Credit applied{% endif %} {{doc.applied_credit}} {{doc.currency}}</p>{% endif %}<strong>{% if ar %}الإجمالي{% else %}Total{% endif %} {{doc.total}} {{doc.currency}}</strong>{% endif %}
+<button onclick="window.print()">{% if ar %}طباعة{% else %}Print{% endif %}</button></html>

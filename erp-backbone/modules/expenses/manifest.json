@@ -1,0 +1,361 @@
+{
+  "id": "expenses",
+  "contract_version": "1.0",
+  "name": {
+    "en": "Employee expenses",
+    "ar": "مصروفات الموظفين"
+  },
+  "description": {
+    "en": "Employee expenses",
+    "ar": "مصروفات الموظفين"
+  },
+  "version": "2.7.1",
+  "category": "shared_business",
+  "group": "Finance",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "dependencies": [
+    "hr",
+    "accounting",
+    "media_service"
+  ],
+  "required_dependencies": [
+    "hr",
+    "accounting",
+    "media_service"
+  ],
+  "optional_dependencies": [
+    "projects"
+  ],
+  "runtime": "internal",
+  "permissions": [
+    "expenses.view",
+    "expenses.create",
+    "expenses.delegate",
+    "expenses.approve",
+    "expenses.post",
+    "expenses.reimburse"
+  ],
+  "permission_definitions": {
+    "expenses.view": {
+      "name_en": "View own claims",
+      "name_ar": "عرض المطالبات الشخصية",
+      "description_en": "View own claims within assigned sites.",
+      "description_ar": "عرض المطالبات الشخصية في المواقع المصرح بها.",
+      "action_type": "read"
+    },
+    "expenses.create": {
+      "name_en": "Prepare own claims",
+      "name_ar": "إعداد المطالبات الشخصية",
+      "description_en": "Prepare own claims within assigned sites.",
+      "description_ar": "إعداد المطالبات الشخصية في المواقع المصرح بها.",
+      "action_type": "write"
+    },
+    "expenses.delegate": {
+      "name_en": "Prepare claims for site employees",
+      "name_ar": "إعداد مطالبات موظفي الموقع",
+      "description_en": "Prepare claims for site employees within assigned sites.",
+      "description_ar": "إعداد مطالبات موظفي الموقع في المواقع المصرح بها.",
+      "action_type": "write"
+    },
+    "expenses.approve": {
+      "name_en": "Review submitted expenses",
+      "name_ar": "مراجعة واعتماد المصروفات",
+      "description_en": "Review submitted expenses within assigned sites.",
+      "description_ar": "مراجعة واعتماد المصروفات في المواقع المصرح بها.",
+      "action_type": "approve"
+    },
+    "expenses.post": {
+      "name_en": "Post approved expenses",
+      "name_ar": "ترحيل المصروفات المعتمدة",
+      "description_en": "Post approved expenses within assigned sites.",
+      "description_ar": "ترحيل المصروفات المعتمدة في المواقع المصرح بها.",
+      "action_type": "post"
+    },
+    "expenses.reimburse": {
+      "name_en": "Settle employee reimbursements",
+      "name_ar": "صرف مستحقات الموظفين",
+      "description_en": "Settle employee reimbursements within assigned sites.",
+      "description_ar": "صرف مستحقات الموظفين في المواقع المصرح بها.",
+      "action_type": "post"
+    }
+  },
+  "ui_entries": [
+    "/expenses"
+  ],
+  "navigation": [
+    {
+      "route": "/expenses",
+      "label": {
+        "en": "Employee expenses",
+        "ar": "مصروفات الموظفين"
+      },
+      "required_permission": "expenses.view"
+    }
+  ],
+  "events_published": [
+    "claim.changed",
+    "settlement.recorded"
+  ],
+  "events_subscribed": [],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "claim-cycle",
+      "title_en": "Claim and reimburse employee expenses",
+      "title_ar": "تقديم مطالبة وصرف مستحقات الموظف",
+      "required_permission": "expenses.view",
+      "route": "/expenses",
+      "keywords_en": [
+        "expense",
+        "receipt",
+        "payment"
+      ],
+      "keywords_ar": [
+        "مصروف",
+        "إيصال",
+        "دفعة"
+      ],
+      "prerequisites_en": "Link the employee to a staff account and open the accounting period.",
+      "prerequisites_ar": "اربط الموظف بحساب داخلي وافتح الفترة المحاسبية.",
+      "steps": [
+        {
+          "id": "1",
+          "text_en": "Select a site and employee. Add dated lines and save the draft.",
+          "text_ar": "اختر الموقع والموظف وأضف البنود المؤرخة ثم احفظ المسودة."
+        },
+        {
+          "id": "2",
+          "text_en": "Attach receipts to their lines and submit. A separate reviewer approves.",
+          "text_ar": "أرفق إيصال كل بند وأرسل المطالبة إلى معتمد مستقل."
+        },
+        {
+          "id": "3",
+          "text_en": "Post the approved claim. Reimburse out-of-pocket costs with a bank reference and review the outstanding balance.",
+          "text_ar": "رحّل المطالبة ثم سجل دفعات ما سدده الموظف مع مرجع البنك وراجع المتبقي."
+        }
+      ]
+    },
+    {
+      "id": "op-expenses-create",
+      "title_en": "Prepare own claims",
+      "title_ar": "إعداد المطالبات الشخصية",
+      "keywords_en": [
+        "employee",
+        "expenses",
+        "prepare",
+        "own",
+        "claims"
+      ],
+      "keywords_ar": [
+        "مصروفات",
+        "الموظفين",
+        "إعداد",
+        "المطالبات",
+        "الشخصية"
+      ],
+      "required_permission": "expenses.create",
+      "prerequisites_en": "An active account with expenses.create permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية expenses.create ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Employee expenses and select the target scope to start: Prepare own claims.",
+          "text_ar": "افتح قسم مصروفات الموظفين وحدد النطاق المطلوب للبدء في: إعداد المطالبات الشخصية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/expenses/op-expenses-create.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare own claims).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد المطالبات الشخصية).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/expenses"
+    },
+    {
+      "id": "op-expenses-delegate",
+      "title_en": "Prepare claims for site employees",
+      "title_ar": "إعداد مطالبات موظفي الموقع",
+      "keywords_en": [
+        "employee",
+        "expenses",
+        "prepare",
+        "claims",
+        "for",
+        "site",
+        "employees"
+      ],
+      "keywords_ar": [
+        "مصروفات",
+        "الموظفين",
+        "إعداد",
+        "مطالبات",
+        "موظفي",
+        "الموقع"
+      ],
+      "required_permission": "expenses.delegate",
+      "prerequisites_en": "An active account with expenses.delegate permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية expenses.delegate ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Employee expenses and select the target scope to start: Prepare claims for site employees.",
+          "text_ar": "افتح قسم مصروفات الموظفين وحدد النطاق المطلوب للبدء في: إعداد مطالبات موظفي الموقع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/expenses/op-expenses-delegate.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare claims for site employees).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد مطالبات موظفي الموقع).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/expenses"
+    },
+    {
+      "id": "op-expenses-approve",
+      "title_en": "Review submitted expenses",
+      "title_ar": "مراجعة واعتماد المصروفات",
+      "keywords_en": [
+        "employee",
+        "expenses",
+        "review",
+        "submitted"
+      ],
+      "keywords_ar": [
+        "مصروفات",
+        "الموظفين",
+        "مراجعة",
+        "واعتماد",
+        "المصروفات"
+      ],
+      "required_permission": "expenses.approve",
+      "prerequisites_en": "An active account with expenses.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية expenses.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Employee expenses and select the target scope to start: Review submitted expenses.",
+          "text_ar": "افتح قسم مصروفات الموظفين وحدد النطاق المطلوب للبدء في: مراجعة واعتماد المصروفات.",
+          "fields": [],
+          "screenshot": "docs/screenshots/expenses/op-expenses-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Review submitted expenses.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ مراجعة واعتماد المصروفات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/expenses"
+    },
+    {
+      "id": "op-expenses-post",
+      "title_en": "Post approved expenses",
+      "title_ar": "ترحيل المصروفات المعتمدة",
+      "keywords_en": [
+        "employee",
+        "expenses",
+        "post",
+        "approved"
+      ],
+      "keywords_ar": [
+        "مصروفات",
+        "الموظفين",
+        "ترحيل",
+        "المصروفات",
+        "المعتمدة"
+      ],
+      "required_permission": "expenses.post",
+      "prerequisites_en": "An active account with expenses.post permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية expenses.post ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Employee expenses and select the target scope to start: Post approved expenses.",
+          "text_ar": "افتح قسم مصروفات الموظفين وحدد النطاق المطلوب للبدء في: ترحيل المصروفات المعتمدة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/expenses/op-expenses-post.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Post approved expenses and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ترحيل المصروفات المعتمدة وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/expenses"
+    },
+    {
+      "id": "op-expenses-reimburse",
+      "title_en": "Settle employee reimbursements",
+      "title_ar": "صرف مستحقات الموظفين",
+      "keywords_en": [
+        "employee",
+        "expenses",
+        "settle",
+        "reimbursements"
+      ],
+      "keywords_ar": [
+        "مصروفات",
+        "الموظفين",
+        "صرف",
+        "مستحقات"
+      ],
+      "required_permission": "expenses.reimburse",
+      "prerequisites_en": "An active account with expenses.reimburse permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية expenses.reimburse ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Employee expenses and select the target scope to start: Settle employee reimbursements.",
+          "text_ar": "افتح قسم مصروفات الموظفين وحدد النطاق المطلوب للبدء في: صرف مستحقات الموظفين.",
+          "fields": [],
+          "screenshot": "docs/screenshots/expenses/op-expenses-reimburse.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Settle employee reimbursements and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد صرف مستحقات الموظفين وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/expenses"
+    }
+  ]
+}

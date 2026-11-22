@@ -1,0 +1,488 @@
+{
+  "id": "sales",
+  "version": "0.1.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "accounting",
+    "inventory",
+    "customers"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "sales.view",
+    "sales.customer",
+    "sales.quote",
+    "sales.order",
+    "sales.deliver",
+    "sales.invoice",
+    "sales.collect",
+    "sales.return",
+    "sales.credit"
+  ],
+  "requested_service_permissions": [],
+  "ui_entries": [
+    "/sales"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Sales",
+    "ar": "المبيعات"
+  },
+  "description": {
+    "en": "Quotes, deliveries, invoices and customer balances.",
+    "ar": "عروض الأسعار والتسليم والفواتير وأرصدة العملاء."
+  },
+  "group": "Sales",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [
+    "accounting",
+    "inventory",
+    "customers"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "sales.view": {
+      "name_en": "View sales documents",
+      "name_ar": "عرض مستندات المبيعات",
+      "description_en": "Allows the role holder to view sales documents within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض مستندات المبيعات ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "sales.customer": {
+      "name_en": "Maintain customer records",
+      "name_ar": "إدارة بيانات العملاء",
+      "description_en": "Allows the role holder to maintain customer records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة بيانات العملاء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.quote": {
+      "name_en": "Prepare quotations",
+      "name_ar": "إعداد عروض الأسعار",
+      "description_en": "Allows the role holder to prepare quotations within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد عروض الأسعار ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.order": {
+      "name_en": "Manage sales orders",
+      "name_ar": "إدارة أوامر البيع",
+      "description_en": "Allows the role holder to manage sales orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة أوامر البيع ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.deliver": {
+      "name_en": "Record sales deliveries",
+      "name_ar": "تسجيل تسليمات المبيعات",
+      "description_en": "Allows the role holder to record sales deliveries within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل تسليمات المبيعات ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.invoice": {
+      "name_en": "Invoice delivered goods",
+      "name_ar": "فوترة البضائع المسلمة",
+      "description_en": "Allows the role holder to invoice delivered goods within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور فوترة البضائع المسلمة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.collect": {
+      "name_en": "Record customer collections",
+      "name_ar": "تسجيل تحصيلات العملاء",
+      "description_en": "Allows the role holder to record customer collections within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل تحصيلات العملاء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.return": {
+      "name_en": "Record sales returns",
+      "name_ar": "تسجيل مرتجعات المبيعات",
+      "description_en": "Allows the role holder to record sales returns within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل مرتجعات المبيعات ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "sales.credit": {
+      "name_en": "Issue customer credit notes",
+      "name_ar": "إصدار إشعارات دائنة للعملاء",
+      "description_en": "Allows the role holder to issue customer credit notes within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إصدار إشعارات دائنة للعملاء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/sales",
+      "label": {
+        "en": "Sales",
+        "ar": "المبيعات"
+      },
+      "required_permission": "sales.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review a quotation",
+      "title_ar": "مراجعة عرض سعر",
+      "keywords_en": [
+        "review",
+        "a",
+        "quotation"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "عرض",
+        "سعر"
+      ],
+      "required_permission": "sales.view",
+      "route": "/sales",
+      "prerequisites_en": "An active account with sales.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية sales.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open the sales quotation for the customer and check currency and quantities.",
+          "text_ar": "افتح عرض العميل وراجع العملة والكميات.",
+          "screenshot": "docs/screenshots/sales/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Follow its linked order and verify that invoiced quantities correspond to deliveries.",
+          "text_ar": "تتبع أمر البيع المرتبط وتحقق من أن كميات الفاتورة توافق التسليم.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-sales-customer",
+      "title_en": "Maintain customer records",
+      "title_ar": "إدارة بيانات العملاء",
+      "keywords_en": [
+        "sales",
+        "maintain",
+        "customer",
+        "records"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "إدارة",
+        "بيانات",
+        "العملاء"
+      ],
+      "required_permission": "sales.customer",
+      "prerequisites_en": "An active account with sales.customer permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.customer ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Maintain customer records.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: إدارة بيانات العملاء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-customer.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Maintain customer records).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة بيانات العملاء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-quote",
+      "title_en": "Prepare quotations",
+      "title_ar": "إعداد عروض الأسعار",
+      "keywords_en": [
+        "sales",
+        "prepare",
+        "quotations"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "إعداد",
+        "عروض",
+        "الأسعار"
+      ],
+      "required_permission": "sales.quote",
+      "prerequisites_en": "An active account with sales.quote permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.quote ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Prepare quotations.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: إعداد عروض الأسعار.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-quote.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare quotations).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد عروض الأسعار).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-order",
+      "title_en": "Manage sales orders",
+      "title_ar": "إدارة أوامر البيع",
+      "keywords_en": [
+        "sales",
+        "manage",
+        "orders"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "إدارة",
+        "أوامر",
+        "البيع"
+      ],
+      "required_permission": "sales.order",
+      "prerequisites_en": "An active account with sales.order permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.order ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Manage sales orders.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: إدارة أوامر البيع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-order.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Manage sales orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة أوامر البيع).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-deliver",
+      "title_en": "Record sales deliveries",
+      "title_ar": "تسجيل تسليمات المبيعات",
+      "keywords_en": [
+        "sales",
+        "record",
+        "deliveries"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "تسجيل",
+        "تسليمات"
+      ],
+      "required_permission": "sales.deliver",
+      "prerequisites_en": "An active account with sales.deliver permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.deliver ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Record sales deliveries.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: تسجيل تسليمات المبيعات.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-deliver.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Record sales deliveries).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل تسليمات المبيعات).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-invoice",
+      "title_en": "Invoice delivered goods",
+      "title_ar": "فوترة البضائع المسلمة",
+      "keywords_en": [
+        "sales",
+        "invoice",
+        "delivered",
+        "goods"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "فوترة",
+        "البضائع",
+        "المسلمة"
+      ],
+      "required_permission": "sales.invoice",
+      "prerequisites_en": "An active account with sales.invoice permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.invoice ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Invoice delivered goods.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: فوترة البضائع المسلمة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-invoice.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Invoice delivered goods).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (فوترة البضائع المسلمة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-collect",
+      "title_en": "Record customer collections",
+      "title_ar": "تسجيل تحصيلات العملاء",
+      "keywords_en": [
+        "sales",
+        "record",
+        "customer",
+        "collections"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "تسجيل",
+        "تحصيلات",
+        "العملاء"
+      ],
+      "required_permission": "sales.collect",
+      "prerequisites_en": "An active account with sales.collect permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.collect ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Record customer collections.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: تسجيل تحصيلات العملاء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-collect.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Record customer collections).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل تحصيلات العملاء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-return",
+      "title_en": "Record sales returns",
+      "title_ar": "تسجيل مرتجعات المبيعات",
+      "keywords_en": [
+        "sales",
+        "record",
+        "returns"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "تسجيل",
+        "مرتجعات"
+      ],
+      "required_permission": "sales.return",
+      "prerequisites_en": "An active account with sales.return permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.return ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Record sales returns.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: تسجيل مرتجعات المبيعات.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-return.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Record sales returns).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل مرتجعات المبيعات).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    },
+    {
+      "id": "op-sales-credit",
+      "title_en": "Issue customer credit notes",
+      "title_ar": "إصدار إشعارات دائنة للعملاء",
+      "keywords_en": [
+        "sales",
+        "issue",
+        "customer",
+        "credit",
+        "notes"
+      ],
+      "keywords_ar": [
+        "المبيعات",
+        "إصدار",
+        "إشعارات",
+        "دائنة",
+        "للعملاء"
+      ],
+      "required_permission": "sales.credit",
+      "prerequisites_en": "An active account with sales.credit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية sales.credit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Sales and select the target scope to start: Issue customer credit notes.",
+          "text_ar": "افتح قسم المبيعات وحدد النطاق المطلوب للبدء في: إصدار إشعارات دائنة للعملاء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/sales/op-sales-credit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Issue customer credit notes).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إصدار إشعارات دائنة للعملاء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/sales"
+    }
+  ]
+}

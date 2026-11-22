@@ -1,0 +1,282 @@
+{
+  "id": "crm",
+  "version": "2.0.1",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "sales",
+    "customers"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "crm.view",
+    "crm.manage",
+    "crm.configure",
+    "crm.customer_approve"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/crm/leads",
+    "/crm/opportunities",
+    "/crm/activities",
+    "/crm/customer-requests",
+    "/crm/settings"
+  ],
+  "name": {
+    "en": "CRM",
+    "ar": "إدارة علاقات العملاء"
+  },
+  "description": {
+    "en": "Leads, opportunities, follow-up and Sales quotations.",
+    "ar": "العملاء المحتملون والفرص والمتابعة وعروض المبيعات."
+  },
+  "group": "Sales",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "domain_module",
+  "dependencies": [
+    "sales",
+    "customers"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "crm.view": {
+      "name_en": "View CRM records",
+      "name_ar": "عرض سجلات علاقات العملاء",
+      "description_en": "Allows the role holder to view CRM records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض سجلات علاقات العملاء ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "crm.manage": {
+      "name_en": "Manage leads and opportunities",
+      "name_ar": "إدارة العملاء المحتملين والفرص",
+      "description_en": "Allows the role holder to manage leads and opportunities within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة العملاء المحتملين والفرص ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "crm.configure": {
+      "name_en": "Configure opportunity stages",
+      "name_ar": "ضبط مراحل الفرص",
+      "description_en": "Allows the role holder to configure opportunity stages within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ضبط مراحل الفرص ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "crm.customer_approve": {
+      "name_en": "Approve customer requests",
+      "name_ar": "اعتماد طلبات إنشاء العملاء",
+      "description_en": "Allows the role holder to approve customer requests within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد طلبات إنشاء العملاء ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/crm/leads",
+      "label": {
+        "en": "CRM",
+        "ar": "إدارة علاقات العملاء"
+      },
+      "required_permission": "crm.view"
+    },
+    {
+      "route": "/crm/opportunities",
+      "label": {
+        "en": "CRM",
+        "ar": "إدارة علاقات العملاء"
+      },
+      "required_permission": "crm.view"
+    },
+    {
+      "route": "/crm/activities",
+      "label": {
+        "en": "CRM",
+        "ar": "إدارة علاقات العملاء"
+      },
+      "required_permission": "crm.view"
+    },
+    {
+      "route": "/crm/customer-requests",
+      "label": {
+        "en": "CRM",
+        "ar": "إدارة علاقات العملاء"
+      },
+      "required_permission": "crm.view"
+    },
+    {
+      "route": "/crm/settings",
+      "label": {
+        "en": "CRM",
+        "ar": "إدارة علاقات العملاء"
+      },
+      "required_permission": "crm.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Qualify a lead",
+      "title_ar": "تأهيل عميل محتمل",
+      "keywords_en": [
+        "qualify",
+        "a",
+        "lead"
+      ],
+      "keywords_ar": [
+        "تأهيل",
+        "عميل",
+        "محتمل"
+      ],
+      "required_permission": "crm.view",
+      "route": "/crm/leads",
+      "prerequisites_en": "An active account with crm.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية crm.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open the lead and verify the contact details and owner.",
+          "text_ar": "افتح العميل المحتمل وراجع بيانات التواصل والمسؤول.",
+          "screenshot": "docs/screenshots/crm/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Convert the lead to an opportunity and inspect its stage history.",
+          "text_ar": "حوّل العميل المحتمل إلى فرصة وراجع سجل مراحلها.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-crm-manage",
+      "title_en": "Manage leads and opportunities",
+      "title_ar": "إدارة العملاء المحتملين والفرص",
+      "keywords_en": [
+        "crm",
+        "manage",
+        "leads",
+        "and",
+        "opportunities"
+      ],
+      "keywords_ar": [
+        "إدارة",
+        "علاقات",
+        "العملاء",
+        "المحتملين",
+        "والفرص"
+      ],
+      "required_permission": "crm.manage",
+      "prerequisites_en": "An active account with crm.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية crm.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open CRM and select the target scope to start: Manage leads and opportunities.",
+          "text_ar": "افتح قسم إدارة علاقات العملاء وحدد النطاق المطلوب للبدء في: إدارة العملاء المحتملين والفرص.",
+          "fields": [],
+          "screenshot": "docs/screenshots/crm/op-crm-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Manage leads and opportunities and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة العملاء المحتملين والفرص وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/crm/leads"
+    },
+    {
+      "id": "op-crm-configure",
+      "title_en": "Configure opportunity stages",
+      "title_ar": "ضبط مراحل الفرص",
+      "keywords_en": [
+        "crm",
+        "configure",
+        "opportunity",
+        "stages"
+      ],
+      "keywords_ar": [
+        "إدارة",
+        "علاقات",
+        "العملاء",
+        "ضبط",
+        "مراحل",
+        "الفرص"
+      ],
+      "required_permission": "crm.configure",
+      "prerequisites_en": "An active account with crm.configure permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية crm.configure ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open CRM and select the target scope to start: Configure opportunity stages.",
+          "text_ar": "افتح قسم إدارة علاقات العملاء وحدد النطاق المطلوب للبدء في: ضبط مراحل الفرص.",
+          "fields": [],
+          "screenshot": "docs/screenshots/crm/op-crm-configure.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Configure opportunity stages and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ضبط مراحل الفرص وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/crm/settings"
+    },
+    {
+      "id": "op-crm-customer-approve",
+      "title_en": "Approve customer requests",
+      "title_ar": "اعتماد طلبات إنشاء العملاء",
+      "keywords_en": [
+        "crm",
+        "approve",
+        "customer",
+        "requests"
+      ],
+      "keywords_ar": [
+        "إدارة",
+        "علاقات",
+        "العملاء",
+        "اعتماد",
+        "طلبات",
+        "إنشاء"
+      ],
+      "required_permission": "crm.customer_approve",
+      "prerequisites_en": "An active account with crm.customer_approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية crm.customer_approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open CRM and select the target scope to start: Approve customer requests.",
+          "text_ar": "افتح قسم إدارة علاقات العملاء وحدد النطاق المطلوب للبدء في: اعتماد طلبات إنشاء العملاء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/crm/op-crm-customer-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve customer requests.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد طلبات إنشاء العملاء.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/crm/customer-requests"
+    }
+  ]
+}

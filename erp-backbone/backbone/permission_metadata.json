@@ -1,0 +1,1311 @@
+{
+  "accounting.close": {
+    "label": {
+      "en": "Close accounting periods",
+      "ar": "إقفال الفترات المحاسبية"
+    },
+    "description": {
+      "en": "Allows the role holder to close accounting periods within the assigned scope.",
+      "ar": "تتيح لحامل الدور إقفال الفترات المحاسبية ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "accounting.manual": {
+    "label": {
+      "en": "Prepare manual journal entries",
+      "ar": "إعداد قيود اليومية اليدوية"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare manual journal entries within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد قيود اليومية اليدوية ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "accounting.manual.post": {
+    "label": {
+      "en": "Post manual journal entries",
+      "ar": "ترحيل القيود اليدوية"
+    },
+    "description": {
+      "en": "Allows the role holder to post manual journal entries within the assigned scope.",
+      "ar": "تتيح لحامل الدور ترحيل القيود اليدوية ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "accounting.post": {
+    "label": {
+      "en": "Process accounting postings",
+      "ar": "معالجة الترحيل المحاسبي"
+    },
+    "description": {
+      "en": "Allows the role holder to process accounting postings within the assigned scope.",
+      "ar": "تتيح لحامل الدور معالجة الترحيل المحاسبي ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "accounting.setup": {
+    "label": {
+      "en": "Configure accounting rules",
+      "ar": "ضبط قواعد المحاسبة"
+    },
+    "description": {
+      "en": "Allows the role holder to configure accounting rules within the assigned scope.",
+      "ar": "تتيح لحامل الدور ضبط قواعد المحاسبة ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "accounting.view": {
+    "label": {
+      "en": "Review ledgers and balances",
+      "ar": "عرض الدفاتر والأرصدة"
+    },
+    "description": {
+      "en": "Allows the role holder to review ledgers and balances within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض الدفاتر والأرصدة ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "ap.create": {
+    "label": {
+      "en": "Prepare supplier invoices",
+      "ar": "إعداد فواتير الموردين"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare supplier invoices within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد فواتير الموردين ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "ap.credit": {
+    "label": {
+      "en": "Record supplier credit notes",
+      "ar": "تسجيل إشعارات الموردين الدائنة"
+    },
+    "description": {
+      "en": "Allows the role holder to record supplier credit notes within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل إشعارات الموردين الدائنة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "ap.pay": {
+    "label": {
+      "en": "Record supplier payments",
+      "ar": "تسجيل مدفوعات الموردين"
+    },
+    "description": {
+      "en": "Allows the role holder to record supplier payments within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل مدفوعات الموردين ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "ap.post": {
+    "label": {
+      "en": "Post matched supplier invoices",
+      "ar": "ترحيل فواتير الموردين المطابقة"
+    },
+    "description": {
+      "en": "Allows the role holder to post matched supplier invoices within the assigned scope.",
+      "ar": "تتيح لحامل الدور ترحيل فواتير الموردين المطابقة ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "ap.view": {
+    "label": {
+      "en": "Review supplier payables",
+      "ar": "عرض مستحقات الموردين"
+    },
+    "description": {
+      "en": "Allows the role holder to review supplier payables within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض مستحقات الموردين ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "assets.cost.edit": {
+    "label": {
+      "en": "Edit asset costs",
+      "ar": "تعديل تكاليف الأصول"
+    },
+    "description": {
+      "en": "Allows the role holder to edit asset costs within the assigned scope.",
+      "ar": "تتيح لحامل الدور تعديل تكاليف الأصول ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "assets.cost.view": {
+    "label": {
+      "en": "View asset acquisition costs",
+      "ar": "عرض تكاليف اقتناء الأصول"
+    },
+    "description": {
+      "en": "Allows the role holder to view asset acquisition costs within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض تكاليف اقتناء الأصول ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "assets.create": {
+    "label": {
+      "en": "Register new assets",
+      "ar": "تسجيل أصول جديدة"
+    },
+    "description": {
+      "en": "Allows the role holder to register new assets within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل أصول جديدة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "assets.edit": {
+    "label": {
+      "en": "Update asset records",
+      "ar": "تعديل سجلات الأصول"
+    },
+    "description": {
+      "en": "Allows the role holder to update asset records within the assigned scope.",
+      "ar": "تتيح لحامل الدور تعديل سجلات الأصول ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "assets.transfer": {
+    "label": {
+      "en": "Transfer assets between sites",
+      "ar": "نقل الأصول بين المواقع"
+    },
+    "description": {
+      "en": "Allows the role holder to transfer assets between sites within the assigned scope.",
+      "ar": "تتيح لحامل الدور نقل الأصول بين المواقع ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "assets.view": {
+    "label": {
+      "en": "View the asset register",
+      "ar": "عرض سجل الأصول"
+    },
+    "description": {
+      "en": "Allows the role holder to view the asset register within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض سجل الأصول ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "attendance.approve": {
+    "label": {
+      "en": "Approve weekly timesheets",
+      "ar": "اعتماد كشوف الوقت الأسبوعية"
+    },
+    "description": {
+      "en": "Allows the role holder to approve weekly timesheets within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد كشوف الوقت الأسبوعية ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "attendance.correct": {
+    "label": {
+      "en": "Review attendance corrections",
+      "ar": "مراجعة تصحيحات الحضور"
+    },
+    "description": {
+      "en": "Allows the role holder to review attendance corrections within the assigned scope.",
+      "ar": "تتيح لحامل الدور مراجعة تصحيحات الحضور ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "attendance.record": {
+    "label": {
+      "en": "Record attendance and work time",
+      "ar": "تسجيل الحضور ووقت العمل"
+    },
+    "description": {
+      "en": "Allows the role holder to record attendance and work time within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل الحضور ووقت العمل ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "attendance.reopen": {
+    "label": {
+      "en": "Reopen approved timesheets",
+      "ar": "إعادة فتح كشوف الوقت المعتمدة"
+    },
+    "description": {
+      "en": "Allows the role holder to reopen approved timesheets within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعادة فتح كشوف الوقت المعتمدة ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "attendance.setup": {
+    "label": {
+      "en": "Configure site attendance policies",
+      "ar": "ضبط سياسات الحضور بالموقع"
+    },
+    "description": {
+      "en": "Allows the role holder to configure site attendance policies within the assigned scope.",
+      "ar": "تتيح لحامل الدور ضبط سياسات الحضور بالموقع ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "budget.view": {
+    "label": {
+      "en": "Review budgets and actual expenses",
+      "ar": "عرض الموازنة والمصروف الفعلي"
+    },
+    "description": {
+      "en": "Allows the role holder to review budgets and actual expenses within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض الموازنة والمصروف الفعلي ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "budget.centers": {
+    "label": {
+      "en": "Manage cost centers",
+      "ar": "إدارة مراكز التكلفة"
+    },
+    "description": {
+      "en": "Allows the role holder to manage cost centers within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة مراكز التكلفة ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "budget.prepare": {
+    "label": {
+      "en": "Prepare budget versions",
+      "ar": "إعداد إصدارات الموازنة"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare budget versions within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد إصدارات الموازنة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "budget.approve": {
+    "label": {
+      "en": "Approve budget versions",
+      "ar": "اعتماد إصدارات الموازنة"
+    },
+    "description": {
+      "en": "Allows the role holder to approve budget versions within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد إصدارات الموازنة ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "crm.configure": {
+    "label": {
+      "en": "Configure opportunity stages",
+      "ar": "ضبط مراحل الفرص"
+    },
+    "description": {
+      "en": "Allows the role holder to configure opportunity stages within the assigned scope.",
+      "ar": "تتيح لحامل الدور ضبط مراحل الفرص ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "crm.customer_approve": {
+    "label": {
+      "en": "Approve customer requests",
+      "ar": "اعتماد طلبات إنشاء العملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to approve customer requests within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد طلبات إنشاء العملاء ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "crm.manage": {
+    "label": {
+      "en": "Manage leads and opportunities",
+      "ar": "إدارة العملاء المحتملين والفرص"
+    },
+    "description": {
+      "en": "Allows the role holder to manage leads and opportunities within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة العملاء المحتملين والفرص ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "crm.view": {
+    "label": {
+      "en": "View CRM records",
+      "ar": "عرض سجلات علاقات العملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to view CRM records within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض سجلات علاقات العملاء ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "helpdesk.agent": {
+    "label": {
+      "en": "Handle assigned tickets",
+      "ar": "معالجة بلاغات الدعم"
+    },
+    "description": {
+      "en": "Work assigned tickets and collaborate with support staff using internal notes.",
+      "ar": "معالجة البلاغات المسندة والتعاون مع فريق الدعم من خلال الملاحظات الداخلية."
+    },
+    "type": "write"
+  },
+  "helpdesk.configure": {
+    "label": {
+      "en": "Configure service policies",
+      "ar": "ضبط سياسات الدعم"
+    },
+    "description": {
+      "en": "Allows the role holder to configure service policies within the assigned scope.",
+      "ar": "تتيح لحامل الدور ضبط سياسات الدعم ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "helpdesk.dispatch": {
+    "label": {
+      "en": "Assign support tickets",
+      "ar": "توجيه بلاغات الدعم"
+    },
+    "description": {
+      "en": "Allows the role holder to assign support tickets within the assigned scope.",
+      "ar": "تتيح لحامل الدور توجيه بلاغات الدعم ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "helpdesk.reopen": {
+    "label": {
+      "en": "Reopen support tickets",
+      "ar": "إعادة فتح بلاغات الدعم"
+    },
+    "description": {
+      "en": "Allows the role holder to reopen support tickets within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعادة فتح بلاغات الدعم ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "helpdesk.request": {
+    "label": {
+      "en": "Submit support requests",
+      "ar": "تقديم بلاغات الدعم"
+    },
+    "description": {
+      "en": "Allows the role holder to submit support requests within the assigned scope.",
+      "ar": "تتيح لحامل الدور تقديم بلاغات الدعم ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "helpdesk.view": {
+    "label": {
+      "en": "View support tickets",
+      "ar": "عرض بلاغات الدعم"
+    },
+    "description": {
+      "en": "Allows the role holder to view support tickets within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض بلاغات الدعم ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "hr.identity.link": {
+    "label": {
+      "en": "Link employee files to accounts",
+      "ar": "ربط الموظفين بحسابات الدخول"
+    },
+    "description": {
+      "en": "Allows the role holder to link employee files to accounts within the assigned scope.",
+      "ar": "تتيح لحامل الدور ربط الموظفين بحسابات الدخول ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "hr.identity.view_full": {
+    "label": {
+      "en": "View unmasked national IDs",
+      "ar": "عرض أرقام الهوية كاملة"
+    },
+    "description": {
+      "en": "Reveal the full national ID in an authorized employee file.",
+      "ar": "إظهار رقم الهوية كاملاً داخل ملف موظف يملك المستخدم حق الوصول إليه."
+    },
+    "type": "read"
+  },
+  "hr.leave.approve": {
+    "label": {
+      "en": "Approve leave requests",
+      "ar": "اعتماد طلبات الإجازة"
+    },
+    "description": {
+      "en": "Allows the role holder to approve leave requests within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد طلبات الإجازة ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "hr.leave.request": {
+    "label": {
+      "en": "Request employee leave",
+      "ar": "تقديم طلبات الإجازة"
+    },
+    "description": {
+      "en": "Allows the role holder to request employee leave within the assigned scope.",
+      "ar": "تتيح لحامل الدور تقديم طلبات الإجازة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "hr.manage": {
+    "label": {
+      "en": "Maintain employee records",
+      "ar": "إدارة ملفات الموظفين"
+    },
+    "description": {
+      "en": "Allows the role holder to maintain employee records within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة ملفات الموظفين ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "hr.offboarding.approve": {
+    "label": {
+      "en": "Approve offboarding requests",
+      "ar": "اعتماد طلبات إنهاء الخدمة"
+    },
+    "description": {
+      "en": "Allows the role holder to approve offboarding requests within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد طلبات إنهاء الخدمة ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "hr.offboarding.request": {
+    "label": {
+      "en": "Request employee offboarding",
+      "ar": "طلب إنهاء خدمة الموظف"
+    },
+    "description": {
+      "en": "Allows the role holder to request employee offboarding within the assigned scope.",
+      "ar": "تتيح لحامل الدور طلب إنهاء خدمة الموظف ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "hr.self": {
+    "label": {
+      "en": "View own employee file",
+      "ar": "عرض الملف الوظيفي الشخصي"
+    },
+    "description": {
+      "en": "Allows the role holder to view own employee file within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض الملف الوظيفي الشخصي ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "hr.view": {
+    "label": {
+      "en": "View employee files",
+      "ar": "عرض ملفات الموظفين"
+    },
+    "description": {
+      "en": "Allows the role holder to view employee files within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض ملفات الموظفين ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "inventory.confirm": {
+    "label": {
+      "en": "Confirm goods receipts",
+      "ar": "تأكيد استلام البضائع"
+    },
+    "description": {
+      "en": "Allows the role holder to confirm goods receipts within the assigned scope.",
+      "ar": "تتيح لحامل الدور تأكيد استلام البضائع ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "inventory.correct": {
+    "label": {
+      "en": "Correct inventory records",
+      "ar": "تصحيح سجلات المخزون"
+    },
+    "description": {
+      "en": "Allows the role holder to correct inventory records within the assigned scope.",
+      "ar": "تتيح لحامل الدور تصحيح سجلات المخزون ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "inventory.opening": {
+    "label": {
+      "en": "Record opening stock",
+      "ar": "تسجيل الأرصدة الافتتاحية"
+    },
+    "description": {
+      "en": "Allows the role holder to record opening stock within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل الأرصدة الافتتاحية ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "inventory.receive": {
+    "label": {
+      "en": "Prepare goods receipts",
+      "ar": "إعداد أذون الاستلام"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare goods receipts within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد أذون الاستلام ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "inventory.return": {
+    "label": {
+      "en": "Return stock to suppliers",
+      "ar": "إرجاع المخزون للموردين"
+    },
+    "description": {
+      "en": "Allows the role holder to return stock to suppliers within the assigned scope.",
+      "ar": "تتيح لحامل الدور إرجاع المخزون للموردين ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "inventory.setup": {
+    "label": {
+      "en": "Configure warehouses and items",
+      "ar": "ضبط المخازن والأصناف"
+    },
+    "description": {
+      "en": "Allows the role holder to configure warehouses and items within the assigned scope.",
+      "ar": "تتيح لحامل الدور ضبط المخازن والأصناف ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "inventory.view": {
+    "label": {
+      "en": "View stock movements and balances",
+      "ar": "عرض حركات وأرصدة المخزون"
+    },
+    "description": {
+      "en": "Allows the role holder to view stock movements and balances within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض حركات وأرصدة المخزون ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "maintenance.execute": {
+    "label": {
+      "en": "Execute maintenance work",
+      "ar": "تنفيذ أعمال الصيانة"
+    },
+    "description": {
+      "en": "Allows the role holder to execute maintenance work within the assigned scope.",
+      "ar": "تتيح لحامل الدور تنفيذ أعمال الصيانة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "maintenance.parts": {
+    "label": {
+      "en": "Issue and return spare parts",
+      "ar": "صرف وإرجاع قطع الغيار"
+    },
+    "description": {
+      "en": "Allows the role holder to issue and return spare parts within the assigned scope.",
+      "ar": "تتيح لحامل الدور صرف وإرجاع قطع الغيار ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "maintenance.plan": {
+    "label": {
+      "en": "Plan preventive maintenance",
+      "ar": "تخطيط الصيانة الوقائية"
+    },
+    "description": {
+      "en": "Allows the role holder to plan preventive maintenance within the assigned scope.",
+      "ar": "تتيح لحامل الدور تخطيط الصيانة الوقائية ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "maintenance.supervise": {
+    "label": {
+      "en": "Supervise maintenance work",
+      "ar": "الإشراف على أعمال الصيانة"
+    },
+    "description": {
+      "en": "Allows the role holder to supervise maintenance work within the assigned scope.",
+      "ar": "تتيح لحامل الدور الإشراف على أعمال الصيانة ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "maintenance.view": {
+    "label": {
+      "en": "View maintenance work",
+      "ar": "عرض أعمال الصيانة"
+    },
+    "description": {
+      "en": "Allows the role holder to view maintenance work within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض أعمال الصيانة ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "manufacturing.approve": {
+    "label": {
+      "en": "Approve production operations",
+      "ar": "اعتماد عمليات الإنتاج"
+    },
+    "description": {
+      "en": "Allows the role holder to approve production operations within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد عمليات الإنتاج ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "manufacturing.bom": {
+    "label": {
+      "en": "Maintain bills of materials",
+      "ar": "إدارة قوائم مواد التصنيع"
+    },
+    "description": {
+      "en": "Allows the role holder to maintain bills of materials within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة قوائم مواد التصنيع ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "manufacturing.execute": {
+    "label": {
+      "en": "Record production operations",
+      "ar": "تسجيل عمليات الإنتاج"
+    },
+    "description": {
+      "en": "Allows the role holder to record production operations within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل عمليات الإنتاج ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "manufacturing.plan": {
+    "label": {
+      "en": "Plan material requirements",
+      "ar": "تخطيط احتياجات المواد"
+    },
+    "description": {
+      "en": "Allows the role holder to plan material requirements within the assigned scope.",
+      "ar": "تتيح لحامل الدور تخطيط احتياجات المواد ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "manufacturing.prepare": {
+    "label": {
+      "en": "Prepare production orders",
+      "ar": "إعداد أوامر الإنتاج"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare production orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد أوامر الإنتاج ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "manufacturing.view": {
+    "label": {
+      "en": "View production records",
+      "ar": "عرض سجلات الإنتاج"
+    },
+    "description": {
+      "en": "Allows the role holder to view production records within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض سجلات الإنتاج ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "marketing.admin": {
+    "label": {
+      "en": "Approve marketing campaigns",
+      "ar": "اعتماد الحملات التسويقية"
+    },
+    "description": {
+      "en": "Review and approve campaigns before launch and administer their delivery.",
+      "ar": "مراجعة الحملات واعتمادها قبل الإطلاق وإدارة إرسالها."
+    },
+    "type": "admin"
+  },
+  "marketing.edit": {
+    "label": {
+      "en": "Prepare marketing campaigns",
+      "ar": "إعداد الحملات التسويقية"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare marketing campaigns within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد الحملات التسويقية ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "marketing.suppressions": {
+    "label": {
+      "en": "Manage marketing suppressions",
+      "ar": "إدارة قوائم منع الإرسال"
+    },
+    "description": {
+      "en": "Allows the role holder to manage marketing suppressions within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة قوائم منع الإرسال ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "marketing.view": {
+    "label": {
+      "en": "View marketing campaigns",
+      "ar": "عرض الحملات التسويقية"
+    },
+    "description": {
+      "en": "Allows the role holder to view marketing campaigns within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض الحملات التسويقية ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "media_service.manage": {
+    "label": {
+      "en": "Manage stored media",
+      "ar": "إدارة ملفات الوسائط"
+    },
+    "description": {
+      "en": "Allows the role holder to manage stored media within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة ملفات الوسائط ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "media_service.view": {
+    "label": {
+      "en": "View media records",
+      "ar": "عرض سجلات الوسائط"
+    },
+    "description": {
+      "en": "Allows the role holder to view media records within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض سجلات الوسائط ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "payroll.approve": {
+    "label": {
+      "en": "Approve payroll runs",
+      "ar": "اعتماد مسيرات الرواتب"
+    },
+    "description": {
+      "en": "Allows the role holder to approve payroll runs within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد مسيرات الرواتب ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "payroll.pay": {
+    "label": {
+      "en": "Record payroll payments",
+      "ar": "تسجيل دفع الرواتب"
+    },
+    "description": {
+      "en": "Allows the role holder to record payroll payments within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل دفع الرواتب ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "payroll.payslip": {
+    "label": {
+      "en": "View employee payslips",
+      "ar": "عرض كشوف رواتب الموظفين"
+    },
+    "description": {
+      "en": "Allows the role holder to view employee payslips within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض كشوف رواتب الموظفين ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "payroll.payslip.self": {
+    "label": {
+      "en": "View own payslip",
+      "ar": "عرض كشف الراتب الشخصي"
+    },
+    "description": {
+      "en": "Allows the role holder to view own payslip within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض كشف الراتب الشخصي ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "payroll.post": {
+    "label": {
+      "en": "Post payroll to the ledger",
+      "ar": "ترحيل الرواتب للدفتر"
+    },
+    "description": {
+      "en": "Allows the role holder to post payroll to the ledger within the assigned scope.",
+      "ar": "تتيح لحامل الدور ترحيل الرواتب للدفتر ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "payroll.prepare": {
+    "label": {
+      "en": "Prepare payroll runs",
+      "ar": "إعداد مسيرات الرواتب"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare payroll runs within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد مسيرات الرواتب ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "payroll.summary": {
+    "label": {
+      "en": "View payroll totals",
+      "ar": "عرض إجماليات الرواتب"
+    },
+    "description": {
+      "en": "Allows the role holder to view payroll totals within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض إجماليات الرواتب ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "platform.audit": {
+    "label": {
+      "en": "Review the audit trail",
+      "ar": "مراجعة سجل التدقيق"
+    },
+    "description": {
+      "en": "Allows the role holder to review the audit trail within the assigned scope.",
+      "ar": "تتيح لحامل الدور مراجعة سجل التدقيق ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "platform.delegate": {
+    "label": {
+      "en": "Manage approval delegations",
+      "ar": "إدارة تفويضات الاعتماد"
+    },
+    "description": {
+      "en": "Allows the role holder to manage approval delegations within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة تفويضات الاعتماد ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "platform.export": {
+    "label": {
+      "en": "Export permitted records",
+      "ar": "تصدير السجلات المسموح بها"
+    },
+    "description": {
+      "en": "Allows the role holder to export permitted records within the assigned scope.",
+      "ar": "تتيح لحامل الدور تصدير السجلات المسموح بها ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "projects.cost": {
+    "label": {
+      "en": "Review project costs",
+      "ar": "عرض تكاليف المشاريع"
+    },
+    "description": {
+      "en": "Allows the role holder to review project costs within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض تكاليف المشاريع ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "projects.manage": {
+    "label": {
+      "en": "Manage projects and tasks",
+      "ar": "إدارة المشاريع والمهام"
+    },
+    "description": {
+      "en": "Allows the role holder to manage projects and tasks within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة المشاريع والمهام ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "projects.review": {
+    "label": {
+      "en": "Review project allocations",
+      "ar": "مراجعة تخصيصات المشاريع"
+    },
+    "description": {
+      "en": "Allows the role holder to review project allocations within the assigned scope.",
+      "ar": "تتيح لحامل الدور مراجعة تخصيصات المشاريع ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "projects.time": {
+    "label": {
+      "en": "Allocate time to tasks",
+      "ar": "تخصيص الوقت للمهام"
+    },
+    "description": {
+      "en": "Allows the role holder to allocate time to tasks within the assigned scope.",
+      "ar": "تتيح لحامل الدور تخصيص الوقت للمهام ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "projects.view": {
+    "label": {
+      "en": "View projects",
+      "ar": "عرض المشاريع"
+    },
+    "description": {
+      "en": "Allows the role holder to view projects within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض المشاريع ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "public_identity.manage": {
+    "label": {
+      "en": "Manage customer accounts",
+      "ar": "إدارة حسابات العملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to manage customer accounts within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة حسابات العملاء ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "public_identity.view": {
+    "label": {
+      "en": "View customer identities",
+      "ar": "عرض هويات العملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to view customer identities within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض هويات العملاء ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "publication.manage": {
+    "label": {
+      "en": "Manage publication spaces",
+      "ar": "إدارة مواقع النشر"
+    },
+    "description": {
+      "en": "Allows the role holder to manage publication spaces within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة مواقع النشر ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "publication.view": {
+    "label": {
+      "en": "View publication spaces",
+      "ar": "عرض مواقع النشر"
+    },
+    "description": {
+      "en": "Allows the role holder to view publication spaces within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض مواقع النشر ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "purchasing.approve": {
+    "label": {
+      "en": "Approve purchase requisitions",
+      "ar": "اعتماد طلبات الشراء"
+    },
+    "description": {
+      "en": "Allows the role holder to approve purchase requisitions within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد طلبات الشراء ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "purchasing.create": {
+    "label": {
+      "en": "Create purchase requisitions",
+      "ar": "إنشاء طلبات الشراء"
+    },
+    "description": {
+      "en": "Allows the role holder to create purchase requisitions within the assigned scope.",
+      "ar": "تتيح لحامل الدور إنشاء طلبات الشراء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "purchasing.edit": {
+    "label": {
+      "en": "Edit purchase requisitions",
+      "ar": "تعديل طلبات الشراء"
+    },
+    "description": {
+      "en": "Allows the role holder to edit purchase requisitions within the assigned scope.",
+      "ar": "تتيح لحامل الدور تعديل طلبات الشراء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "purchasing.po.create": {
+    "label": {
+      "en": "Convert requisitions to orders",
+      "ar": "تحويل الطلبات إلى أوامر شراء"
+    },
+    "description": {
+      "en": "Allows the role holder to convert requisitions to orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور تحويل الطلبات إلى أوامر شراء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "purchasing.po.issue": {
+    "label": {
+      "en": "Issue purchase orders",
+      "ar": "إصدار أوامر الشراء"
+    },
+    "description": {
+      "en": "Allows the role holder to issue purchase orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور إصدار أوامر الشراء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "purchasing.po.void": {
+    "label": {
+      "en": "Void purchase orders",
+      "ar": "إلغاء أوامر الشراء"
+    },
+    "description": {
+      "en": "Allows the role holder to void purchase orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور إلغاء أوامر الشراء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "purchasing.submit": {
+    "label": {
+      "en": "Submit requisitions for review",
+      "ar": "إرسال طلبات الشراء للمراجعة"
+    },
+    "description": {
+      "en": "Allows the role holder to submit requisitions for review within the assigned scope.",
+      "ar": "تتيح لحامل الدور إرسال طلبات الشراء للمراجعة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "purchasing.view": {
+    "label": {
+      "en": "View purchasing documents",
+      "ar": "عرض مستندات الشراء"
+    },
+    "description": {
+      "en": "Allows the role holder to view purchasing documents within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض مستندات الشراء ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "sales.collect": {
+    "label": {
+      "en": "Record customer collections",
+      "ar": "تسجيل تحصيلات العملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to record customer collections within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل تحصيلات العملاء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.credit": {
+    "label": {
+      "en": "Issue customer credit notes",
+      "ar": "إصدار إشعارات دائنة للعملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to issue customer credit notes within the assigned scope.",
+      "ar": "تتيح لحامل الدور إصدار إشعارات دائنة للعملاء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.customer": {
+    "label": {
+      "en": "Maintain customer records",
+      "ar": "إدارة بيانات العملاء"
+    },
+    "description": {
+      "en": "Allows the role holder to maintain customer records within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة بيانات العملاء ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.deliver": {
+    "label": {
+      "en": "Record sales deliveries",
+      "ar": "تسجيل تسليمات المبيعات"
+    },
+    "description": {
+      "en": "Allows the role holder to record sales deliveries within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل تسليمات المبيعات ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.invoice": {
+    "label": {
+      "en": "Invoice delivered goods",
+      "ar": "فوترة البضائع المسلمة"
+    },
+    "description": {
+      "en": "Allows the role holder to invoice delivered goods within the assigned scope.",
+      "ar": "تتيح لحامل الدور فوترة البضائع المسلمة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.order": {
+    "label": {
+      "en": "Manage sales orders",
+      "ar": "إدارة أوامر البيع"
+    },
+    "description": {
+      "en": "Allows the role holder to manage sales orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة أوامر البيع ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.quote": {
+    "label": {
+      "en": "Prepare quotations",
+      "ar": "إعداد عروض الأسعار"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare quotations within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد عروض الأسعار ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.return": {
+    "label": {
+      "en": "Record sales returns",
+      "ar": "تسجيل مرتجعات المبيعات"
+    },
+    "description": {
+      "en": "Allows the role holder to record sales returns within the assigned scope.",
+      "ar": "تتيح لحامل الدور تسجيل مرتجعات المبيعات ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "sales.view": {
+    "label": {
+      "en": "View sales documents",
+      "ar": "عرض مستندات المبيعات"
+    },
+    "description": {
+      "en": "Allows the role holder to view sales documents within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض مستندات المبيعات ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "suppliers.manage": {
+    "label": {
+      "en": "Maintain supplier records",
+      "ar": "إدارة بيانات الموردين"
+    },
+    "description": {
+      "en": "Allows the role holder to maintain supplier records within the assigned scope.",
+      "ar": "تتيح لحامل الدور إدارة بيانات الموردين ضمن النطاق المعيّن له."
+    },
+    "type": "admin"
+  },
+  "suppliers.view": {
+    "label": {
+      "en": "View supplier records",
+      "ar": "عرض بيانات الموردين"
+    },
+    "description": {
+      "en": "Allows the role holder to view supplier records within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض بيانات الموردين ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "supply.dispatch": {
+    "label": {
+      "en": "Dispatch stock transfers",
+      "ar": "شحن تحويلات المخزون"
+    },
+    "description": {
+      "en": "Allows the role holder to dispatch stock transfers within the assigned scope.",
+      "ar": "تتيح لحامل الدور شحن تحويلات المخزون ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "supply.prepare": {
+    "label": {
+      "en": "Prepare stock transfers",
+      "ar": "إعداد تحويلات المخزون"
+    },
+    "description": {
+      "en": "Allows the role holder to prepare stock transfers within the assigned scope.",
+      "ar": "تتيح لحامل الدور إعداد تحويلات المخزون ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "supply.receive": {
+    "label": {
+      "en": "Receive transferred stock",
+      "ar": "استلام المخزون المحول"
+    },
+    "description": {
+      "en": "Allows the role holder to receive transferred stock within the assigned scope.",
+      "ar": "تتيح لحامل الدور استلام المخزون المحول ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "supply.settle": {
+    "label": {
+      "en": "Approve in-transit discrepancies",
+      "ar": "اعتماد تسوية فروق البضاعة بالطريق"
+    },
+    "description": {
+      "en": "Allows the role holder to approve in-transit discrepancies within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد تسوية فروق البضاعة بالطريق ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "supply.view": {
+    "label": {
+      "en": "Track transfers and shipments",
+      "ar": "تتبع التحويلات والشحنات"
+    },
+    "description": {
+      "en": "Allows the role holder to track transfers and shipments within the assigned scope.",
+      "ar": "تتيح لحامل الدور تتبع التحويلات والشحنات ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "workorders.approve": {
+    "label": {
+      "en": "Approve work orders",
+      "ar": "اعتماد أوامر العمل"
+    },
+    "description": {
+      "en": "Allows the role holder to approve work orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور اعتماد أوامر العمل ضمن النطاق المعيّن له."
+    },
+    "type": "approve"
+  },
+  "workorders.create": {
+    "label": {
+      "en": "Create work orders",
+      "ar": "إنشاء أوامر العمل"
+    },
+    "description": {
+      "en": "Allows the role holder to create work orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور إنشاء أوامر العمل ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "workorders.edit": {
+    "label": {
+      "en": "Edit work orders",
+      "ar": "تعديل أوامر العمل"
+    },
+    "description": {
+      "en": "Allows the role holder to edit work orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور تعديل أوامر العمل ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "workorders.submit": {
+    "label": {
+      "en": "Submit work orders for review",
+      "ar": "إرسال أوامر العمل للمراجعة"
+    },
+    "description": {
+      "en": "Allows the role holder to submit work orders for review within the assigned scope.",
+      "ar": "تتيح لحامل الدور إرسال أوامر العمل للمراجعة ضمن النطاق المعيّن له."
+    },
+    "type": "write"
+  },
+  "workorders.view": {
+    "label": {
+      "en": "View work orders",
+      "ar": "عرض أوامر العمل"
+    },
+    "description": {
+      "en": "Allows the role holder to view work orders within the assigned scope.",
+      "ar": "تتيح لحامل الدور عرض أوامر العمل ضمن النطاق المعيّن له."
+    },
+    "type": "read"
+  },
+  "publication.publish": {
+    "label": {
+      "en": "Publish public content",
+      "ar": "نشر المحتوى العام"
+    },
+    "description": {
+      "en": "Publish, withdraw and archive public pages and posts.",
+      "ar": "نشر الصفحات والمقالات وسحبها وأرشفتها."
+    },
+    "type": "admin"
+  },
+  "publication.moderate": {
+    "label": {
+      "en": "Moderate public comments",
+      "ar": "مراجعة التعليقات العامة"
+    },
+    "description": {
+      "en": "Approve, reject or hide customer comments.",
+      "ar": "اعتماد تعليقات العملاء أو رفضها أو إخفاؤها."
+    },
+    "type": "admin"
+  }
+}

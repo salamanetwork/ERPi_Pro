@@ -1,0 +1,6 @@
+# Keep staging private even when an external VPS is used.
+services:
+  nginx:
+    environment:
+      ERP_HOST: ${ERP_HOST:-localhost}
+      ERP_AUTHORITY: ${ERP_AUTHORITY:-localhost:8443}

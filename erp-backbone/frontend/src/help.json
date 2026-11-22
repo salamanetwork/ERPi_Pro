@@ -1,0 +1,2112 @@
+{
+  "topics": {
+    "home": {
+      "en": {
+        "title": "Workspace",
+        "purpose": "See records and tasks you can access.",
+        "fields": "Use Site to narrow the indicators.",
+        "next": "Open an indicator or a module to continue."
+      },
+      "ar": {
+        "title": "مساحة العمل",
+        "purpose": "راجع السجلات والمهام المتاحة حسب صلاحياتك.",
+        "fields": "استخدم الموقع لتضييق المؤشرات.",
+        "next": "افتح مؤشرًا أو وحدة لمتابعة العمل."
+      }
+    },
+    "hr": {
+      "en": {
+        "title": "Human Resources",
+        "purpose": "Maintain employee records and manage requests and runs.",
+        "fields": "Use the tabs to select the workflow you need.",
+        "next": "Open a permitted record or create one from its tab."
+      },
+      "ar": {
+        "title": "الموارد البشرية",
+        "purpose": "أدر ملفات الموظفين والطلبات ودورات الرواتب.",
+        "fields": "اختر التبويب الخاص بالعملية المطلوبة.",
+        "next": "افتح سجلًا مصرحًا به أو أنشئ سجلًا من التبويب."
+      }
+    },
+    "hr/employees": {
+      "en": {
+        "title": "Employee file",
+        "purpose": "Create or update the employment record and its login link.",
+        "fields": "Employee number, site, role and hire date identify the employment record. Linked user searches by username or full name.",
+        "next": "Save the record. Open Personal details or Compensation history if you have access."
+      },
+      "ar": {
+        "title": "ملف الموظف",
+        "purpose": "أنشئ سجل العمل أو عدّله واربطه بحساب الدخول.",
+        "fields": "رقم الموظف والموقع والوظيفة وتاريخ التعيين تحدد سجل العمل. ابحث عن الحساب باسم الدخول أو الاسم الكامل.",
+        "next": "احفظ السجل، ثم افتح البيانات الشخصية أو سجل الأجر حسب صلاحيتك."
+      }
+    },
+    "hr/leaves": {
+      "en": {
+        "title": "Leave requests",
+        "purpose": "Request or review employee leave.",
+        "fields": "Choose the employee, start and end dates, leave type and reason.",
+        "next": "Submit the request or review the pending request in Inbox."
+      },
+      "ar": {
+        "title": "طلبات الإجازات",
+        "purpose": "قدّم طلب إجازة أو راجعه.",
+        "fields": "اختر الموظف وتاريخي البداية والنهاية ونوع الإجازة والسبب.",
+        "next": "أرسل الطلب أو راجع المعلّق من صندوق المهام."
+      }
+    },
+    "hr/payslips": {
+      "en": {
+        "title": "Payslips",
+        "purpose": "Review the payslips available to your account.",
+        "fields": "Employee and Month identify the relevant slip.",
+        "next": "Open or print the permitted payslip."
+      },
+      "ar": {
+        "title": "كشوف الرواتب",
+        "purpose": "راجع كشوف الرواتب المسموح بها لحسابك.",
+        "fields": "الموظف والشهر يحددان الكشف.",
+        "next": "افتح الكشف المسموح به أو اطبعه."
+      }
+    },
+    "attendance": {
+      "en": {
+        "title": "Time and attendance",
+        "purpose": "Record your shift and breaks, or review a weekly timesheet.",
+        "fields": "Week start, site and status filter the list. Times use the site timezone.",
+        "next": "Close the shift and submit the completed week, or review it from Inbox."
+      },
+      "ar": {
+        "title": "الوقت والحضور",
+        "purpose": "سجّل الوردية والاستراحة أو راجع كشف الأسبوع.",
+        "fields": "تاريخ بدء الأسبوع والموقع والحالة تصفّي القائمة. الأوقات تُعرض بتوقيت الموقع.",
+        "next": "أغلق الوردية وأرسل الأسبوع المكتمل أو راجعه من صندوق المهام."
+      }
+    },
+    "attendanceCorrections": {
+      "en": {
+        "title": "Attendance corrections",
+        "purpose": "Correct a recorded shift or review a proposed change.",
+        "fields": "Enter only the affected date and time, and the reason. An ambiguous local time requires its offset.",
+        "next": "Submit the change or compare the original and proposed times before deciding."
+      },
+      "ar": {
+        "title": "تصحيحات الحضور",
+        "purpose": "صحّح وردية مسجّلة أو راجع تعديلًا مقترحًا.",
+        "fields": "أدخل التاريخ والوقت المعنيين والسبب. الوقت المحلي الملتبس يتطلب فرق التوقيت.",
+        "next": "أرسل التغيير أو قارن الوقت الأصلي بالمقترح قبل اتخاذ القرار."
+      }
+    },
+    "attendanceCorrectionRequest": {
+      "en": {
+        "title": "Attendance corrections",
+        "purpose": "Correct a recorded shift or review a proposed change.",
+        "fields": "Enter only the affected date and time, and the reason. An ambiguous local time requires its offset.",
+        "next": "Submit the change or compare the original and proposed times before deciding."
+      },
+      "ar": {
+        "title": "تصحيحات الحضور",
+        "purpose": "صحّح وردية مسجّلة أو راجع تعديلًا مقترحًا.",
+        "fields": "أدخل التاريخ والوقت المعنيين والسبب. الوقت المحلي الملتبس يتطلب فرق التوقيت.",
+        "next": "أرسل التغيير أو قارن الوقت الأصلي بالمقترح قبل اتخاذ القرار."
+      }
+    },
+    "profile": {
+      "en": {
+        "title": "Your profile",
+        "purpose": "Update your display name and picture.",
+        "fields": "Enter name parts separately and select a supported image file.",
+        "next": "Save the changes or open your linked employee file."
+      },
+      "ar": {
+        "title": "ملفك الشخصي",
+        "purpose": "حدّث اسم العرض وصورتك.",
+        "fields": "أدخل أجزاء الاسم بشكل منفصل واختر ملف صورة مدعومًا.",
+        "next": "احفظ التغييرات أو افتح ملف الموظف المرتبط."
+      }
+    },
+    "settings": {
+      "en": {
+        "title": "Settings",
+        "purpose": "Choose the language and appearance of your workspace.",
+        "fields": "Language controls Arabic or English and the interface direction. Theme controls the color scheme.",
+        "next": "Save the preferences for this account."
+      },
+      "ar": {
+        "title": "الإعدادات",
+        "purpose": "اختر لغة مساحة العمل ومظهرها.",
+        "fields": "اللغة تحدد العربية أو الإنجليزية واتجاه الواجهة. السمة تحدد الألوان.",
+        "next": "احفظ تفضيلات الحساب."
+      }
+    },
+    "purchases": {
+      "en": {
+        "title": "Purchase requests",
+        "purpose": "Create a purchase request or review it for approval.",
+        "fields": "Check the site, currency, quantities and estimated prices. Approval templates define reviewer roles and the threshold.",
+        "next": "Save and submit the request. Once approved, create its purchase order."
+      },
+      "ar": {
+        "title": "طلبات الشراء",
+        "purpose": "أنشئ طلب شراء أو راجعه للاعتماد.",
+        "fields": "راجع الموقع والعملة والكميات والأسعار التقديرية. قوالب الموافقات تحدد أدوار المراجعين والحد.",
+        "next": "احفظ الطلب وأرسله. بعد الاعتماد أنشئ أمر الشراء."
+      }
+    },
+    "purchase": {
+      "en": {
+        "title": "Purchase requests",
+        "purpose": "Create a purchase request or review it for approval.",
+        "fields": "Check the site, currency, quantities and estimated prices. Approval templates define reviewer roles and the threshold.",
+        "next": "Save and submit the request. Once approved, create its purchase order."
+      },
+      "ar": {
+        "title": "طلبات الشراء",
+        "purpose": "أنشئ طلب شراء أو راجعه للاعتماد.",
+        "fields": "راجع الموقع والعملة والكميات والأسعار التقديرية. قوالب الموافقات تحدد أدوار المراجعين والحد.",
+        "next": "احفظ الطلب وأرسله. بعد الاعتماد أنشئ أمر الشراء."
+      }
+    },
+    "purchaseTemplates": {
+      "en": {
+        "title": "Purchase requests",
+        "purpose": "Create a purchase request or review it for approval.",
+        "fields": "Check the site, currency, quantities and estimated prices. Approval templates define reviewer roles and the threshold.",
+        "next": "Save and submit the request. Once approved, create its purchase order."
+      },
+      "ar": {
+        "title": "طلبات الشراء",
+        "purpose": "أنشئ طلب شراء أو راجعه للاعتماد.",
+        "fields": "راجع الموقع والعملة والكميات والأسعار التقديرية. قوالب الموافقات تحدد أدوار المراجعين والحد.",
+        "next": "احفظ الطلب وأرسله. بعد الاعتماد أنشئ أمر الشراء."
+      }
+    },
+    "purchaseOrders": {
+      "en": {
+        "title": "Purchase orders",
+        "purpose": "Prepare, issue and follow up a purchase order.",
+        "fields": "Check the source request, supplier, item prices and delivery dates.",
+        "next": "Issue the draft, then open Goods receipts from the issued order."
+      },
+      "ar": {
+        "title": "أوامر الشراء",
+        "purpose": "جهّز أمر شراء وأصدره وتابع استلامه.",
+        "fields": "راجع الطلب المصدر والمورد والأسعار وتواريخ التسليم.",
+        "next": "أصدر المسودة ثم افتح إيصالات الاستلام من الأمر الصادر."
+      }
+    },
+    "purchaseOrder": {
+      "en": {
+        "title": "Purchase orders",
+        "purpose": "Prepare, issue and follow up a purchase order.",
+        "fields": "Check the source request, supplier, item prices and delivery dates.",
+        "next": "Issue the draft, then open Goods receipts from the issued order."
+      },
+      "ar": {
+        "title": "أوامر الشراء",
+        "purpose": "جهّز أمر شراء وأصدره وتابع استلامه.",
+        "fields": "راجع الطلب المصدر والمورد والأسعار وتواريخ التسليم.",
+        "next": "أصدر المسودة ثم افتح إيصالات الاستلام من الأمر الصادر."
+      }
+    },
+    "suppliers": {
+      "en": {
+        "title": "Suppliers",
+        "purpose": "Maintain supplier records used in purchase orders.",
+        "fields": "Code identifies the supplier. Check the active status and currency.",
+        "next": "Save the supplier before selecting it on a purchase order."
+      },
+      "ar": {
+        "title": "الموردون",
+        "purpose": "أدر سجلات الموردين المستخدمة في أوامر الشراء.",
+        "fields": "الرمز يحدد المورد. راجع حالة التفعيل والعملة.",
+        "next": "احفظ المورد قبل اختياره في أمر شراء."
+      }
+    },
+    "payables": {
+      "en": {
+        "title": "Supplier invoices",
+        "purpose": "Match supplier invoices to orders and receipts.",
+        "fields": "Enter the supplier invoice reference, dates and quantities against the available receipt lines.",
+        "next": "Match and post the invoice, then record the payment when made."
+      },
+      "ar": {
+        "title": "فواتير الموردين",
+        "purpose": "طابق فواتير الموردين مع الأوامر والاستلامات.",
+        "fields": "أدخل مرجع الفاتورة والتواريخ والكميات مقابل بنود الاستلام المتاحة.",
+        "next": "طابق الفاتورة ورحّلها ثم سجّل الدفع عند تنفيذه."
+      }
+    },
+    "payables/aging": {
+      "en": {
+        "title": "AP aging",
+        "purpose": "Review outstanding amounts by supplier and due date.",
+        "fields": "Use As of date and Site to select the reporting scope.",
+        "next": "Run the report and open a row to review the invoices."
+      },
+      "ar": {
+        "title": "أعمار ديون الموردين",
+        "purpose": "راجع المبالغ المستحقة حسب المورد وتاريخ الاستحقاق.",
+        "fields": "استخدم تاريخ التقرير والموقع لتحديد النطاق.",
+        "next": "شغّل التقرير وافتح الصف لمراجعة الفواتير."
+      }
+    },
+    "inventory": {
+      "en": {
+        "title": "Inventory",
+        "purpose": "Review stock and manage items, receipts and balances.",
+        "fields": "Choose the site, warehouse, location and unit where relevant.",
+        "next": "Review the quantities before confirming a receipt or adjustment."
+      },
+      "ar": {
+        "title": "المخزون",
+        "purpose": "راجع المخزون وأدر الأصناف والاستلامات والأرصدة.",
+        "fields": "اختر الموقع والمستودع والمكان والوحدة حسب العملية.",
+        "next": "راجع الكميات قبل تأكيد الاستلام أو التسوية."
+      }
+    },
+    "receipt": {
+      "en": {
+        "title": "Inventory",
+        "purpose": "Review stock and manage items, receipts and balances.",
+        "fields": "Choose the site, warehouse, location and unit where relevant.",
+        "next": "Review the quantities before confirming a receipt or adjustment."
+      },
+      "ar": {
+        "title": "المخزون",
+        "purpose": "راجع المخزون وأدر الأصناف والاستلامات والأرصدة.",
+        "fields": "اختر الموقع والمستودع والمكان والوحدة حسب العملية.",
+        "next": "راجع الكميات قبل تأكيد الاستلام أو التسوية."
+      }
+    },
+    "receive": {
+      "en": {
+        "title": "Inventory",
+        "purpose": "Review stock and manage items, receipts and balances.",
+        "fields": "Choose the site, warehouse, location and unit where relevant.",
+        "next": "Review the quantities before confirming a receipt or adjustment."
+      },
+      "ar": {
+        "title": "المخزون",
+        "purpose": "راجع المخزون وأدر الأصناف والاستلامات والأرصدة.",
+        "fields": "اختر الموقع والمستودع والمكان والوحدة حسب العملية.",
+        "next": "راجع الكميات قبل تأكيد الاستلام أو التسوية."
+      }
+    },
+    "inventory/items": {
+      "en": {
+        "title": "Inventory items",
+        "purpose": "Find items and their units.",
+        "fields": "Use the item code or name to distinguish similar records.",
+        "next": "Open Inventory setup to maintain item and unit data if permitted."
+      },
+      "ar": {
+        "title": "أصناف المخزون",
+        "purpose": "ابحث عن الأصناف ووحداتها.",
+        "fields": "استخدم رمز الصنف أو اسمه للتمييز بين السجلات المتشابهة.",
+        "next": "افتح إعداد المخزون لتعديل الأصناف والوحدات حسب صلاحيتك."
+      }
+    },
+    "inventory/balances": {
+      "en": {
+        "title": "Stock balances",
+        "purpose": "Check available stock by item and location.",
+        "fields": "Use Site and Item to narrow the balance view.",
+        "next": "Review Stock movements for the transactions behind a balance."
+      },
+      "ar": {
+        "title": "أرصدة المخزون",
+        "purpose": "تحقق من رصيد الأصناف حسب مكان التخزين.",
+        "fields": "حدد الموقع والصنف لتضييق نطاق الأرصدة.",
+        "next": "راجع حركات المخزون لمعرفة العمليات المؤثرة في الرصيد."
+      }
+    },
+    "assets": {
+      "en": {
+        "title": "Assets and maintenance",
+        "purpose": "Manage equipment records and maintenance plans.",
+        "fields": "Check the asset tag, site, condition and next maintenance due date.",
+        "next": "Create a corrective order or generate due preventive work."
+      },
+      "ar": {
+        "title": "الأصول والصيانة",
+        "purpose": "أدر سجلات المعدات وخطط الصيانة.",
+        "fields": "راجع رمز الأصل والموقع وحالته وموعد الصيانة المقبل.",
+        "next": "أنشئ أمرًا تصحيحيًا أو ولّد أوامر الصيانة الوقائية المستحقة."
+      }
+    },
+    "assetDetail": {
+      "en": {
+        "title": "Assets and maintenance",
+        "purpose": "Manage equipment records and maintenance plans.",
+        "fields": "Check the asset tag, site, condition and next maintenance due date.",
+        "next": "Create a corrective order or generate due preventive work."
+      },
+      "ar": {
+        "title": "الأصول والصيانة",
+        "purpose": "أدر سجلات المعدات وخطط الصيانة.",
+        "fields": "راجع رمز الأصل والموقع وحالته وموعد الصيانة المقبل.",
+        "next": "أنشئ أمرًا تصحيحيًا أو ولّد أوامر الصيانة الوقائية المستحقة."
+      }
+    },
+    "maintenance": {
+      "en": {
+        "title": "Assets and maintenance",
+        "purpose": "Manage equipment records and maintenance plans.",
+        "fields": "Check the asset tag, site, condition and next maintenance due date.",
+        "next": "Create a corrective order or generate due preventive work."
+      },
+      "ar": {
+        "title": "الأصول والصيانة",
+        "purpose": "أدر سجلات المعدات وخطط الصيانة.",
+        "fields": "راجع رمز الأصل والموقع وحالته وموعد الصيانة المقبل.",
+        "next": "أنشئ أمرًا تصحيحيًا أو ولّد أوامر الصيانة الوقائية المستحقة."
+      }
+    },
+    "maintenanceAsset": {
+      "en": {
+        "title": "Assets and maintenance",
+        "purpose": "Manage equipment records and maintenance plans.",
+        "fields": "Check the asset tag, site, condition and next maintenance due date.",
+        "next": "Create a corrective order or generate due preventive work."
+      },
+      "ar": {
+        "title": "الأصول والصيانة",
+        "purpose": "أدر سجلات المعدات وخطط الصيانة.",
+        "fields": "راجع رمز الأصل والموقع وحالته وموعد الصيانة المقبل.",
+        "next": "أنشئ أمرًا تصحيحيًا أو ولّد أوامر الصيانة الوقائية المستحقة."
+      }
+    },
+    "orders": {
+      "en": {
+        "title": "Work orders",
+        "purpose": "Create, execute or review work orders.",
+        "fields": "Select the site and asset. Check the assignment and order stage.",
+        "next": "Submit a draft, or perform the next action available for its stage."
+      },
+      "ar": {
+        "title": "أوامر الشغل",
+        "purpose": "أنشئ أو نفّذ أو راجع أوامر الشغل.",
+        "fields": "اختر الموقع والأصل وراجع تعيين الفني وحالة الأمر.",
+        "next": "أرسل المسودة أو نفّذ الإجراء المتاح للمرحلة الحالية."
+      }
+    },
+    "order": {
+      "en": {
+        "title": "Work orders",
+        "purpose": "Create, execute or review work orders.",
+        "fields": "Select the site and asset. Check the assignment and order stage.",
+        "next": "Submit a draft, or perform the next action available for its stage."
+      },
+      "ar": {
+        "title": "أوامر الشغل",
+        "purpose": "أنشئ أو نفّذ أو راجع أوامر الشغل.",
+        "fields": "اختر الموقع والأصل وراجع تعيين الفني وحالة الأمر.",
+        "next": "أرسل المسودة أو نفّذ الإجراء المتاح للمرحلة الحالية."
+      }
+    },
+    "approvalTemplates": {
+      "en": {
+        "title": "Work orders",
+        "purpose": "Create, execute or review work orders.",
+        "fields": "Select the site and asset. Check the assignment and order stage.",
+        "next": "Submit a draft, or perform the next action available for its stage."
+      },
+      "ar": {
+        "title": "أوامر الشغل",
+        "purpose": "أنشئ أو نفّذ أو راجع أوامر الشغل.",
+        "fields": "اختر الموقع والأصل وراجع تعيين الفني وحالة الأمر.",
+        "next": "أرسل المسودة أو نفّذ الإجراء المتاح للمرحلة الحالية."
+      }
+    },
+    "accounting": {
+      "en": {
+        "title": "Accounting",
+        "purpose": "Manage periods, journals or reports.",
+        "fields": "Use posting date, account, debit and credit for journals.",
+        "next": "Review the entries, then post or run the appropriate report."
+      },
+      "ar": {
+        "title": "المحاسبة",
+        "purpose": "أدر الفترات والقيود والتقارير.",
+        "fields": "استخدم تاريخ الترحيل والحساب والمدين والدائن في القيود.",
+        "next": "راجع القيود ثم رحّلها أو شغّل التقرير المناسب."
+      }
+    },
+    "budgeting": {
+      "en": {
+        "title": "Cost centers and budgets",
+        "purpose": "Compare planned and recorded expense by cost center.",
+        "fields": "Select the year, site, center, account and report date.",
+        "next": "Open a result to see the underlying journal entries."
+      },
+      "ar": {
+        "title": "مراكز التكلفة والموازنات",
+        "purpose": "قارن المصروف المخطط به والفعلي حسب مركز التكلفة.",
+        "fields": "حدد السنة والموقع والمركز والحساب وتاريخ التقرير.",
+        "next": "افتح نتيجة للاطلاع على القيود المرتبطة."
+      }
+    },
+    "sales": {
+      "en": {
+        "title": "Sales",
+        "purpose": "Manage quotations, delivery, invoicing and collection.",
+        "fields": "Check the customer, site, quantities, prices and source document.",
+        "next": "Follow the available actions on the current sales document."
+      },
+      "ar": {
+        "title": "المبيعات",
+        "purpose": "أدر العروض والتسليم والفوترة والتحصيل.",
+        "fields": "راجع العميل والموقع والكميات والأسعار والمستند المصدر.",
+        "next": "تابع الإجراءات المتاحة على مستند البيع الحالي."
+      }
+    },
+    "sale": {
+      "en": {
+        "title": "Sales",
+        "purpose": "Manage quotations, delivery, invoicing and collection.",
+        "fields": "Check the customer, site, quantities, prices and source document.",
+        "next": "Follow the available actions on the current sales document."
+      },
+      "ar": {
+        "title": "المبيعات",
+        "purpose": "أدر العروض والتسليم والفوترة والتحصيل.",
+        "fields": "راجع العميل والموقع والكميات والأسعار والمستند المصدر.",
+        "next": "تابع الإجراءات المتاحة على مستند البيع الحالي."
+      }
+    },
+    "sales/customers": {
+      "en": {
+        "title": "Customers",
+        "purpose": "Maintain customer data for sales and invoices.",
+        "fields": "Code identifies the customer. Check billing information and payment terms.",
+        "next": "Save the customer before choosing it on a quotation."
+      },
+      "ar": {
+        "title": "العملاء",
+        "purpose": "أدر بيانات العملاء المستخدمة في المبيعات والفواتير.",
+        "fields": "الرمز يحدد العميل. راجع بيانات الفوترة وشروط الدفع.",
+        "next": "احفظ العميل قبل اختياره في عرض سعر."
+      }
+    },
+    "reportsDashboard": {
+      "en": {
+        "title": "Reports and dashboards",
+        "purpose": "Review indicators and open their detail reports.",
+        "fields": "Choose a site and reporting period where available.",
+        "next": "Open an indicator and compare its underlying rows."
+      },
+      "ar": {
+        "title": "التقارير ولوحات المعلومات",
+        "purpose": "راجع المؤشرات وافتح تقارير التفاصيل.",
+        "fields": "اختر الموقع والفترة حيثما يتاح ذلك.",
+        "next": "افتح المؤشر وقارن السجلات التي بُني عليها."
+      }
+    },
+    "reportsDetail": {
+      "en": {
+        "title": "Reports and dashboards",
+        "purpose": "Review indicators and open their detail reports.",
+        "fields": "Choose a site and reporting period where available.",
+        "next": "Open an indicator and compare its underlying rows."
+      },
+      "ar": {
+        "title": "التقارير ولوحات المعلومات",
+        "purpose": "راجع المؤشرات وافتح تقارير التفاصيل.",
+        "fields": "اختر الموقع والفترة حيثما يتاح ذلك.",
+        "next": "افتح المؤشر وقارن السجلات التي بُني عليها."
+      }
+    },
+    "inbox": {
+      "en": {
+        "title": "Inbox",
+        "purpose": "Find records waiting for your action.",
+        "fields": "Module, Site and Action narrow the tasks shown.",
+        "next": "Open a task and use the permitted action on its record."
+      },
+      "ar": {
+        "title": "صندوق المهام",
+        "purpose": "اعثر على السجلات التي تنتظر إجراءك.",
+        "fields": "الوحدة والموقع والإجراء تضيق نطاق المهام المعروضة.",
+        "next": "افتح المهمة ونفّذ الإجراء المسموح على سجلها."
+      }
+    },
+    "notifications": {
+      "en": {
+        "title": "Notifications",
+        "purpose": "Review activity on your records and requests.",
+        "fields": "Unread notices show new activity.",
+        "next": "Open the source record to review the status."
+      },
+      "ar": {
+        "title": "الإشعارات",
+        "purpose": "راجع النشاط على سجلاتك وطلباتك.",
+        "fields": "الإشعارات غير المقروءة تعرض الأنشطة الجديدة.",
+        "next": "افتح السجل المصدر لمراجعة الحالة."
+      }
+    },
+    "search": {
+      "en": {
+        "title": "Global search",
+        "purpose": "Find a record by its name or reference.",
+        "fields": "Search terms filter results within your access scope.",
+        "next": "Open the matching record."
+      },
+      "ar": {
+        "title": "البحث العام",
+        "purpose": "ابحث عن سجل باسمه أو مرجعه.",
+        "fields": "عبارة البحث تصفّي النتائج ضمن نطاق صلاحياتك.",
+        "next": "افتح السجل المطابق."
+      }
+    },
+    "modules": {
+      "en": {
+        "title": "Module visibility",
+        "purpose": "Manage module availability and links in navigation.",
+        "fields": "Choose a module or screen and choose the role for role-specific changes.",
+        "next": "Review the resulting list with an account in the affected role."
+      },
+      "ar": {
+        "title": "ظهور الموديولات",
+        "purpose": "أدر تفعيل الوظائف وظهور الروابط في القائمة.",
+        "fields": "اختر الوحدة أو الشاشة وحدد الدور عند ضبط ظهورها حسب الدور.",
+        "next": "راجع القائمة بحساب يتبع الدور المعني."
+      }
+    },
+    "moduleVisibility": {
+      "en": {
+        "title": "Module visibility",
+        "purpose": "Manage module availability and links in navigation.",
+        "fields": "Choose a module or screen and choose the role for role-specific changes.",
+        "next": "Review the resulting list with an account in the affected role."
+      },
+      "ar": {
+        "title": "ظهور الموديولات",
+        "purpose": "أدر تفعيل الوظائف وظهور الروابط في القائمة.",
+        "fields": "اختر الوحدة أو الشاشة وحدد الدور عند ضبط ظهورها حسب الدور.",
+        "next": "راجع القائمة بحساب يتبع الدور المعني."
+      }
+    },
+    "access": {
+      "en": {
+        "title": "Access control",
+        "purpose": "Manage what accounts can do and where they can do it.",
+        "fields": "Choose the user, role and site for an assignment.",
+        "next": "Verify the assignment using the account affected."
+      },
+      "ar": {
+        "title": "التحكم في الوصول",
+        "purpose": "أدر صلاحيات الحسابات والمواقع التي تسري فيها.",
+        "fields": "اختر المستخدم والدور والموقع عند التعيين.",
+        "next": "تحقق من التعيين باستخدام الحساب المعني."
+      }
+    },
+    "sites": {
+      "en": {
+        "title": "Sites",
+        "purpose": "Maintain the sites used by records and permissions.",
+        "fields": "Use the site name and check blockers before deactivating it.",
+        "next": "Open a site to review its status and dependencies."
+      },
+      "ar": {
+        "title": "المواقع",
+        "purpose": "أدر المواقع التي تستخدمها السجلات والصلاحيات.",
+        "fields": "راجع اسم الموقع وأسباب المنع قبل تعطيله.",
+        "next": "افتح الموقع لمراجعة حالته واعتمادياته."
+      }
+    },
+    "audit": {
+      "en": {
+        "title": "Audit trail",
+        "purpose": "Trace actions performed in the system.",
+        "fields": "Filter by UTC date, actor or action.",
+        "next": "Apply the filters and export if needed and permitted."
+      },
+      "ar": {
+        "title": "سجل التدقيق",
+        "purpose": "تتبّع الإجراءات المسجّلة في النظام.",
+        "fields": "صفِّ بحسب التاريخ بتوقيت UTC أو المنفّذ أو الإجراء.",
+        "next": "طبّق الفلاتر وصدّر النتائج عند الحاجة وحسب صلاحيتك."
+      }
+    },
+    "documentSettings": {
+      "en": {
+        "title": "Document settings",
+        "purpose": "Manage numbering and print layouts.",
+        "fields": "Choose the document type, then set its numbering or print options.",
+        "next": "Preview where available and save the settings."
+      },
+      "ar": {
+        "title": "إعدادات المستندات",
+        "purpose": "أدر الترقيم وتخطيطات الطباعة.",
+        "fields": "اختر نوع المستند ثم اضبط الترقيم أو خيارات الطباعة.",
+        "next": "استخدم المعاينة حيثما تتاح ثم احفظ الإعدادات."
+      }
+    },
+    "delegations": {
+      "en": {
+        "title": "Delegations",
+        "purpose": "Request or review temporary access delegation.",
+        "fields": "Choose delegate, site, role and start/end times.",
+        "next": "Submit the request for review and check its status."
+      },
+      "ar": {
+        "title": "التفويضات",
+        "purpose": "قدّم أو راجع تفويض وصول مؤقت.",
+        "fields": "اختر المفوَّض إليه والموقع والدور ووقت البداية والنهاية.",
+        "next": "أرسل الطلب للمراجعة وتابع حالته."
+      }
+    },
+    "dataImport": {
+      "en": {
+        "title": "Data import",
+        "purpose": "Validate CSV data before importing it.",
+        "fields": "Choose the record type and upload a matching CSV file.",
+        "next": "Review validation errors before confirming the import."
+      },
+      "ar": {
+        "title": "استيراد البيانات",
+        "purpose": "تحقق من بيانات CSV قبل استيرادها.",
+        "fields": "اختر نوع السجل وارفع ملف CSV مطابقًا.",
+        "next": "راجع أخطاء التحقق قبل تأكيد الاستيراد."
+      }
+    },
+    "notFound": {
+      "en": {
+        "title": "Page help",
+        "purpose": "Use the workspace to locate a page or record you can access.",
+        "fields": "Available links depend on your permissions.",
+        "next": "Go to Workspace or use Global search."
+      },
+      "ar": {
+        "title": "مساعدة الصفحة",
+        "purpose": "استخدم مساحة العمل للعثور على صفحة أو سجل مسموح به.",
+        "fields": "الروابط المتاحة تعتمد على صلاحيات حسابك.",
+        "next": "ارجع إلى مساحة العمل أو استخدم البحث العام."
+      }
+    },
+    "customers": {
+      "en": {
+        "title": "Customers",
+        "purpose": "Find and maintain customer master records.",
+        "fields": "Use Code, Name, and Status to narrow the directory.",
+        "next": "Open New customer or Edit to work in a separate form."
+      },
+      "ar": {
+        "title": "العملاء",
+        "purpose": "ابحث عن سجلات العملاء وأدرها.",
+        "fields": "استخدم الكود والاسم والحالة لتضييق النتائج.",
+        "next": "افتح عميل جديد أو تعديل للتعامل مع نموذج مستقل."
+      }
+    },
+    "items": {
+      "en": {
+        "title": "Inventory items",
+        "purpose": "Review the catalog and the base units used for stock.",
+        "fields": "Filter by code, name, status, or base unit.",
+        "next": "Open an item to review its unit conversions."
+      },
+      "ar": {
+        "title": "أصناف المخزون",
+        "purpose": "راجع دليل الأصناف ووحدات المخزون الأساسية.",
+        "fields": "ابحث بالكود والاسم وصفِّ حسب الحالة أو الوحدة الأساسية.",
+        "next": "افتح الصنف لمراجعة معاملاته بين الوحدات."
+      }
+    },
+    "hrSetup": {
+      "en": {
+        "title": "HR Setup",
+        "purpose": "Maintain the records used when editing an employee.",
+        "fields": "Use Code as a stable identifier and Name as the display label.",
+        "next": "Create departments and job titles before adding employees."
+      },
+      "ar": {
+        "title": "إعدادات الموارد البشرية",
+        "purpose": "أدر البيانات التي يختارها مسؤول HR عند تعديل ملف الموظف.",
+        "fields": "استخدم الكود كمعرّف ثابت والاسم للعرض.",
+        "next": "أنشئ الأقسام والمسميات الوظيفية قبل إضافة الموظفين."
+      }
+    },
+    "employeeNumbering": {
+      "en": {
+        "title": "Employee numbering",
+        "purpose": "Choose how new employee numbers are assigned.",
+        "fields": "Automatic numbering uses the next unused number at save time.",
+        "next": "Save your settings before creating employees."
+      },
+      "ar": {
+        "title": "ترقيم الموظفين",
+        "purpose": "حدد طريقة ترقيم الموظفين الجدد.",
+        "fields": "الترقيم التلقائي يستخدم الرقم التالي المتاح وقت الحفظ.",
+        "next": "احفظ الإعدادات قبل إنشاء ملفات الموظفين."
+      }
+    },
+    "offboarding": {
+      "en": {
+        "title": "Offboarding",
+        "purpose": "Submit or review a dated end of employment.",
+        "fields": "Choose the request type, give a reason and select the final employment day.",
+        "next": "A separate authorized reviewer approves or rejects the request."
+      },
+      "ar": {
+        "title": "إنهاء الخدمة",
+        "purpose": "قدّم طلب إنهاء خدمة بتاريخ محدد أو راجعه.",
+        "fields": "اختر نوع الطلب واكتب السبب وحدد آخر يوم عمل.",
+        "next": "يراجع الطلب ويعتمده أو يرفضه مسؤول آخر مخوّل."
+      }
+    },
+    "payroll/runs": {
+      "en": {
+        "title": "Payroll runs",
+        "purpose": "Prepare or review the payroll for a site and month.",
+        "fields": "Site and Month define the run. Check compensation and any approved adjustments.",
+        "next": "Calculate, then submit for review before posting and recording the payment."
+      },
+      "ar": {
+        "title": "دورات الرواتب",
+        "purpose": "جهّز أو راجع رواتب موقع وشهر محددين.",
+        "fields": "الموقع والشهر يحددان الدورة. راجع الأجر والتسويات المعتمدة.",
+        "next": "احسب الرواتب ثم أرسلها للمراجعة قبل الترحيل وتسجيل الدفع."
+      }
+    },
+    "payroll": {
+      "en": {
+        "title": "Payroll runs",
+        "purpose": "Prepare or review the payroll for a site and month.",
+        "fields": "Site and Month define the run. Check compensation and any approved adjustments.",
+        "next": "Calculate, then submit for review before posting and recording the payment."
+      },
+      "ar": {
+        "title": "دورات الرواتب",
+        "purpose": "جهّز أو راجع رواتب موقع وشهر محددين.",
+        "fields": "الموقع والشهر يحددان الدورة. راجع الأجر والتسويات المعتمدة.",
+        "next": "احسب الرواتب ثم أرسلها للمراجعة قبل الترحيل وتسجيل الدفع."
+      }
+    },
+    "payroll/payslips": {
+      "en": {
+        "title": "Payslips",
+        "purpose": "Review authorized payslips for your site or your own employee file.",
+        "fields": "Each row shows the employee number, month, status and net salary.",
+        "next": "Open the print view to print or save an individual slip."
+      },
+      "ar": {
+        "title": "كشوف الرواتب",
+        "purpose": "راجع كشوف الرواتب المتاحة لك حسب موقعك أو ملف الموظف الخاص بك.",
+        "fields": "يعرض كل صف رقم الموظف والشهر والحالة وصافي الراتب.",
+        "next": "افتح معاينة الطباعة لطباعة كشف الراتب الفردي أو حفظه."
+      }
+    },
+    "companyProfile": {
+      "en": {
+        "title": "Company Profile",
+        "purpose": "Set the name and logo users see beside the workspace menu.",
+        "fields": "Set a company name and choose a PNG, JPG, or SVG logo up to 2 MB. Use the preview to check the result.",
+        "next": "Save to apply the branding for all accounts in this installation."
+      },
+      "ar": {
+        "title": "ملف الشركة",
+        "purpose": "اضبط الاسم والشعار الذي يظهر بجوار قائمة مساحة العمل.",
+        "fields": "أدخل اسم الشركة واختر شعارًا بصيغة PNG أو JPG أو SVG بحجم يصل إلى 2 ميغابايت. راجع المعاينة.",
+        "next": "احفظ لتطبيق الهوية على كل الحسابات في هذا التثبيت."
+      }
+    },
+    "crm": {
+      "en": {
+        "title": "CRM",
+        "purpose": "Follow sales leads, opportunities and activities.",
+        "fields": "Use Site and Stage to narrow records. Switch between List view and Kanban view.",
+        "next": "Open a lead or an opportunity to continue."
+      },
+      "ar": {
+        "title": "إدارة علاقات العملاء",
+        "purpose": "تابع العملاء المحتملين والفرص والأنشطة.",
+        "fields": "استخدم الموقع والمرحلة لتصفية السجلات. بدّل بين القائمة ولوحة كانبان.",
+        "next": "افتح عميلًا محتملًا أو فرصة للمتابعة."
+      }
+    },
+    "crm/leads": {
+      "en": {
+        "title": "CRM leads",
+        "purpose": "Record and qualify a potential customer.",
+        "fields": "Enter a name and site. Add contact details and assign an owner when needed.",
+        "next": "Set the lead to Qualified, save, then use Convert to opportunity."
+      },
+      "ar": {
+        "title": "العملاء المحتملون",
+        "purpose": "سجّل بيانات العميل المحتمل وحدد تأهله للبيع.",
+        "fields": "أدخل الاسم والموقع وأضف بيانات الاتصال والمسؤول عند الحاجة.",
+        "next": "احفظ الحالة كمؤهل ثم اختر تحويل إلى فرصة."
+      }
+    },
+    "crm/opportunities": {
+      "en": {
+        "title": "CRM opportunities",
+        "purpose": "Track estimated sales and move open opportunities between stages.",
+        "fields": "Use the estimated amount and currency for pipeline reporting. Link a Sales customer before starting a quote.",
+        "next": "Move a card in Kanban or use Move opportunity. Open Stage history to review the change."
+      },
+      "ar": {
+        "title": "فرص المبيعات",
+        "purpose": "تابع القيمة التقديرية وانقل الفرص المفتوحة بين المراحل.",
+        "fields": "أدخل القيمة التقديرية والعملة لحساب الفرص. اربط عميلًا في المبيعات قبل إنشاء عرض سعر.",
+        "next": "اسحب البطاقة في كانبان أو اختر نقل الفرصة. راجع سجل المراحل للتحقق من الحركة."
+      }
+    },
+    "crm/activities": {
+      "en": {
+        "title": "CRM activities",
+        "purpose": "Schedule calls and meetings, and follow up on tasks.",
+        "fields": "Set an owner and due date and time. The due task appears in the owner’s Inbox and Notifications.",
+        "next": "Open the activity to complete it or update its schedule."
+      },
+      "ar": {
+        "title": "أنشطة المتابعة",
+        "purpose": "جدول المكالمات والاجتماعات وتابع المهام.",
+        "fields": "حدد المسؤول ووقت الاستحقاق. يظهر النشاط المستحق في صندوق مهام المسؤول وإشعاراته.",
+        "next": "افتح النشاط لإكماله أو تعديل موعده."
+      }
+    },
+    "adminUsers": {
+      "en": {
+        "title": "Users",
+        "purpose": "Find staff accounts and review their roles and site assignments.",
+        "fields": "Enter a unique username and initial password to create an account.",
+        "next": "Open Manage to change status, reset a password or assign a role."
+      },
+      "ar": {
+        "title": "المستخدمون",
+        "purpose": "ابحث عن حساب الموظف وراجع أدواره والمواقع المتاحة له.",
+        "fields": "أدخل اسم دخول فريدًا وكلمة مرور أولية عند الإنشاء.",
+        "next": "افتح إدارة المستخدم لتغيير الحالة أو كلمة المرور أو تعيين دور."
+      }
+    },
+    "publication": {
+      "en": {
+        "title": "Public sites",
+        "purpose": "Manage the public spaces and their published pages.",
+        "fields": "Choose an internal site, code and language before editing content.",
+        "next": "Review the working revision and publish it to make it public."
+      },
+      "ar": {
+        "title": "مواقع النشر",
+        "purpose": "أدر مساحات النشر وصفحاتها العامة.",
+        "fields": "حدد الموقع الداخلي والكود واللغة قبل تحرير المحتوى.",
+        "next": "راجع المسودة ثم انشرها لإتاحتها للزوار."
+      }
+    },
+    "parties": {
+      "en": {
+        "title": "Parties",
+        "purpose": "Keep organization and contact details in the selected site or space.",
+        "fields": "Choose a site, a party type and enter the English and Arabic names.",
+        "next": "Save the party to use it for appointments and invoices."
+      },
+      "ar": {
+        "title": "الأطراف",
+        "purpose": "احفظ بيانات الجهات والأفراد داخل الموقع أو مساحة النشر المحددة.",
+        "fields": "اختر الموقع ونوع الطرف وأدخل الاسمين العربي والإنجليزي.",
+        "next": "احفظ الطرف لاستخدامه في حجز المواعيد والفوترة."
+      }
+    },
+    "scheduling": {
+      "en": {
+        "title": "Appointments",
+        "purpose": "Set working hours and book available resource slots.",
+        "fields": "Create a resource with a time zone, working days and a slot duration.",
+        "next": "Select a party and a start time, then confirm or cancel the booking."
+      },
+      "ar": {
+        "title": "المواعيد",
+        "purpose": "حدد ساعات العمل واحجز موعدًا متاحًا للمورد.",
+        "fields": "أنشئ موردًا وحدد المنطقة الزمنية وأيام العمل ومدة الموعد.",
+        "next": "اختر الطرف ووقت البدء ثم أكّد الحجز أو ألغِه."
+      }
+    },
+    "billing_core": {
+      "en": {
+        "title": "Billing",
+        "purpose": "Issue itemized invoices and record full or partial receipts.",
+        "fields": "Select the party and currency. Enter a description, quantity, price and tax for each line.",
+        "next": "Issue the draft, record payment, then open the printable receipt."
+      },
+      "ar": {
+        "title": "الفوترة",
+        "purpose": "أصدر فواتير مفصلة وسجل تحصيلًا كليًا أو جزئيًا.",
+        "fields": "اختر الطرف والعملة وأدخل وصف وكمية وسعر وضريبة كل بند.",
+        "next": "أصدر المسودة وسجل الدفعة ثم افتح الإيصال للطباعة."
+      }
+    },
+    "projects": {
+      "en": {
+        "title": "Projects",
+        "purpose": "Follow tasks, membership and project costs.",
+        "fields": "Select a project within your membership to inspect its plan.",
+        "next": "Review tasks, approved time and budget variance."
+      },
+      "ar": {
+        "title": "المشاريع",
+        "purpose": "تابع المهام وعضوية المشروع والتكاليف.",
+        "fields": "اختر مشروعًا ضمن عضويتك لعرض خطته.",
+        "next": "راجع المهام والوقت المعتمد وفرق الموازنة."
+      }
+    },
+    "marketing": {
+      "en": {
+        "title": "Marketing",
+        "purpose": "Plan campaigns and track consenting recipients.",
+        "fields": "Choose a site, channel, segment and template.",
+        "next": "Preview the campaign, approve and review delivery results."
+      },
+      "ar": {
+        "title": "التسويق",
+        "purpose": "خطط للحملات وتابع المستلمين الذين وافقوا على التواصل.",
+        "fields": "اختر الموقع والقناة والشريحة والقالب.",
+        "next": "عاين الحملة واعتمدها ثم راجع نتائج الإرسال."
+      }
+    },
+    "helpdesk": {
+      "en": {
+        "title": "Helpdesk",
+        "purpose": "Track internal tickets from request to resolution.",
+        "fields": "Choose the site and category and describe the issue.",
+        "next": "Assign the ticket and review the resolution and response history."
+      },
+      "ar": {
+        "title": "الدعم",
+        "purpose": "تابع البلاغات الداخلية من التقديم حتى الحل.",
+        "fields": "حدد الموقع والفئة واشرح المشكلة.",
+        "next": "عيّن مسؤول البلاغ وراجع الحل وسجل الردود."
+      }
+    },
+    "manufacturing": {
+      "en": {
+        "title": "Manufacturing",
+        "purpose": "Plan materials and manage production orders.",
+        "fields": "Select a site and a released bill of materials.",
+        "next": "Reserve materials, issue components, receive output and close."
+      },
+      "ar": {
+        "title": "التصنيع",
+        "purpose": "خطط للخامات وأدر أوامر الإنتاج.",
+        "fields": "حدد الموقع وقائمة المواد المعتمدة.",
+        "next": "احجز الخامات واصرف المكونات ثم استلم الناتج وأقفل الأمر."
+      }
+    },
+    "supply": {
+      "en": {
+        "title": "Supply chain",
+        "purpose": "Track transfers, reservations and shipments.",
+        "fields": "Choose the source and destination for each transfer.",
+        "next": "Confirm, dispatch, receive and reconcile any discrepancy."
+      },
+      "ar": {
+        "title": "الإمداد",
+        "purpose": "تابع التحويلات والحجوزات والشحنات.",
+        "fields": "حدد المصدر والوجهة لكل تحويل.",
+        "next": "أكد التحويل واشحنه ثم سجل الاستلام وسوِّ الفروق."
+      }
+    },
+    "gateway": {
+      "en": {
+        "title": "Integrations & Webhooks",
+        "purpose": "Configure a destination and authentication for outgoing calls or create a signed inbound endpoint.",
+        "fields": "Use the indicators and field hints for the current environment.",
+        "next": "Test the connection and inspect the delivery or outbound log."
+      },
+      "ar": {
+        "title": "التكاملات والأحداث الواردة",
+        "purpose": "حدد وجهة الاتصال والمصادقة للطلبات الصادرة، أو أنشئ نقطة استقبال موقعة.",
+        "fields": "استعن بالمؤشرات وشروحات الحقول بحسب بيئة التشغيل الحالية.",
+        "next": "اختبر الاتصال ثم راجع سجل التسليم أو سجل الاتصالات الصادرة."
+      }
+    },
+    "securityHealth": {
+      "en": {
+        "title": "Security Health",
+        "purpose": "Review indicators for keys, sessions, MFA, backups and delivery queues.",
+        "fields": "Use the indicators and field hints for the current environment.",
+        "next": "Refresh after changing configuration. Revoking staff sessions also ends your session."
+      },
+      "ar": {
+        "title": "حالة الأمان",
+        "purpose": "راجع مؤشرات المفاتيح والجلسات والتحقق متعدد العوامل والنسخ وطوابير التسليم.",
+        "fields": "استعن بالمؤشرات وشروحات الحقول بحسب بيئة التشغيل الحالية.",
+        "next": "حدّث الصفحة بعد تغيير الإعدادات. إنهاء جلسات الموظفين ينهي جلستك أيضًا."
+      }
+    },
+    "expenses": {
+      "en": {
+        "title": "Employee expenses",
+        "purpose": "Claim business costs and track reimbursement.",
+        "fields": "Choose the employee and payment method. Enter dated amounts and attach supporting receipts.",
+        "next": "Submit, approve, post and record payments against the posted balance."
+      },
+      "ar": {
+        "title": "مصروفات الموظفين",
+        "purpose": "قدّم مصروفات العمل وتابع صرف المستحقات.",
+        "fields": "اختر الموظف وطريقة الدفع، وأدخل بنود المصروف وإيصالاته.",
+        "next": "أرسل المطالبة للاعتماد ثم الترحيل وسجّل دفعات التسوية."
+      }
+    },
+    "bank_reconciliation": {
+      "en": {
+        "title": "Bank reconciliation",
+        "purpose": "Compare the bank statement with posted cash movements for one account and site.",
+        "fields": "Enter signed movements in date order. Bank credits increase cash and bank debits reduce it.",
+        "next": "Match equal totals, post any missing charges and close after both differences reach zero."
+      },
+      "ar": {
+        "title": "التسوية البنكية",
+        "purpose": "قارن كشف البنك بالحركات المرحلة إلى حساب الأستاذ في نفس الموقع.",
+        "fields": "أدخل الحركات بالترتيب الزمني. دائن كشف البنك يزيد الرصيد ومدينه يخفضه.",
+        "next": "طابق المجاميع المتساوية ورحّل الرسوم الناقصة ثم أقفل عند تصفير الفرقين."
+      }
+    },
+    "subscriptions": {
+      "en": {
+        "title": "Subscriptions",
+        "purpose": "Manage recurring service contracts and their billing documents.",
+        "fields": "Select a site and optional public space. Set a price, tax rate and billing interval. Select a customer from the same scope.",
+        "next": "Review billed cycles, register payments in Documents & Billing and review cancellation requests."
+      },
+      "ar": {
+        "title": "الاشتراكات",
+        "purpose": "أدر عقود الخدمة الدورية وفواتيرها.",
+        "fields": "حدد الموقع ومساحة النشر الاختيارية. اضبط السعر والضريبة والدورية، واختر عميلاً من نفس النطاق.",
+        "next": "راجع الدورات المفوترة وسجل الدفعات من المستندات والفوترة، ثم راجع طلبات الإلغاء."
+      }
+    }
+  },
+  "fields": {
+    "Linked user": {
+      "en": "Search by username or full name. Select the account that will sign in for this employee.",
+      "ar": "ابحث باسم الدخول أو الاسم الكامل واختر الحساب الذي سيستخدمه الموظف."
+    },
+    "Employee number": {
+      "en": "Payroll and HR use this identifier. Save to assign it automatically, or enter your company number in manual mode.",
+      "ar": "يستخدم ملف الموظف والرواتب هذا الرقم. احفظ لتوليده تلقائيًا، أو اكتب رقم الشركة في الوضع اليدوي."
+    },
+    "Site": {
+      "en": "Select the site to which this record or filter applies.",
+      "ar": "اختر الموقع الذي يخصه السجل أو الفلتر."
+    },
+    "Department": {
+      "en": "Identify the team responsible for the employee. Search by department code or name, then select one from HR Setup.",
+      "ar": "يحدد القسم المسؤول عن الموظف. ابحث بكود القسم أو اسمه، ثم اختر سجلًا من إعدادات الموارد البشرية."
+    },
+    "Job title": {
+      "en": "Record the employee’s role in the company. Select a title by its name or code from Job titles.",
+      "ar": "يسجل دور الموظف في الشركة. ابحث عن المسمى بكوده أو اسمه، ثم اختره من المسميات الوظيفية."
+    },
+    "Hire date": {
+      "en": "Select the first day of the employee’s employment.",
+      "ar": "اختر أول يوم عمل للموظف."
+    },
+    "Last employment day": {
+      "en": "The final day the employee may start attendance. Select the date in the employee’s site timezone.",
+      "ar": "آخر يوم يُسمح فيه للموظف ببدء الحضور. اختر التاريخ حسب توقيت موقعه."
+    },
+    "Date of birth": {
+      "en": "Select the employee’s birth date.",
+      "ar": "اختر تاريخ ميلاد الموظف."
+    },
+    "Proposed start": {
+      "en": "Enter the corrected starting date and time at the site.",
+      "ar": "أدخل تاريخ ووقت البداية المصححة حسب توقيت الموقع."
+    },
+    "Proposed end": {
+      "en": "Enter the corrected ending date and time at the site.",
+      "ar": "أدخل تاريخ ووقت النهاية المصححة حسب توقيت الموقع."
+    },
+    "Start UTC offset": {
+      "en": "For a repeated local time, enter the offset for the intended starting instant.",
+      "ar": "عند تكرار الساعة المحلية أدخل فرق UTC لبداية الوقت المقصود."
+    },
+    "End UTC offset": {
+      "en": "For a repeated local time, enter the offset for the intended ending instant.",
+      "ar": "عند تكرار الساعة المحلية أدخل فرق UTC لنهاية الوقت المقصود."
+    },
+    "Time (hour and minute)": {
+      "en": "Set the hour and minute for the selected day.",
+      "ar": "اختر الساعة والدقيقة لليوم المحدد."
+    },
+    "Name": {
+      "en": "Enter the name to display on this record.",
+      "ar": "أدخل الاسم الذي يظهر في هذا السجل."
+    },
+    "Username": {
+      "en": "Enter the account name used to sign in.",
+      "ar": "أدخل اسم الحساب المستخدم لتسجيل الدخول."
+    },
+    "Password": {
+      "en": "Enter the password for this account.",
+      "ar": "أدخل كلمة مرور هذا الحساب."
+    },
+    "Description": {
+      "en": "Describe the item, request or transaction.",
+      "ar": "صف البند أو الطلب أو المعاملة."
+    },
+    "Reason": {
+      "en": "Explain why you are requesting or making the change.",
+      "ar": "اذكر سبب طلب التغيير أو تنفيذه."
+    },
+    "Review note": {
+      "en": "Record an explanation of the review action.",
+      "ar": "سجّل توضيحًا لإجراء المراجعة."
+    },
+    "Quantity": {
+      "en": "Enter the quantity in the unit shown or selected.",
+      "ar": "أدخل الكمية بالوحدة الظاهرة أو المحددة."
+    },
+    "Amount": {
+      "en": "Enter the amount in the currency shown on the screen.",
+      "ar": "أدخل المبلغ بالعملة الظاهرة على الشاشة."
+    },
+    "Account": {
+      "en": "Select the ledger account used for the posting or report.",
+      "ar": "اختر حساب الأستاذ الذي يستخدم للترحيل أو التقرير."
+    },
+    "Cost center": {
+      "en": "Choose the cost center to receive the expense or limit the report.",
+      "ar": "اختر مركز التكلفة لتحميل المصروف أو تحديد نطاق التقرير."
+    },
+    "Warehouse": {
+      "en": "Select the warehouse at the chosen site.",
+      "ar": "اختر المستودع في الموقع المحدد."
+    },
+    "Location": {
+      "en": "Select the storage location within the warehouse.",
+      "ar": "اختر مكان التخزين داخل المستودع."
+    },
+    "Posting date": {
+      "en": "Select the date on which the transaction is recorded in the ledger.",
+      "ar": "اختر تاريخ تسجيل المعاملة في الأستاذ العام."
+    },
+    "As of date": {
+      "en": "Select the date at which the report measures outstanding balances.",
+      "ar": "اختر التاريخ الذي يقيس عنده التقرير الأرصدة القائمة."
+    },
+    "Currency": {
+      "en": "Choose the currency used for the document values.",
+      "ar": "اختر العملة المستخدمة في قيم المستند."
+    },
+    "Supplier": {
+      "en": "Choose the supplier associated with the order or invoice.",
+      "ar": "اختر المورد المرتبط بالأمر أو الفاتورة."
+    },
+    "Customer": {
+      "en": "Choose the customer for the sales document.",
+      "ar": "اختر العميل لمستند المبيعات."
+    },
+    "Due date": {
+      "en": "Select the date by which the amount or work is due.",
+      "ar": "اختر تاريخ استحقاق المبلغ أو العمل."
+    },
+    "Code": {
+      "en": "Enter the reference code used to identify this record.",
+      "ar": "أدخل الرمز المرجعي الذي يميز السجل."
+    },
+    "Active": {
+      "en": "Choose whether this record is available for future selection. Historical references remain linked when you archive it.",
+      "ar": "يحدد إتاحة السجل للاختيار في المعاملات الجديدة. تظل السجلات التاريخية مرتبطة به بعد الأرشفة."
+    },
+    "Status": {
+      "en": "Choose which lifecycle state to show.",
+      "ar": "اختر حالة السجلات المطلوب عرضها."
+    },
+    "Role": {
+      "en": "Choose the access role affected by this action.",
+      "ar": "اختر دور الوصول المعني بهذا الإجراء."
+    },
+    "Choose a profile picture": {
+      "en": "Select a JPEG, PNG, or WebP image up to 2 MB.",
+      "ar": "اختر صورة JPEG أو PNG أو WebP بحجم لا يتجاوز 2 ميجابايت."
+    },
+    "Source role assignment": {
+      "en": "Select the existing site and role assignment from which you will delegate.",
+      "ar": "اختر تعيين الموقع والدور الذي سيصدر منه التفويض."
+    },
+    "Date": {
+      "en": "Choose the calendar day for this record or operation.",
+      "ar": "اختر اليوم المرجعي لهذا السجل أو الإجراء."
+    },
+    "Start date": {
+      "en": "Choose the first day of the requested range.",
+      "ar": "اختر أول يوم في النطاق المطلوب."
+    },
+    "End date": {
+      "en": "Choose the last day of the requested range.",
+      "ar": "اختر آخر يوم في النطاق المطلوب."
+    },
+    "Month": {
+      "en": "Choose the calendar month and year for this operation.",
+      "ar": "اختر شهر وسنة هذه العملية."
+    },
+    "Reference": {
+      "en": "Enter an external reference that can identify this transaction later.",
+      "ar": "أدخل مرجعًا خارجيًا يساعد في التعرف على المعاملة لاحقًا."
+    },
+    "Unit price": {
+      "en": "Enter the price for one unit in the document currency.",
+      "ar": "أدخل سعر الوحدة الواحدة بعملة المستند."
+    },
+    "Search users by username or name": {
+      "en": "Enter at least two characters of the username or registered name.",
+      "ar": "أدخل حرفين على الأقل من اسم الدخول أو الاسم المسجّل."
+    },
+    "Account type": {
+      "en": "Choose the financial classification of this account.",
+      "ar": "اختر التصنيف المالي للحساب."
+    },
+    "Action": {
+      "en": "Choose the system operation to include in the results.",
+      "ar": "اختر العملية المطلوب إظهارها في النتائج."
+    },
+    "Actor": {
+      "en": "Enter a username or name to filter by who performed the action.",
+      "ar": "أدخل اسم الدخول أو اسم الشخص لتصفية النتائج حسب المنفّذ."
+    },
+    "Address": {
+      "en": "Enter the street, city and other address details used by this record.",
+      "ar": "أدخل الشارع والمدينة وبقية بيانات العنوان الخاصة بهذا السجل."
+    },
+    "Billing address": {
+      "en": "Enter the street, city and other address details used by this record.",
+      "ar": "أدخل الشارع والمدينة وبقية بيانات العنوان الخاصة بهذا السجل."
+    },
+    "Shipping address": {
+      "en": "Enter the street, city and other address details used by this record.",
+      "ar": "أدخل الشارع والمدينة وبقية بيانات العنوان الخاصة بهذا السجل."
+    },
+    "Allowances": {
+      "en": "Enter the monthly amount for this salary component.",
+      "ar": "أدخل المبلغ الشهري لهذا المكوّن من الراتب."
+    },
+    "Basic salary": {
+      "en": "Enter the monthly amount for this salary component.",
+      "ar": "أدخل المبلغ الشهري لهذا المكوّن من الراتب."
+    },
+    "Asset link": {
+      "en": "Select the asset affected by the current work.",
+      "ar": "اختر الأصل المعني بالعمل الحالي."
+    },
+    "Asset": {
+      "en": "Select the asset affected by the current work.",
+      "ar": "اختر الأصل المعني بالعمل الحالي."
+    },
+    "Bank reference": {
+      "en": "Enter the transaction reference from the bank statement.",
+      "ar": "أدخل مرجع المعاملة من كشف البنك."
+    },
+    "Base quantity": {
+      "en": "Enter the quantity in the unit indicated for this operation.",
+      "ar": "أدخل الكمية بالوحدة المحددة لهذه العملية."
+    },
+    "Issue quantity": {
+      "en": "Enter the quantity in the unit indicated for this operation.",
+      "ar": "أدخل الكمية بالوحدة المحددة لهذه العملية."
+    },
+    "Return quantity": {
+      "en": "Enter the quantity in the unit indicated for this operation.",
+      "ar": "أدخل الكمية بالوحدة المحددة لهذه العملية."
+    },
+    "Quantity in purchase unit": {
+      "en": "Enter the quantity in the unit indicated for this operation.",
+      "ar": "أدخل الكمية بالوحدة المحددة لهذه العملية."
+    },
+    "Base unit": {
+      "en": "Sets the unit used for stock balances and valuation. Choose the unit in which you keep quantity, such as Piece.",
+      "ar": "تحدد الوحدة التي تُحفظ بها أرصدة المخزون والتقييم. اختر وحدة حفظ الكمية، مثل القطعة."
+    },
+    "From unit": {
+      "en": "Choose the unit used to record or convert the quantity.",
+      "ar": "اختر الوحدة المستخدمة لتسجيل الكمية أو تحويلها."
+    },
+    "Purchase unit": {
+      "en": "Choose the unit used to record or convert the quantity.",
+      "ar": "اختر الوحدة المستخدمة لتسجيل الكمية أو تحويلها."
+    },
+    "Business day starts at": {
+      "en": "Set the local time when the inventory business day starts.",
+      "ar": "حدد الوقت المحلي لبداية يوم تشغيل المخزون."
+    },
+    "CSV file": {
+      "en": "Choose a CSV file whose headers match the selected import type.",
+      "ar": "اختر ملف CSV بعناوين أعمدة تطابق نوع الاستيراد."
+    },
+    "Checklist (one step per line)": {
+      "en": "Enter each maintenance instruction on its own line.",
+      "ar": "أدخل كل تعليمات الصيانة في سطر مستقل."
+    },
+    "Choose a file (up to 10 MB)": {
+      "en": "Choose a document to attach to the current record.",
+      "ar": "اختر المستند المطلوب إرفاقه بالسجل الحالي."
+    },
+    "Company name": {
+      "en": "Shown in the sidebar. Leave it blank to use ERPi Pro.",
+      "ar": "يظهر أعلى القائمة الجانبية. اتركه فارغًا لعرض ERPi Pro."
+    },
+    "Contact": {
+      "en": "Enter contact details for this supplier or customer.",
+      "ar": "أدخل بيانات التواصل مع المورد أو العميل."
+    },
+    "Conversion factor": {
+      "en": "Quantity of base units in one selected unit. Enter 12 if one box contains 12 pieces and Piece is the base unit.",
+      "ar": "عدد الوحدات الأساسية في كل وحدة مختارة. اكتب 12 إذا كان الصندوق يحتوي على 12 قطعة والقطعة هي الوحدة الأساسية."
+    },
+    "Corrective work order title": {
+      "en": "Enter a short title that identifies the work or request.",
+      "ar": "أدخل عنوانًا مختصرًا يميّز العمل أو الطلب."
+    },
+    "Title": {
+      "en": "Enter a short title that identifies the work or request.",
+      "ar": "أدخل عنوانًا مختصرًا يميّز العمل أو الطلب."
+    },
+    "Credit amount (AED)": {
+      "en": "Enter this side of the posting using a positive amount in the displayed currency.",
+      "ar": "أدخل مبلغ هذا الجانب من القيد بقيمة موجبة بالعملة الظاهرة."
+    },
+    "Credit": {
+      "en": "Enter this side of the posting using a positive amount in the displayed currency.",
+      "ar": "أدخل مبلغ هذا الجانب من القيد بقيمة موجبة بالعملة الظاهرة."
+    },
+    "Debit": {
+      "en": "Enter this side of the posting using a positive amount in the displayed currency.",
+      "ar": "أدخل مبلغ هذا الجانب من القيد بقيمة موجبة بالعملة الظاهرة."
+    },
+    "Data type": {
+      "en": "Choose the category that determines the fields or records shown next.",
+      "ar": "اختر الفئة التي تحدد الحقول أو السجلات التي ستظهر بعد ذلك."
+    },
+    "Setup type": {
+      "en": "Choose the category that determines the fields or records shown next.",
+      "ar": "اختر الفئة التي تحدد الحقول أو السجلات التي ستظهر بعد ذلك."
+    },
+    "Type": {
+      "en": "Choose the category that determines the fields or records shown next.",
+      "ar": "اختر الفئة التي تحدد الحقول أو السجلات التي ستظهر بعد ذلك."
+    },
+    "Document type": {
+      "en": "Choose the category that determines the fields or records shown next.",
+      "ar": "اختر الفئة التي تحدد الحقول أو السجلات التي ستظهر بعد ذلك."
+    },
+    "Days": {
+      "en": "Enter the number of days counted for this field.",
+      "ar": "أدخل عدد الأيام المستخدمة في هذا الحقل."
+    },
+    "Payment terms (days)": {
+      "en": "Enter the number of days counted for this field.",
+      "ar": "أدخل عدد الأيام المستخدمة في هذا الحقل."
+    },
+    "Default currency": {
+      "en": "Choose the currency initially suggested for this supplier.",
+      "ar": "اختر العملة التي تظهر مبدئيًا لهذا المورد."
+    },
+    "Default view": {
+      "en": "Select or name a saved set of filters for later use.",
+      "ar": "اختر مجموعة الفلاتر المحفوظة أو سمّها لاستخدامها لاحقًا."
+    },
+    "Saved views": {
+      "en": "Select or name a saved set of filters for later use.",
+      "ar": "اختر مجموعة الفلاتر المحفوظة أو سمّها لاستخدامها لاحقًا."
+    },
+    "View name": {
+      "en": "Select or name a saved set of filters for later use.",
+      "ar": "اختر مجموعة الفلاتر المحفوظة أو سمّها لاستخدامها لاحقًا."
+    },
+    "Delegate": {
+      "en": "Choose the person for this record or assignment.",
+      "ar": "اختر الشخص المعني بالسجل أو التعيين."
+    },
+    "User": {
+      "en": "Choose the person for this record or assignment.",
+      "ar": "اختر الشخص المعني بالسجل أو التعيين."
+    },
+    "Employee": {
+      "en": "Choose the person for this record or assignment.",
+      "ar": "اختر الشخص المعني بالسجل أو التعيين."
+    },
+    "Technician": {
+      "en": "Choose the person for this record or assignment.",
+      "ar": "اختر الشخص المعني بالسجل أو التعيين."
+    },
+    "Department manager role": {
+      "en": "Choose the role responsible for this approval step.",
+      "ar": "اختر الدور المسؤول عن خطوة الموافقة."
+    },
+    "Finance reviewer role": {
+      "en": "Choose the role responsible for this approval step.",
+      "ar": "اختر الدور المسؤول عن خطوة الموافقة."
+    },
+    "Reviewer role": {
+      "en": "Choose the role responsible for this approval step.",
+      "ar": "اختر الدور المسؤول عن خطوة الموافقة."
+    },
+    "Description / Reason": {
+      "en": "Document the facts or reason that supports this action.",
+      "ar": "وثّق الوقائع أو سبب هذا الإجراء."
+    },
+    "Findings": {
+      "en": "Document the facts or reason that supports this action.",
+      "ar": "وثّق الوقائع أو سبب هذا الإجراء."
+    },
+    "Price change reason": {
+      "en": "Document the facts or reason that supports this action.",
+      "ar": "وثّق الوقائع أو سبب هذا الإجراء."
+    },
+    "Reopen reason": {
+      "en": "Document the facts or reason that supports this action.",
+      "ar": "وثّق الوقائع أو سبب هذا الإجراء."
+    },
+    "Void reason": {
+      "en": "Document the facts or reason that supports this action.",
+      "ar": "وثّق الوقائع أو سبب هذا الإجراء."
+    },
+    "Destination site": {
+      "en": "Choose the receiving site for the asset transfer.",
+      "ar": "اختر الموقع الذي سينتقل إليه الأصل."
+    },
+    "Equipment type": {
+      "en": "Enter the equipment identifier or its maintenance location as indicated.",
+      "ar": "أدخل معرّف المعدة أو موقع صيانتها حسب الحقل."
+    },
+    "Functional location": {
+      "en": "Enter the equipment identifier or its maintenance location as indicated.",
+      "ar": "أدخل معرّف المعدة أو موقع صيانتها حسب الحقل."
+    },
+    "Tag": {
+      "en": "Enter the equipment identifier or its maintenance location as indicated.",
+      "ar": "أدخل معرّف المعدة أو موقع صيانتها حسب الحقل."
+    },
+    "Estimated unit price": {
+      "en": "Enter the estimated price or cost in the displayed currency.",
+      "ar": "أدخل السعر التقديري أو التكلفة بالعملة الظاهرة."
+    },
+    "Unit cost (AED)": {
+      "en": "Enter the estimated price or cost in the displayed currency.",
+      "ar": "أدخل السعر التقديري أو التكلفة بالعملة الظاهرة."
+    },
+    "Purchase cost": {
+      "en": "Enter the estimated price or cost in the displayed currency.",
+      "ar": "أدخل السعر التقديري أو التكلفة بالعملة الظاهرة."
+    },
+    "Finance threshold": {
+      "en": "Enter the amount that determines when finance reviews the request.",
+      "ar": "أدخل المبلغ الذي يحدد متى يراجع قسم المالية الطلب."
+    },
+    "Financial month": {
+      "en": "Choose the fiscal period for these records or reports.",
+      "ar": "اختر الفترة المالية لهذه السجلات أو التقارير."
+    },
+    "Financial year": {
+      "en": "Choose the fiscal period for these records or reports.",
+      "ar": "اختر الفترة المالية لهذه السجلات أو التقارير."
+    },
+    "First name": {
+      "en": "Enter the indicated part of the registered name.",
+      "ar": "أدخل الجزء المطلوب من الاسم المسجّل."
+    },
+    "Middle name": {
+      "en": "Enter the indicated part of the registered name.",
+      "ar": "أدخل الجزء المطلوب من الاسم المسجّل."
+    },
+    "Last name": {
+      "en": "Enter the indicated part of the registered name.",
+      "ar": "أدخل الجزء المطلوب من الاسم المسجّل."
+    },
+    "Legal name": {
+      "en": "Enter the indicated part of the registered name.",
+      "ar": "أدخل الجزء المطلوب من الاسم المسجّل."
+    },
+    "First sequence number": {
+      "en": "Enter the initial number used by the sequence.",
+      "ar": "أدخل الرقم الأول الذي يبدأ منه التسلسل."
+    },
+    "Footer": {
+      "en": "Enter text to appear in that part of the printed document.",
+      "ar": "أدخل النص الذي يظهر في هذا الجزء من المستند المطبوع."
+    },
+    "Print heading": {
+      "en": "Enter text to appear in that part of the printed document.",
+      "ar": "أدخل النص الذي يظهر في هذا الجزء من المستند المطبوع."
+    },
+    "Frequency": {
+      "en": "Set the recurrence unit or interval between maintenance jobs.",
+      "ar": "حدد وحدة التكرار أو الفاصل بين أعمال الصيانة."
+    },
+    "Interval": {
+      "en": "Set the recurrence unit or interval between maintenance jobs.",
+      "ar": "حدد وحدة التكرار أو الفاصل بين أعمال الصيانة."
+    },
+    "Hide in navigation": {
+      "en": "Remove this link from the menu for the selected scope.",
+      "ar": "أخفِ هذا الرابط من القائمة في النطاق المحدد."
+    },
+    "I reviewed inventory and open GRNI.": {
+      "en": "Confirm the cutover balances before applying the cutover.",
+      "ar": "أكّد مراجعة أرصدة التحويل قبل تنفيذ القطع."
+    },
+    "Inventory account": {
+      "en": "Select the account used for this relationship or posting rule.",
+      "ar": "اختر الحساب المستخدم في هذا الربط أو قاعدة الترحيل."
+    },
+    "Offset account": {
+      "en": "Select the account used for this relationship or posting rule.",
+      "ar": "اختر الحساب المستخدم في هذا الربط أو قاعدة الترحيل."
+    },
+    "Parent account": {
+      "en": "Select the account used for this relationship or posting rule.",
+      "ar": "اختر الحساب المستخدم في هذا الربط أو قاعدة الترحيل."
+    },
+    "Posting account": {
+      "en": "Select the account used for this relationship or posting rule.",
+      "ar": "اختر الحساب المستخدم في هذا الربط أو قاعدة الترحيل."
+    },
+    "Variance account": {
+      "en": "Select the account used for this relationship or posting rule.",
+      "ar": "اختر الحساب المستخدم في هذا الربط أو قاعدة الترحيل."
+    },
+    "Item": {
+      "en": "Select the item whose stock or movement is affected.",
+      "ar": "اختر الصنف الذي يخصه الرصيد أو الحركة."
+    },
+    "Language": {
+      "en": "Choose the language for screens or the printed document.",
+      "ar": "اختر لغة الشاشة أو المستند المطبوع."
+    },
+    "Leave type": {
+      "en": "Select whether the leave is paid or unpaid.",
+      "ar": "حدد ما إذا كانت الإجازة مدفوعة أو غير مدفوعة."
+    },
+    "Logo (PNG or JPEG": {
+      "en": "Choose the logo file to display on the print template.",
+      "ar": "اختر ملف الشعار الذي يظهر في قالب الطباعة."
+    },
+    " up to 256 KB)": {
+      "en": "Choose the logo file to display on the print template.",
+      "ar": "اختر ملف الشعار الذي يظهر في قالب الطباعة."
+    },
+    "Module": {
+      "en": "Select which application area the filter or setting affects.",
+      "ar": "اختر الوحدة التي يخصها الفلتر أو الإعداد."
+    },
+    "Movement": {
+      "en": "Choose the stock movement category relevant to this operation.",
+      "ar": "اختر فئة حركة المخزون التي تخص الإجراء."
+    },
+    "National ID": {
+      "en": "Use this field to view, replace or clear the employee's protected identity number, as indicated.",
+      "ar": "استخدم الحقل لعرض رقم هوية الموظف المحمي أو تغييره أو إزالته حسب الخيار."
+    },
+    "New national ID": {
+      "en": "Use this field to view, replace or clear the employee's protected identity number, as indicated.",
+      "ar": "استخدم الحقل لعرض رقم هوية الموظف المحمي أو تغييره أو إزالته حسب الخيار."
+    },
+    "Remove national ID": {
+      "en": "Use this field to view, replace or clear the employee's protected identity number, as indicated.",
+      "ar": "استخدم الحقل لعرض رقم هوية الموظف المحمي أو تغييره أو إزالته حسب الخيار."
+    },
+    "Nationality": {
+      "en": "Enter the employee's recorded nationality.",
+      "ar": "أدخل الجنسية المسجّلة للموظف."
+    },
+    "New role": {
+      "en": "Enter a distinct name for the role to create.",
+      "ar": "أدخل اسمًا مميزًا للدور الجديد."
+    },
+    "Original issue": {
+      "en": "Choose the original issue being returned against.",
+      "ar": "اختر إذن الصرف الأصلي الذي يتم الإرجاع عليه."
+    },
+    "Parent asset": {
+      "en": "Choose the equipment record that contains or owns this asset.",
+      "ar": "اختر المعدة التي يتبع لها هذا الأصل."
+    },
+    "Prefix": {
+      "en": "Enter the characters placed before the generated document number.",
+      "ar": "أدخل الأحرف التي تسبق رقم المستند المولّد."
+    },
+    "Previous work order is still open": {
+      "en": "Confirm you reviewed the previous order before generating another one.",
+      "ar": "أكّد مراجعة الأمر السابق قبل توليد أمر آخر."
+    },
+    "Purchase order line": {
+      "en": "Choose the corresponding line from the source document.",
+      "ar": "اختر البند المطابق في المستند المصدر."
+    },
+    "Source line": {
+      "en": "Choose the corresponding line from the source document.",
+      "ar": "اختر البند المطابق في المستند المصدر."
+    },
+    "Purchase order": {
+      "en": "Select the existing document that this operation should reference.",
+      "ar": "اختر المستند الموجود الذي يرتبط به هذا الإجراء."
+    },
+    "Sales invoice": {
+      "en": "Select the existing document that this operation should reference.",
+      "ar": "اختر المستند الموجود الذي يرتبط به هذا الإجراء."
+    },
+    "Supplier return": {
+      "en": "Select the existing document that this operation should reference.",
+      "ar": "اختر المستند الموجود الذي يرتبط به هذا الإجراء."
+    },
+    "Purchase reference": {
+      "en": "Enter the identifier shown on the external document or supplier record.",
+      "ar": "أدخل المعرّف الوارد في المستند الخارجي أو سجل المورد."
+    },
+    "Supplier invoice number": {
+      "en": "Enter the identifier shown on the external document or supplier record.",
+      "ar": "أدخل المعرّف الوارد في المستند الخارجي أو سجل المورد."
+    },
+    "Supplier reference": {
+      "en": "Enter the identifier shown on the external document or supplier record.",
+      "ar": "أدخل المعرّف الوارد في المستند الخارجي أو سجل المورد."
+    },
+    "Supplier code": {
+      "en": "Enter the identifier shown on the external document or supplier record.",
+      "ar": "أدخل المعرّف الوارد في المستند الخارجي أو سجل المورد."
+    },
+    "Tax ID": {
+      "en": "Enter the identifier shown on the external document or supplier record.",
+      "ar": "أدخل المعرّف الوارد في المستند الخارجي أو سجل المورد."
+    },
+    "Report": {
+      "en": "Choose the report that will run with the selected filters.",
+      "ar": "اختر التقرير الذي يُشغّل بالفلاتر المحددة."
+    },
+    "Search": {
+      "en": "Enter a name, number or reference to find a record.",
+      "ar": "أدخل اسمًا أو رقمًا أو مرجعًا للعثور على سجل."
+    },
+    "Global search": {
+      "en": "Enter a name, number or reference to find a record.",
+      "ar": "أدخل اسمًا أو رقمًا أو مرجعًا للعثور على سجل."
+    },
+    "Separate sequence per site": {
+      "en": "Track each site's document numbers using its own sequence.",
+      "ar": "استخدم تسلسل ترقيم مستقل لكل موقع."
+    },
+    "Standard daily minutes": {
+      "en": "Set the site's standard net work minutes for each day.",
+      "ar": "حدد دقائق العمل الصافية الأساسية يوميًا للموقع."
+    },
+    "Supplier invoice total (AED)": {
+      "en": "Enter the total from the supplier invoice, in dirhams.",
+      "ar": "أدخل الإجمالي الوارد في فاتورة المورد بالدرهم."
+    },
+    "Tax rate (%)": {
+      "en": "Enter the percentage using numeric digits.",
+      "ar": "أدخل النسبة المئوية باستخدام الأرقام."
+    },
+    "Warning threshold (%)": {
+      "en": "Enter the percentage using numeric digits.",
+      "ar": "أدخل النسبة المئوية باستخدام الأرقام."
+    },
+    "Theme": {
+      "en": "Select the light, dark or system appearance.",
+      "ar": "اختر المظهر الفاتح أو الداكن أو إعداد النظام."
+    },
+    "Time zone": {
+      "en": "Use an IANA zone such as Asia/Dubai for the resource’s working hours.",
+      "ar": "استخدم اسم منطقة زمنية مثل Asia/Dubai لتحديد توقيت دوام المورد."
+    },
+    "Unit code": {
+      "en": "Enter the identifier or display name for the unit of measure.",
+      "ar": "أدخل رمز أو اسم عرض وحدة القياس."
+    },
+    "Unit name": {
+      "en": "Enter the identifier or display name for the unit of measure.",
+      "ar": "أدخل رمز أو اسم عرض وحدة القياس."
+    },
+    "Verification code": {
+      "en": "Enter the current six-digit code from your authenticator app.",
+      "ar": "أدخل الرمز الحالي المكوّن من ستة أرقام من تطبيق المصادقة."
+    },
+    "Week starts on": {
+      "en": "Choose the first weekday in this site's attendance week.",
+      "ar": "اختر أول يوم في أسبوع الحضور لهذا الموقع."
+    },
+    "Requested minutes": {
+      "en": "Enter the overtime amount in whole minutes within the displayed limit.",
+      "ar": "أدخل مقدار الوقت الإضافي بالدقائق الصحيحة ضمن الحد الظاهر."
+    },
+    "Approved minutes": {
+      "en": "Enter the overtime amount in whole minutes within the displayed limit.",
+      "ar": "أدخل مقدار الوقت الإضافي بالدقائق الصحيحة ضمن الحد الظاهر."
+    },
+    "Decision reason": {
+      "en": "Explain why the approved duration differs from the request.",
+      "ar": "اذكر سبب اختلاف المدة المعتمدة عن المطلوبة."
+    },
+    "Permissions": {
+      "en": "Select the operations granted by this role or delegation.",
+      "ar": "حدد العمليات التي يتيحها هذا الدور أو التفويض."
+    },
+    "Starts at (local time)": {
+      "en": "Enter the local date and time when this delegation starts.",
+      "ar": "أدخل التاريخ والوقت المحليين لبدء التفويض."
+    },
+    "Ends at (local time)": {
+      "en": "Enter the local date and time when this delegation expires.",
+      "ar": "أدخل التاريخ والوقت المحليين لانتهاء التفويض."
+    },
+    "Transfer date": {
+      "en": "Choose the effective date of the site transfer.",
+      "ar": "اختر التاريخ الذي يبدأ فيه سريان نقل الموقع."
+    },
+    "Invoice date": {
+      "en": "Choose the date on the original invoice.",
+      "ar": "اختر التاريخ المدون على أصل الفاتورة."
+    },
+    "Confirmed delivery date": {
+      "en": "Choose the delivery date confirmed by the supplier.",
+      "ar": "اختر تاريخ التسليم الذي أكّده المورد."
+    },
+    "Valid through": {
+      "en": "Choose the final day this offer can be used.",
+      "ar": "اختر آخر يوم يمكن فيه استخدام هذا العرض."
+    },
+    "Cutover date": {
+      "en": "Choose the first date when live accounting starts.",
+      "ar": "اختر أول يوم يبدأ فيه التشغيل المحاسبي الفعلي."
+    },
+    "Week start": {
+      "en": "Select the first local day of the attendance week.",
+      "ar": "اختر اليوم المحلي الأول لأسبوع الحضور."
+    },
+    "Effective date": {
+      "en": "Choose the date from which this value applies.",
+      "ar": "اختر تاريخ بداية تطبيق هذه القيمة."
+    },
+    "Leave-only week start": {
+      "en": "Choose the first day of a week with an approved leave and no recorded shift.",
+      "ar": "اختر أول يوم لأسبوع فيه إجازة معتمدة من دون وردية مسجلة."
+    },
+    "Grade": {
+      "en": "Classify the position using an optional grade. Search by code or name and select a grade if your company uses them.",
+      "ar": "يصنّف الوظيفة باستخدام درجة اختيارية. ابحث بالكود أو الاسم واختر درجة لو شركتك بتستخدم الدرجات."
+    },
+    "Request type": {
+      "en": "Choose Resignation for an employee-initiated departure or Termination for a company-initiated departure.",
+      "ar": "اختر استقالة إذا بدأ الموظف الإجراء، أو إنهاء خدمة إذا بدأت الشركة الإجراء."
+    },
+    "Automatic numbering": {
+      "en": "Enable this to assign employee numbers at save time. Clear it to require a number in the employee form.",
+      "ar": "فعّل الخيار لتوليد رقم الموظف وقت الحفظ. ألغِه لإلزام إدخال الرقم في النموذج."
+    },
+    "Next employee number": {
+      "en": "Sets the starting point for future numbers. Use a positive whole number at least as high as the current one.",
+      "ar": "يحدد بداية الأرقام التالية. اكتب عددًا صحيحًا موجبًا يساوي القيمة الحالية أو يزيد عليها."
+    },
+    "Auto-generate Code": {
+      "en": "Suggest a code from the name. Turn off this option to edit the code before saving.",
+      "ar": "يقترح كودًا من الاسم. ألغِ هذا الخيار لتعديل الكود قبل الحفظ."
+    },
+    "Company logo": {
+      "en": "Choose a PNG, JPG, or SVG logo up to 2 MB.",
+      "ar": "اختر شعارًا بصيغة PNG أو JPG أو SVG بحجم يصل إلى 2 ميغابايت."
+    },
+    "Slot minutes": {
+      "en": "Length of one bookable appointment. Start times align to this interval from opening time.",
+      "ar": "مدة الموعد الواحد بالدقائق. تُحسب أوقات البدء على هذه الفواصل من بداية الدوام."
+    },
+    "Portal account ID": {
+      "en": "Optional. Enter the ID of an active customer account belonging to this publication space.",
+      "ar": "اختياري. أدخل معرّف حساب عميل نشط مرتبط بمساحة النشر المختارة."
+    },
+    "Tax or national ID": {
+      "en": "Enter the tax number of the organization or the identifier of the individual when needed.",
+      "ar": "أدخل الرقم الضريبي للجهة أو رقم هوية الفرد عند الحاجة."
+    },
+    "Tax %": {
+      "en": "Enter the tax percentage, for example 5 for five percent.",
+      "ar": "أدخل نسبة الضريبة، مثل 5 لخمسة بالمئة."
+    },
+    "Start (device local time)": {
+      "en": "Enter the appointment start in your device’s local time. The server checks the slot against the resource’s time zone.",
+      "ar": "أدخل بداية الموعد بتوقيت جهازك. يتحقق الخادم من الموعد وفق توقيت المورد."
+    },
+    "gateway.slug": {
+      "en": "Stable identifier used in the route; choose it before saving.",
+      "ar": "رمز ثابت يظهر في المسار. اختره قبل الحفظ."
+    },
+    "gateway.name": {
+      "en": "Display name shown to administrators.",
+      "ar": "الاسم الذي يظهر للمسؤولين."
+    },
+    "gateway.site_id": {
+      "en": "Leave empty for a global configuration, or enter the numeric site ID.",
+      "ar": "اتركه فارغًا للإعداد العام، أو أدخل رقم الموقع."
+    },
+    "gateway.connector_id": {
+      "en": "Optional connector for this endpoint. Select a global connector or one in the same site.",
+      "ar": "موصل اختياري لهذه النقطة، عام أو تابع لنفس الموقع."
+    },
+    "gateway.base_url": {
+      "en": "Production requires a public HTTPS destination.",
+      "ar": "يتطلب الإنتاج عنوان HTTPS عامًا."
+    },
+    "gateway.health_path": {
+      "en": "Relative probe path starting with /. The test sends HEAD.",
+      "ar": "مسار الفحص يبدأ بـ /. يرسل الاختبار طلب HEAD."
+    },
+    "gateway.auth_type": {
+      "en": "Choose none, bearer token, basic credentials, or a named API key header.",
+      "ar": "اختر دون مصادقة أو رمز حامل أو مصادقة أساسية أو مفتاح ترويسة."
+    },
+    "gateway.auth_header_name": {
+      "en": "Header carrying the API key for API-key authentication.",
+      "ar": "اسم الترويسة التي تحمل مفتاح الخدمة عند اختيار مصادقة المفتاح."
+    },
+    "gateway.credentials": {
+      "en": "Leave empty while editing to keep the existing secret. For Basic use username:password.",
+      "ar": "اتركه فارغًا عند التعديل للاحتفاظ بالسر الحالي. للمصادقة الأساسية اكتب اسم المستخدم ثم نقطتين وكلمة المرور."
+    },
+    "gateway.timeout_seconds": {
+      "en": "Maximum socket timeout in seconds (1–60).",
+      "ar": "مهلة الاتصال بالثواني من 1 إلى 60."
+    },
+    "gateway.max_retries": {
+      "en": "Additional attempts after transient upstream failure, from 0 to 5.",
+      "ar": "عدد المحاولات الإضافية عند العطل المؤقت، من صفر إلى خمس."
+    },
+    "gateway.active": {
+      "en": "Enable this configuration to allow calls or accept incoming deliveries.",
+      "ar": "فعّل الإعداد للسماح بالاتصال أو استقبال الأحداث."
+    },
+    "gateway.signature_header": {
+      "en": "Name of the header containing the HMAC-SHA256 signature.",
+      "ar": "اسم الترويسة التي تحتوي توقيع HMAC-SHA256."
+    },
+    "gateway.timestamp_header": {
+      "en": "Header for the signed Unix timestamp. Clearing it switches to body-only signing.",
+      "ar": "ترويسة وقت يونكس الموقّع. عند تفريغها يقتصر التوقيع على المتن."
+    },
+    "gateway.tolerance_seconds": {
+      "en": "Maximum clock difference for a timestamped event, in seconds (1–300).",
+      "ar": "أقصى فرق زمني مسموح للحدث الموقّت بالثواني، من 1 إلى 300."
+    },
+    "expense.site": {
+      "en": "Select the site that owns the expense.",
+      "ar": "اختر الموقع الذي يتحمل المصروف."
+    },
+    "expense.employee": {
+      "en": "Select the employee who incurred the expense. Preparing another employee’s claim requires delegation rights.",
+      "ar": "اختر الموظف صاحب المصروف. يتطلب التقديم عن موظف آخر صلاحية الإعداد بالنيابة."
+    },
+    "expense.project": {
+      "en": "Optionally associate the claim with an active project you belong to at this site.",
+      "ar": "يمكن ربط المطالبة بمشروع نشط تشارك فيه في هذا الموقع."
+    },
+    "expense.center": {
+      "en": "Expense lines debit this cost center when posted.",
+      "ar": "يُحمّل المصروف على هذا المركز عند الترحيل."
+    },
+    "expense.currency": {
+      "en": "The claim uses the current accounting ledger currency.",
+      "ar": "تُسجّل المطالبة بعملة دفتر الأستاذ."
+    },
+    "expense.method": {
+      "en": "Choose Employee for reimbursement or Company when already paid from company funds.",
+      "ar": "اختر الموظف لصرف مستحقاته أو الشركة إذا دفعت من أموالها."
+    },
+    "expense.category": {
+      "en": "Classify this line for expense review.",
+      "ar": "صنّف البند لتسهيل مراجعة المصروف."
+    },
+    "expense.date": {
+      "en": "Enter the date shown on the supporting receipt.",
+      "ar": "أدخل تاريخ المصروف المثبت على الإيصال."
+    },
+    "expense.description": {
+      "en": "Describe the business purpose of this line.",
+      "ar": "وضّح الغرض من المصروف."
+    },
+    "expense.net": {
+      "en": "Enter the amount before tax, up to two decimal places.",
+      "ar": "أدخل القيمة قبل الضريبة حتى منزلتين عشريتين."
+    },
+    "expense.tax": {
+      "en": "Enter the tax amount in ledger currency, or zero.",
+      "ar": "أدخل مبلغ الضريبة بعملة الدفتر أو صفرًا."
+    },
+    "expense.recoverable": {
+      "en": "Select if this tax is recoverable; otherwise it is included in the expense.",
+      "ar": "حدّد إذا كانت الضريبة قابلة للاسترداد، وإلا تُضاف إلى المصروف."
+    },
+    "expense.file": {
+      "en": "Attach a private PNG, JPEG, WebP (5 MB) or PDF (10 MB) to this saved line.",
+      "ar": "أرفق صورة خاصة حتى 5 ميغابايت أو ملف PDF حتى 10 ميغابايت لهذا البند المحفوظ."
+    },
+    "expense.posting_date": {
+      "en": "Use an open accounting period on or after all line dates.",
+      "ar": "اختر تاريخًا في فترة مفتوحة لا يسبق تواريخ البنود."
+    },
+    "expense.reference": {
+      "en": "Enter the bank transaction or cash voucher reference.",
+      "ar": "أدخل مرجع الحوالة البنكية أو سند الصندوق."
+    },
+    "expense.amount": {
+      "en": "Enter a positive amount up to the remaining employee balance.",
+      "ar": "أدخل مبلغًا موجبًا حتى قيمة المتبقي للموظف."
+    },
+    "expense.reason": {
+      "en": "Explain the rejection so the employee can review it.",
+      "ar": "وضّح سبب الرفض حتى يتمكن الموظف من مراجعته."
+    },
+    "bank.site": {
+      "en": "Only bank and ledger rows for this site are visible.",
+      "ar": "تظهر فقط كشوف البنك وقيود الموقع المحدد."
+    },
+    "bank.profile": {
+      "en": "Select the bank and its ledger account.",
+      "ar": "اختر البنك وحسابه في الأستاذ."
+    },
+    "bank.name": {
+      "en": "Enter the bank or cash account’s display name.",
+      "ar": "أدخل اسم البنك أو الصندوق الظاهر للمستخدم."
+    },
+    "bank.last_four": {
+      "en": "Enter only the last four characters of the account or IBAN.",
+      "ar": "أدخل آخر أربعة أحرف أو أرقام فقط من الحساب أو الآيبان."
+    },
+    "bank.account_id": {
+      "en": "Choose the asset account that receives posted cash movements.",
+      "ar": "اختر حساب الأصل الذي ترحل إليه المقبوضات والمدفوعات."
+    },
+    "bank.charges_id": {
+      "en": "Expense account debited for fees and negative rounding.",
+      "ar": "حساب المصروف المدين للرسوم وفروق التقريب السالبة."
+    },
+    "bank.interest_id": {
+      "en": "Income account credited for interest and positive rounding.",
+      "ar": "حساب الإيراد الدائن للفائدة وفروق التقريب الموجبة."
+    },
+    "bank.tolerance": {
+      "en": "Maximum difference for a suggestion or an explicit rounding entry.",
+      "ar": "أقصى فرق للاقتراح أو لقيد تقريب صريح."
+    },
+    "bank.start": {
+      "en": "First date on this statement, after the last reconciled date.",
+      "ar": "أول تاريخ في الكشف بعد آخر إقفال."
+    },
+    "bank.end": {
+      "en": "Last date on this statement. Later ledger entries are excluded.",
+      "ar": "آخر تاريخ بالكشف، وتستبعد القيود الأحدث منه."
+    },
+    "bank.opening": {
+      "en": "Enter the bank opening balance. For subsequent statements use the previous closing balance.",
+      "ar": "أدخل رصيد أول المدة. للكشف التالي استخدم رصيد الإقفال السابق."
+    },
+    "bank.closing": {
+      "en": "Copy the ending balance printed by the bank.",
+      "ar": "انقل رصيد آخر المدة من كشف البنك."
+    },
+    "bank.date": {
+      "en": "Use YYYY-MM-DD within the statement period; append oldest first.",
+      "ar": "استخدم YYYY-MM-DD ضمن فترة الكشف وأدخل الأقدم أولاً."
+    },
+    "bank.description": {
+      "en": "Enter the bank narration used to identify the transaction.",
+      "ar": "أدخل بيان الحركة كما يظهر في كشف الحساب."
+    },
+    "bank.reference": {
+      "en": "Bank transaction or payment reference used to identify matches.",
+      "ar": "مرجع البنك أو الدفعة لتحديد الحركات المتطابقة."
+    },
+    "bank.amount": {
+      "en": "Positive for money in and negative for money out.",
+      "ar": "استخدم الموجب للوارد والسالب للصادر."
+    },
+    "bank.running_balance": {
+      "en": "Optional balance immediately after this row; checked before import.",
+      "ar": "رصيد اختياري بعد هذه الحركة، يتحقق منه النظام قبل الاستيراد."
+    },
+    "bank.debit": {
+      "en": "Map the positive outgoing amount on the bank statement.",
+      "ar": "اربط عمود المبلغ الصادر الموجب في الكشف."
+    },
+    "bank.credit": {
+      "en": "Map the positive incoming amount on the bank statement.",
+      "ar": "اربط عمود المبلغ الوارد الموجب في الكشف."
+    },
+    "bank.file": {
+      "en": "Upload UTF-8 CSV up to 2 MiB and 5,000 rows. Map signed amount or debit/credit.",
+      "ar": "ارفع CSV بترميز UTF-8 حتى ٢ ميبيبايت و٥٠٠٠ حركة. اختر المبلغ بإشارته أو المدين والدائن."
+    },
+    "bank.attach": {
+      "en": "Keep a private copy of the imported file with this statement.",
+      "ar": "احفظ نسخة خاصة من الملف المستورد مع هذا الكشف."
+    },
+    "bank.adjust": {
+      "en": "Fees and interest post the whole selected bank line. Rounding posts only its residual against selected GL lines.",
+      "ar": "الرسوم والفائدة ترحلان مبلغ الحركة المحددة. التقريب يرحل فقط الفرق عن قيود الأستاذ المختارة."
+    },
+    "subscriptions.price": {
+      "en": "Recurring net amount for one full cycle, in the active ledger currency.",
+      "ar": "السعر الصافي لدورة كاملة بعملة الدفتر النشط."
+    },
+    "subscriptions.tax": {
+      "en": "Percentage applied per billing line.",
+      "ar": "نسبة الضريبة لكل بند في الفاتورة."
+    },
+    "subscriptions.setup": {
+      "en": "One-time charge on the first paid cycle.",
+      "ar": "رسم مرة واحدة عند أول دورة مدفوعة."
+    },
+    "subscriptions.trial_days": {
+      "en": "Number of free days before advance billing starts.",
+      "ar": "عدد الأيام المجانية قبل أول فاتورة مقدمة."
+    },
+    "subscriptions.interval": {
+      "en": "Choose monthly, quarterly, annual or a fixed number of days.",
+      "ar": "اختر دورية شهرية أو ربع سنوية أو سنوية أو عدداً ثابتاً من الأيام."
+    },
+    "subscriptions.days": {
+      "en": "Length of each custom cycle in calendar days.",
+      "ar": "عدد الأيام التقويمية في كل دورة مخصصة."
+    },
+    "subscriptions.version_id": {
+      "en": "Select the price and terms snapshot for this contract.",
+      "ar": "اختر نسخة السعر والشروط الخاصة بالعقد."
+    },
+    "subscriptions.party_id": {
+      "en": "Select an active customer in the chosen site and public space.",
+      "ar": "اختر عميلاً نشطاً في الموقع ومساحة النشر المحددين."
+    },
+    "subscriptions.start": {
+      "en": "Site-local calendar date when the trial or first paid cycle begins.",
+      "ar": "تاريخ بداية التجربة أو أول دورة مدفوعة بالتوقيت المحلي للموقع."
+    },
+    "subscriptions.code": {
+      "en": "Use a unique plan code within this site.",
+      "ar": "أدخل كود خطة فريداً داخل الموقع."
+    },
+    "subscriptions.name_en": {
+      "en": "Plan name shown in English.",
+      "ar": "اسم الخطة الذي يظهر بالإنجليزية."
+    },
+    "subscriptions.name_ar": {
+      "en": "Plan name shown in Arabic.",
+      "ar": "اسم الخطة الذي يظهر بالعربية."
+    },
+    "subscriptions.first": {
+      "en": "Days after the invoice due date. Thresholds must increase from first notice to suspension.",
+      "ar": "عدد الأيام بعد استحقاق الفاتورة. يجب أن تزداد المهل من الإشعار الأول حتى التعليق."
+    },
+    "subscriptions.second": {
+      "en": "Days after the invoice due date. Thresholds must increase from first notice to suspension.",
+      "ar": "عدد الأيام بعد استحقاق الفاتورة. يجب أن تزداد المهل من الإشعار الأول حتى التعليق."
+    },
+    "subscriptions.final": {
+      "en": "Days after the invoice due date. Thresholds must increase from first notice to suspension.",
+      "ar": "عدد الأيام بعد استحقاق الفاتورة. يجب أن تزداد المهل من الإشعار الأول حتى التعليق."
+    },
+    "subscriptions.suspend": {
+      "en": "Days after the invoice due date. Thresholds must increase from first notice to suspension.",
+      "ar": "عدد الأيام بعد استحقاق الفاتورة. يجب أن تزداد المهل من الإشعار الأول حتى التعليق."
+    }
+  }
+}

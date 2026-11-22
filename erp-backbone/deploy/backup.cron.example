@@ -1,0 +1,5 @@
+# Install in the deployment account's crontab. Configure cron mail delivery.
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+MAILTO=ops@example.net
+0 */6 * * * umask 077; /srv/erp/erp-backbone/backup.sh /srv/erp/erp-backbone/.env.staging /secure/erp/staging-backup.env >/srv/erp/backup-staging.log 2>&1 || { cat /srv/erp/backup-staging.log; exit 1; }

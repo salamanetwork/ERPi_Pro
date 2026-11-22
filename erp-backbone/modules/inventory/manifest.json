@@ -1,0 +1,388 @@
+{
+  "id": "inventory",
+  "version": "0.1.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "purchasing"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "inventory.view",
+    "inventory.setup",
+    "inventory.receive",
+    "inventory.confirm",
+    "inventory.correct",
+    "inventory.return",
+    "inventory.opening"
+  ],
+  "requested_service_permissions": [],
+  "ui_entries": [
+    "/inventory"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Inventory",
+    "ar": "المخزون"
+  },
+  "description": {
+    "en": "Receive purchase orders and track stock and opening balances.",
+    "ar": "استلم أوامر الشراء وتابع المخزون والأرصدة الافتتاحية."
+  },
+  "group": "Inventory",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [
+    "purchasing"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "inventory.view": {
+      "name_en": "View stock movements and balances",
+      "name_ar": "عرض حركات وأرصدة المخزون",
+      "description_en": "Allows the role holder to view stock movements and balances within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض حركات وأرصدة المخزون ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "inventory.setup": {
+      "name_en": "Configure warehouses and items",
+      "name_ar": "ضبط المخازن والأصناف",
+      "description_en": "Allows the role holder to configure warehouses and items within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ضبط المخازن والأصناف ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "inventory.receive": {
+      "name_en": "Prepare goods receipts",
+      "name_ar": "إعداد أذون الاستلام",
+      "description_en": "Allows the role holder to prepare goods receipts within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد أذون الاستلام ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "inventory.confirm": {
+      "name_en": "Confirm goods receipts",
+      "name_ar": "تأكيد استلام البضائع",
+      "description_en": "Allows the role holder to confirm goods receipts within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تأكيد استلام البضائع ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "inventory.correct": {
+      "name_en": "Correct inventory records",
+      "name_ar": "تصحيح سجلات المخزون",
+      "description_en": "Allows the role holder to correct inventory records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تصحيح سجلات المخزون ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "inventory.return": {
+      "name_en": "Return stock to suppliers",
+      "name_ar": "إرجاع المخزون للموردين",
+      "description_en": "Allows the role holder to return stock to suppliers within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إرجاع المخزون للموردين ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "inventory.opening": {
+      "name_en": "Record opening stock",
+      "name_ar": "تسجيل الأرصدة الافتتاحية",
+      "description_en": "Allows the role holder to record opening stock within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل الأرصدة الافتتاحية ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/inventory",
+      "label": {
+        "en": "Inventory",
+        "ar": "المخزون"
+      },
+      "required_permission": "inventory.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Receive a purchase order",
+      "title_ar": "استلام أمر شراء",
+      "keywords_en": [
+        "receive",
+        "a",
+        "purchase",
+        "order"
+      ],
+      "keywords_ar": [
+        "استلام",
+        "أمر",
+        "شراء"
+      ],
+      "required_permission": "inventory.view",
+      "route": "/inventory/receipts",
+      "prerequisites_en": "An active account with inventory.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية inventory.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Locate the issued PO and choose the warehouse location for the incoming goods.",
+          "text_ar": "حدد أمر الشراء الصادر واختر موقع تخزين البضاعة.",
+          "screenshot": "docs/screenshots/inventory/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Enter the quantity actually received and verify the movement in Stock balances.",
+          "text_ar": "سجل الكمية المستلمة فعليًا وتحقق من الحركة في أرصدة المخزون.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-inventory-setup",
+      "title_en": "Configure warehouses and items",
+      "title_ar": "ضبط المخازن والأصناف",
+      "keywords_en": [
+        "inventory",
+        "configure",
+        "warehouses",
+        "and",
+        "items"
+      ],
+      "keywords_ar": [
+        "المخزون",
+        "ضبط",
+        "المخازن",
+        "والأصناف"
+      ],
+      "required_permission": "inventory.setup",
+      "prerequisites_en": "An active account with inventory.setup permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية inventory.setup ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Inventory and select the target scope to start: Configure warehouses and items.",
+          "text_ar": "افتح قسم المخزون وحدد النطاق المطلوب للبدء في: ضبط المخازن والأصناف.",
+          "fields": [],
+          "screenshot": "docs/screenshots/inventory/op-inventory-setup.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Configure warehouses and items and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ضبط المخازن والأصناف وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/inventory"
+    },
+    {
+      "id": "op-inventory-receive",
+      "title_en": "Prepare goods receipts",
+      "title_ar": "إعداد أذون الاستلام",
+      "keywords_en": [
+        "inventory",
+        "prepare",
+        "goods",
+        "receipts"
+      ],
+      "keywords_ar": [
+        "المخزون",
+        "إعداد",
+        "أذون",
+        "الاستلام"
+      ],
+      "required_permission": "inventory.receive",
+      "prerequisites_en": "An active account with inventory.receive permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية inventory.receive ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Inventory and select the target scope to start: Prepare goods receipts.",
+          "text_ar": "افتح قسم المخزون وحدد النطاق المطلوب للبدء في: إعداد أذون الاستلام.",
+          "fields": [],
+          "screenshot": "docs/screenshots/inventory/op-inventory-receive.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare goods receipts).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد أذون الاستلام).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/inventory"
+    },
+    {
+      "id": "op-inventory-confirm",
+      "title_en": "Confirm goods receipts",
+      "title_ar": "تأكيد استلام البضائع",
+      "keywords_en": [
+        "inventory",
+        "confirm",
+        "goods",
+        "receipts"
+      ],
+      "keywords_ar": [
+        "المخزون",
+        "تأكيد",
+        "استلام",
+        "البضائع"
+      ],
+      "required_permission": "inventory.confirm",
+      "prerequisites_en": "An active account with inventory.confirm permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية inventory.confirm ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Inventory and select the target scope to start: Confirm goods receipts.",
+          "text_ar": "افتح قسم المخزون وحدد النطاق المطلوب للبدء في: تأكيد استلام البضائع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/inventory/op-inventory-confirm.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Confirm goods receipts.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ تأكيد استلام البضائع.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/inventory"
+    },
+    {
+      "id": "op-inventory-correct",
+      "title_en": "Correct inventory records",
+      "title_ar": "تصحيح سجلات المخزون",
+      "keywords_en": [
+        "inventory",
+        "correct",
+        "records"
+      ],
+      "keywords_ar": [
+        "المخزون",
+        "تصحيح",
+        "سجلات"
+      ],
+      "required_permission": "inventory.correct",
+      "prerequisites_en": "An active account with inventory.correct permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية inventory.correct ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Inventory and select the target scope to start: Correct inventory records.",
+          "text_ar": "افتح قسم المخزون وحدد النطاق المطلوب للبدء في: تصحيح سجلات المخزون.",
+          "fields": [],
+          "screenshot": "docs/screenshots/inventory/op-inventory-correct.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Correct inventory records).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تصحيح سجلات المخزون).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/inventory"
+    },
+    {
+      "id": "op-inventory-return",
+      "title_en": "Return stock to suppliers",
+      "title_ar": "إرجاع المخزون للموردين",
+      "keywords_en": [
+        "inventory",
+        "return",
+        "stock",
+        "to",
+        "suppliers"
+      ],
+      "keywords_ar": [
+        "المخزون",
+        "إرجاع",
+        "للموردين"
+      ],
+      "required_permission": "inventory.return",
+      "prerequisites_en": "An active account with inventory.return permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية inventory.return ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Inventory and select the target scope to start: Return stock to suppliers.",
+          "text_ar": "افتح قسم المخزون وحدد النطاق المطلوب للبدء في: إرجاع المخزون للموردين.",
+          "fields": [],
+          "screenshot": "docs/screenshots/inventory/op-inventory-return.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Return stock to suppliers).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إرجاع المخزون للموردين).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/inventory"
+    },
+    {
+      "id": "op-inventory-opening",
+      "title_en": "Record opening stock",
+      "title_ar": "تسجيل الأرصدة الافتتاحية",
+      "keywords_en": [
+        "inventory",
+        "record",
+        "opening",
+        "stock"
+      ],
+      "keywords_ar": [
+        "المخزون",
+        "تسجيل",
+        "الأرصدة",
+        "الافتتاحية"
+      ],
+      "required_permission": "inventory.opening",
+      "prerequisites_en": "An active account with inventory.opening permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية inventory.opening ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Inventory and select the target scope to start: Record opening stock.",
+          "text_ar": "افتح قسم المخزون وحدد النطاق المطلوب للبدء في: تسجيل الأرصدة الافتتاحية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/inventory/op-inventory-opening.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Record opening stock).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل الأرصدة الافتتاحية).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/inventory"
+    }
+  ]
+}

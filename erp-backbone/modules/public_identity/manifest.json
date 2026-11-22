@@ -1,0 +1,126 @@
+{
+  "id": "public_identity",
+  "version": "2.6.0",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "runtime": "internal",
+  "required_dependencies": [
+    "publication"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "public_identity.view",
+    "public_identity.manage"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [],
+  "group": "General",
+  "name": {
+    "en": "Customer Accounts",
+    "ar": "حسابات العملاء"
+  },
+  "description": {
+    "en": "Platform Services Foundation",
+    "ar": "خدمات المنصة المشتركة"
+  },
+  "contract_version": "0.1",
+  "scope_mode": "space_scoped",
+  "category": "shared_business",
+  "dependencies": [
+    "publication"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "public_identity.view": {
+      "name_en": "View customer identities",
+      "name_ar": "عرض هويات العملاء",
+      "description_en": "Allows the role holder to view customer identities within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض هويات العملاء ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "public_identity.manage": {
+      "name_en": "Manage customer accounts",
+      "name_ar": "إدارة حسابات العملاء",
+      "description_en": "Allows the role holder to manage customer accounts within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة حسابات العملاء ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    }
+  },
+  "navigation": [],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Find a customer account",
+      "title_ar": "البحث عن حساب عميل",
+      "keywords_en": [
+        "find",
+        "a",
+        "customer",
+        "account"
+      ],
+      "keywords_ar": [
+        "البحث",
+        "عن",
+        "حساب",
+        "عميل"
+      ],
+      "required_permission": "public_identity.view",
+      "route": "/publication",
+      "prerequisites_en": "An active account with public_identity.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية public_identity.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open Public Sites and select Customer Accounts for the intended space.",
+          "text_ar": "افتح المواقع العامة ثم حسابات العملاء لمساحة النشر المطلوبة.",
+          "screenshot": "docs/screenshots/public_identity/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Search by email, verify status and copy the identity ID.",
+          "text_ar": "ابحث بالبريد وتحقق من حالة الحساب ثم انسخ المعرّف.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-public-identity-manage",
+      "title_en": "Manage customer accounts",
+      "title_ar": "إدارة حسابات العملاء",
+      "keywords_en": [
+        "customer",
+        "accounts",
+        "manage"
+      ],
+      "keywords_ar": [
+        "حسابات",
+        "العملاء",
+        "إدارة"
+      ],
+      "required_permission": "public_identity.manage",
+      "prerequisites_en": "An active account with public_identity.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية public_identity.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Customer Accounts and select the target scope to start: Manage customer accounts.",
+          "text_ar": "افتح قسم حسابات العملاء وحدد النطاق المطلوب للبدء في: إدارة حسابات العملاء.",
+          "fields": []
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Manage customer accounts and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة حسابات العملاء وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ]
+    }
+  ]
+}

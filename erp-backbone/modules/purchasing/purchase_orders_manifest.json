@@ -1,0 +1,107 @@
+{
+  "id": "purchase_orders",
+  "version": "1.8.3",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "group": "Procurement",
+  "required_dependencies": [
+    "purchasing",
+    "suppliers"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "purchasing.view",
+    "purchasing.po.create",
+    "purchasing.po.issue",
+    "purchasing.po.void"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/purchase-orders"
+  ],
+  "name": {
+    "en": "Purchase orders",
+    "ar": "أوامر الشراء"
+  },
+  "description": {
+    "en": "Convert approved requests and issue purchase orders.",
+    "ar": "تحويل الطلبات المعتمدة وإصدار أوامر الشراء."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [
+    "purchasing",
+    "suppliers"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "purchasing.view": {
+      "name_en": "View purchasing documents",
+      "name_ar": "عرض مستندات الشراء",
+      "description_en": "Allows the role holder to view purchasing documents within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض مستندات الشراء ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "purchasing.po.create": {
+      "name_en": "Convert requisitions to orders",
+      "name_ar": "تحويل الطلبات إلى أوامر شراء",
+      "description_en": "Allows the role holder to convert requisitions to orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تحويل الطلبات إلى أوامر شراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.po.issue": {
+      "name_en": "Issue purchase orders",
+      "name_ar": "إصدار أوامر الشراء",
+      "description_en": "Allows the role holder to issue purchase orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إصدار أوامر الشراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.po.void": {
+      "name_en": "Void purchase orders",
+      "name_ar": "إلغاء أوامر الشراء",
+      "description_en": "Allows the role holder to void purchase orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إلغاء أوامر الشراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/purchase-orders",
+      "label": {
+        "en": "Purchase orders",
+        "ar": "أوامر الشراء"
+      },
+      "required_permission": "purchasing.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "directory",
+      "title_en": "Work with Purchase orders",
+      "title_ar": "دليل أوامر الشراء",
+      "route": "/purchase-orders",
+      "required_permission": "purchasing.view",
+      "keywords_en": [
+        "Purchase orders"
+      ],
+      "keywords_ar": [
+        "أوامر الشراء"
+      ],
+      "steps": [
+        {
+          "text_en": "Open Purchase orders and choose the site.",
+          "text_ar": "افتح أوامر الشراء واختر الموقع.",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Inspect the record details before saving changes.",
+          "text_ar": "راجع تفاصيل السجل قبل حفظ التعديلات.",
+          "id": "step-2"
+        }
+      ]
+    }
+  ]
+}

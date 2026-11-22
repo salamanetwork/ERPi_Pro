@@ -1,0 +1,286 @@
+{
+  "id": "workorders",
+  "version": "0.2.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [
+    "assets"
+  ],
+  "permissions": [
+    "workorders.view",
+    "workorders.create",
+    "workorders.edit",
+    "workorders.submit",
+    "workorders.approve"
+  ],
+  "requested_service_permissions": [],
+  "ui_entries": [
+    "/work-orders"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Work orders",
+    "ar": "أوامر الشغل"
+  },
+  "description": {
+    "en": "Create, review and submit work orders. Link equipment when Assets is enabled.",
+    "ar": "أنشئ أوامر الشغل وراجعها وأرسلها. اربط المعدة عند تفعيل الأصول."
+  },
+  "group": "Assets & Maintenance",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "workorders.view": {
+      "name_en": "View work orders",
+      "name_ar": "عرض أوامر العمل",
+      "description_en": "Allows the role holder to view work orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض أوامر العمل ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "workorders.create": {
+      "name_en": "Create work orders",
+      "name_ar": "إنشاء أوامر العمل",
+      "description_en": "Allows the role holder to create work orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إنشاء أوامر العمل ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "workorders.edit": {
+      "name_en": "Edit work orders",
+      "name_ar": "تعديل أوامر العمل",
+      "description_en": "Allows the role holder to edit work orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تعديل أوامر العمل ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "workorders.submit": {
+      "name_en": "Submit work orders for review",
+      "name_ar": "إرسال أوامر العمل للمراجعة",
+      "description_en": "Allows the role holder to submit work orders for review within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إرسال أوامر العمل للمراجعة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "workorders.approve": {
+      "name_en": "Approve work orders",
+      "name_ar": "اعتماد أوامر العمل",
+      "description_en": "Allows the role holder to approve work orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد أوامر العمل ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/work-orders",
+      "label": {
+        "en": "Work orders",
+        "ar": "أوامر الشغل"
+      },
+      "required_permission": "workorders.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review a work order",
+      "title_ar": "مراجعة أمر شغل",
+      "keywords_en": [
+        "review",
+        "a",
+        "work",
+        "order"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "أمر",
+        "شغل"
+      ],
+      "required_permission": "workorders.view",
+      "route": "/work-orders",
+      "prerequisites_en": "An active account with workorders.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية workorders.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open the order and check the asset, site and assignment.",
+          "text_ar": "افتح أمر الشغل وراجع الأصل والموقع والمسؤول.",
+          "screenshot": "docs/screenshots/workorders/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Review the work history and parts movements before confirming completion.",
+          "text_ar": "راجع سجل العمل وحركات القطع قبل تأكيد الإنجاز.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-workorders-create",
+      "title_en": "Create work orders",
+      "title_ar": "إنشاء أوامر العمل",
+      "keywords_en": [
+        "work",
+        "orders",
+        "create"
+      ],
+      "keywords_ar": [
+        "أوامر",
+        "الشغل",
+        "إنشاء",
+        "العمل"
+      ],
+      "required_permission": "workorders.create",
+      "prerequisites_en": "An active account with workorders.create permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية workorders.create ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Work orders and select the target scope to start: Create work orders.",
+          "text_ar": "افتح قسم أوامر الشغل وحدد النطاق المطلوب للبدء في: إنشاء أوامر العمل.",
+          "fields": [],
+          "screenshot": "docs/screenshots/workorders/op-workorders-create.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Create work orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إنشاء أوامر العمل).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/work-orders"
+    },
+    {
+      "id": "op-workorders-edit",
+      "title_en": "Edit work orders",
+      "title_ar": "تعديل أوامر العمل",
+      "keywords_en": [
+        "work",
+        "orders",
+        "edit"
+      ],
+      "keywords_ar": [
+        "أوامر",
+        "الشغل",
+        "تعديل",
+        "العمل"
+      ],
+      "required_permission": "workorders.edit",
+      "prerequisites_en": "An active account with workorders.edit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية workorders.edit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Work orders and select the target scope to start: Edit work orders.",
+          "text_ar": "افتح قسم أوامر الشغل وحدد النطاق المطلوب للبدء في: تعديل أوامر العمل.",
+          "fields": [],
+          "screenshot": "docs/screenshots/workorders/op-workorders-edit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Edit work orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تعديل أوامر العمل).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/work-orders"
+    },
+    {
+      "id": "op-workorders-submit",
+      "title_en": "Submit work orders for review",
+      "title_ar": "إرسال أوامر العمل للمراجعة",
+      "keywords_en": [
+        "work",
+        "orders",
+        "submit",
+        "for",
+        "review"
+      ],
+      "keywords_ar": [
+        "أوامر",
+        "الشغل",
+        "إرسال",
+        "العمل",
+        "للمراجعة"
+      ],
+      "required_permission": "workorders.submit",
+      "prerequisites_en": "An active account with workorders.submit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية workorders.submit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Work orders and select the target scope to start: Submit work orders for review.",
+          "text_ar": "افتح قسم أوامر الشغل وحدد النطاق المطلوب للبدء في: إرسال أوامر العمل للمراجعة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/workorders/op-workorders-submit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Submit work orders for review).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إرسال أوامر العمل للمراجعة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/work-orders"
+    },
+    {
+      "id": "op-workorders-approve",
+      "title_en": "Approve work orders",
+      "title_ar": "اعتماد أوامر العمل",
+      "keywords_en": [
+        "work",
+        "orders",
+        "approve"
+      ],
+      "keywords_ar": [
+        "أوامر",
+        "الشغل",
+        "اعتماد",
+        "العمل"
+      ],
+      "required_permission": "workorders.approve",
+      "prerequisites_en": "An active account with workorders.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية workorders.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Work orders and select the target scope to start: Approve work orders.",
+          "text_ar": "افتح قسم أوامر الشغل وحدد النطاق المطلوب للبدء في: اعتماد أوامر العمل.",
+          "fields": [],
+          "screenshot": "docs/screenshots/workorders/op-workorders-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve work orders.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد أوامر العمل.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/work-orders"
+    }
+  ]
+}

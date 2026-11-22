@@ -1,0 +1,236 @@
+{
+  "id": "marketing",
+  "version": "2.5.1",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.5,<3.0",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [
+    "crm",
+    "sales"
+  ],
+  "permissions": [
+    "marketing.view",
+    "marketing.edit",
+    "marketing.admin",
+    "marketing.suppressions"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/marketing"
+  ],
+  "group": "General",
+  "name": {
+    "en": "Marketing",
+    "ar": "التسويق"
+  },
+  "description": {
+    "en": "Campaigns, consent and surveys",
+    "ar": "الحملات والموافقات والاستطلاعات"
+  },
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "domain_module",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "marketing.view": {
+      "name_en": "View marketing campaigns",
+      "name_ar": "عرض الحملات التسويقية",
+      "description_en": "Allows the role holder to view marketing campaigns within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض الحملات التسويقية ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "marketing.edit": {
+      "name_en": "Prepare marketing campaigns",
+      "name_ar": "إعداد الحملات التسويقية",
+      "description_en": "Allows the role holder to prepare marketing campaigns within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد الحملات التسويقية ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "marketing.admin": {
+      "name_en": "Approve marketing campaigns",
+      "name_ar": "اعتماد الحملات التسويقية",
+      "description_en": "Review and approve campaigns before launch and administer their delivery.",
+      "description_ar": "مراجعة الحملات واعتمادها قبل الإطلاق وإدارة إرسالها.",
+      "action_type": "admin"
+    },
+    "marketing.suppressions": {
+      "name_en": "Manage marketing suppressions",
+      "name_ar": "إدارة قوائم منع الإرسال",
+      "description_en": "Allows the role holder to manage marketing suppressions within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة قوائم منع الإرسال ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/marketing",
+      "label": {
+        "en": "Marketing",
+        "ar": "التسويق"
+      },
+      "required_permission": "marketing.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Prepare a campaign",
+      "title_ar": "إعداد حملة تسويقية",
+      "keywords_en": [
+        "prepare",
+        "a",
+        "campaign"
+      ],
+      "keywords_ar": [
+        "إعداد",
+        "حملة",
+        "تسويقية"
+      ],
+      "required_permission": "marketing.view",
+      "route": "/marketing",
+      "prerequisites_en": "An active account with marketing.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية marketing.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Choose the audience segment, channel and template version.",
+          "text_ar": "اختر الشريحة والقناة ونسخة القالب.",
+          "screenshot": "docs/screenshots/marketing/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Preview the rendered message and check consent before approval and sending.",
+          "text_ar": "عاين الرسالة وراجع الموافقة على التواصل قبل اعتماد الإرسال.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-marketing-edit",
+      "title_en": "Prepare marketing campaigns",
+      "title_ar": "إعداد الحملات التسويقية",
+      "keywords_en": [
+        "marketing",
+        "prepare",
+        "campaigns"
+      ],
+      "keywords_ar": [
+        "التسويق",
+        "إعداد",
+        "الحملات",
+        "التسويقية"
+      ],
+      "required_permission": "marketing.edit",
+      "prerequisites_en": "An active account with marketing.edit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية marketing.edit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Marketing and select the target scope to start: Prepare marketing campaigns.",
+          "text_ar": "افتح قسم التسويق وحدد النطاق المطلوب للبدء في: إعداد الحملات التسويقية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/marketing/op-marketing-edit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare marketing campaigns).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد الحملات التسويقية).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/marketing"
+    },
+    {
+      "id": "op-marketing-admin",
+      "title_en": "Approve marketing campaigns",
+      "title_ar": "اعتماد الحملات التسويقية",
+      "keywords_en": [
+        "marketing",
+        "approve",
+        "campaigns"
+      ],
+      "keywords_ar": [
+        "التسويق",
+        "اعتماد",
+        "الحملات",
+        "التسويقية"
+      ],
+      "required_permission": "marketing.admin",
+      "prerequisites_en": "An active account with marketing.admin permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية marketing.admin ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Marketing and select the target scope to start: Approve marketing campaigns.",
+          "text_ar": "افتح قسم التسويق وحدد النطاق المطلوب للبدء في: اعتماد الحملات التسويقية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/marketing/op-marketing-admin.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Approve marketing campaigns and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد اعتماد الحملات التسويقية وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/marketing"
+    },
+    {
+      "id": "op-marketing-suppressions",
+      "title_en": "Manage marketing suppressions",
+      "title_ar": "إدارة قوائم منع الإرسال",
+      "keywords_en": [
+        "marketing",
+        "manage",
+        "suppressions"
+      ],
+      "keywords_ar": [
+        "التسويق",
+        "إدارة",
+        "قوائم",
+        "منع",
+        "الإرسال"
+      ],
+      "required_permission": "marketing.suppressions",
+      "prerequisites_en": "An active account with marketing.suppressions permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية marketing.suppressions ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Marketing and select the target scope to start: Manage marketing suppressions.",
+          "text_ar": "افتح قسم التسويق وحدد النطاق المطلوب للبدء في: إدارة قوائم منع الإرسال.",
+          "fields": [],
+          "screenshot": "docs/screenshots/marketing/op-marketing-suppressions.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Manage marketing suppressions and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة قوائم منع الإرسال وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/marketing"
+    }
+  ]
+}

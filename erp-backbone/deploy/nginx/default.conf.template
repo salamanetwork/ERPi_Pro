@@ -1,0 +1,39 @@
+limit_req_zone $binary_remote_addr zone=erp_login:10m rate=10r/m;
+map $uri $erp_log_uri {
+    default $uri;
+    ~^/api/marketing/(unsubscribe|confirm|survey-invitations)/ /api/marketing/capability;
+}
+log_format erp '$request_id $remote_addr $request_method $erp_log_uri $status $request_time';
+access_log /dev/stdout erp;
+
+server {
+    listen 80;
+    server_name ${ERP_HOST};
+    return 308 https://${ERP_AUTHORITY}$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name ${ERP_HOST};
+    ssl_certificate /etc/nginx/tls/fullchain.pem;
+    ssl_certificate_key /etc/nginx/tls/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    add_header X-Request-ID $request_id always;
+    client_max_body_size 12m;
+    resolver 127.0.0.11 valid=10s ipv6=off;
+
+    location /static/ {
+        alias /srv/erp/static/;
+        autoindex off;
+    }
+
+    location ~ ^/api/login(?:/mfa)?$ {
+        limit_req zone=erp_login burst=10 nodelay;
+        limit_req_status 429;
+        include /etc/nginx/erp-proxy.conf;
+    }
+
+    location / {
+        include /etc/nginx/erp-proxy.conf;
+    }
+}

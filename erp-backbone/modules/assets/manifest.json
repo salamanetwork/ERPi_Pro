@@ -1,0 +1,575 @@
+{
+  "id": "assets",
+  "version": "0.1.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [],
+  "permissions": [
+    "assets.view",
+    "assets.create",
+    "assets.edit",
+    "assets.transfer",
+    "assets.cost.view",
+    "assets.cost.edit",
+    "maintenance.execute",
+    "maintenance.parts",
+    "maintenance.plan",
+    "maintenance.supervise",
+    "maintenance.view"
+  ],
+  "requested_service_permissions": [],
+  "ui_entries": [
+    "/assets"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Assets",
+    "ar": "الأصول"
+  },
+  "description": {
+    "en": "Register equipment and keep its tag and location in one place.",
+    "ar": "سجّل المعدات ورموزها ومواقعها."
+  },
+  "group": "Assets & Maintenance",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "assets.view": {
+      "name_en": "View the asset register",
+      "name_ar": "عرض سجل الأصول",
+      "description_en": "Allows the role holder to view the asset register within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض سجل الأصول ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "assets.create": {
+      "name_en": "Register new assets",
+      "name_ar": "تسجيل أصول جديدة",
+      "description_en": "Allows the role holder to register new assets within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل أصول جديدة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "assets.edit": {
+      "name_en": "Update asset records",
+      "name_ar": "تعديل سجلات الأصول",
+      "description_en": "Allows the role holder to update asset records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تعديل سجلات الأصول ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "assets.transfer": {
+      "name_en": "Transfer assets between sites",
+      "name_ar": "نقل الأصول بين المواقع",
+      "description_en": "Allows the role holder to transfer assets between sites within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور نقل الأصول بين المواقع ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "assets.cost.view": {
+      "name_en": "View asset acquisition costs",
+      "name_ar": "عرض تكاليف اقتناء الأصول",
+      "description_en": "Allows the role holder to view asset acquisition costs within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض تكاليف اقتناء الأصول ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "assets.cost.edit": {
+      "name_en": "Edit asset costs",
+      "name_ar": "تعديل تكاليف الأصول",
+      "description_en": "Allows the role holder to edit asset costs within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تعديل تكاليف الأصول ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "maintenance.execute": {
+      "name_en": "Execute maintenance work",
+      "name_ar": "تنفيذ أعمال الصيانة",
+      "description_en": "Allows the role holder to execute maintenance work within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تنفيذ أعمال الصيانة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "maintenance.parts": {
+      "name_en": "Issue and return spare parts",
+      "name_ar": "صرف وإرجاع قطع الغيار",
+      "description_en": "Allows the role holder to issue and return spare parts within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور صرف وإرجاع قطع الغيار ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "maintenance.plan": {
+      "name_en": "Plan preventive maintenance",
+      "name_ar": "تخطيط الصيانة الوقائية",
+      "description_en": "Allows the role holder to plan preventive maintenance within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تخطيط الصيانة الوقائية ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "maintenance.supervise": {
+      "name_en": "Supervise maintenance work",
+      "name_ar": "الإشراف على أعمال الصيانة",
+      "description_en": "Allows the role holder to supervise maintenance work within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور الإشراف على أعمال الصيانة ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "maintenance.view": {
+      "name_en": "View maintenance work",
+      "name_ar": "عرض أعمال الصيانة",
+      "description_en": "Allows the role holder to view maintenance work within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض أعمال الصيانة ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/assets",
+      "label": {
+        "en": "Assets",
+        "ar": "الأصول"
+      },
+      "required_permission": "assets.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review an asset transfer",
+      "title_ar": "مراجعة نقل أصل",
+      "keywords_en": [
+        "review",
+        "an",
+        "asset",
+        "transfer"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "نقل",
+        "أصل"
+      ],
+      "required_permission": "assets.view",
+      "route": "/assets",
+      "prerequisites_en": "An active account with assets.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية assets.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Find the asset and open its details in the authorized site.",
+          "text_ar": "ابحث عن الأصل وافتح تفاصيله في الموقع المصرح به.",
+          "screenshot": "docs/screenshots/assets/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Inspect the source, destination, transfer date and reason in the history.",
+          "text_ar": "راجع المصدر والوجهة وتاريخ النقل وسببه في سجل الحركات.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-assets-create",
+      "title_en": "Register new assets",
+      "title_ar": "تسجيل أصول جديدة",
+      "keywords_en": [
+        "assets",
+        "register",
+        "new"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "تسجيل",
+        "أصول",
+        "جديدة"
+      ],
+      "required_permission": "assets.create",
+      "prerequisites_en": "An active account with assets.create permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية assets.create ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Register new assets.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: تسجيل أصول جديدة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-assets-create.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Register new assets).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل أصول جديدة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-assets-edit",
+      "title_en": "Update asset records",
+      "title_ar": "تعديل سجلات الأصول",
+      "keywords_en": [
+        "assets",
+        "update",
+        "asset",
+        "records"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "تعديل",
+        "سجلات"
+      ],
+      "required_permission": "assets.edit",
+      "prerequisites_en": "An active account with assets.edit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية assets.edit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Update asset records.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: تعديل سجلات الأصول.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-assets-edit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Update asset records).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تعديل سجلات الأصول).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-assets-transfer",
+      "title_en": "Transfer assets between sites",
+      "title_ar": "نقل الأصول بين المواقع",
+      "keywords_en": [
+        "assets",
+        "transfer",
+        "between",
+        "sites"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "نقل",
+        "بين",
+        "المواقع"
+      ],
+      "required_permission": "assets.transfer",
+      "prerequisites_en": "An active account with assets.transfer permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية assets.transfer ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Transfer assets between sites.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: نقل الأصول بين المواقع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-assets-transfer.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Transfer assets between sites).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (نقل الأصول بين المواقع).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-assets-cost-view",
+      "title_en": "View asset acquisition costs",
+      "title_ar": "عرض تكاليف اقتناء الأصول",
+      "keywords_en": [
+        "assets",
+        "view",
+        "asset",
+        "acquisition",
+        "costs"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "عرض",
+        "تكاليف",
+        "اقتناء"
+      ],
+      "required_permission": "assets.cost.view",
+      "prerequisites_en": "An active account with assets.cost.view permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية assets.cost.view ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: View asset acquisition costs.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: عرض تكاليف اقتناء الأصول.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-assets-cost-view.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for View asset acquisition costs.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض تكاليف اقتناء الأصول.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-assets-cost-edit",
+      "title_en": "Edit asset costs",
+      "title_ar": "تعديل تكاليف الأصول",
+      "keywords_en": [
+        "assets",
+        "edit",
+        "asset",
+        "costs"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "تعديل",
+        "تكاليف"
+      ],
+      "required_permission": "assets.cost.edit",
+      "prerequisites_en": "An active account with assets.cost.edit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية assets.cost.edit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Edit asset costs.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: تعديل تكاليف الأصول.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-assets-cost-edit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Edit asset costs).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تعديل تكاليف الأصول).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-maintenance-execute",
+      "title_en": "Execute maintenance work",
+      "title_ar": "تنفيذ أعمال الصيانة",
+      "keywords_en": [
+        "assets",
+        "execute",
+        "maintenance",
+        "work"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "تنفيذ",
+        "أعمال",
+        "الصيانة"
+      ],
+      "required_permission": "maintenance.execute",
+      "prerequisites_en": "An active account with maintenance.execute permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية maintenance.execute ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Execute maintenance work.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: تنفيذ أعمال الصيانة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-maintenance-execute.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Execute maintenance work).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تنفيذ أعمال الصيانة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-maintenance-parts",
+      "title_en": "Issue and return spare parts",
+      "title_ar": "صرف وإرجاع قطع الغيار",
+      "keywords_en": [
+        "assets",
+        "issue",
+        "and",
+        "return",
+        "spare",
+        "parts"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "صرف",
+        "وإرجاع",
+        "قطع",
+        "الغيار"
+      ],
+      "required_permission": "maintenance.parts",
+      "prerequisites_en": "An active account with maintenance.parts permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية maintenance.parts ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Issue and return spare parts.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: صرف وإرجاع قطع الغيار.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-maintenance-parts.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Issue and return spare parts).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (صرف وإرجاع قطع الغيار).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-maintenance-plan",
+      "title_en": "Plan preventive maintenance",
+      "title_ar": "تخطيط الصيانة الوقائية",
+      "keywords_en": [
+        "assets",
+        "plan",
+        "preventive",
+        "maintenance"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "تخطيط",
+        "الصيانة",
+        "الوقائية"
+      ],
+      "required_permission": "maintenance.plan",
+      "prerequisites_en": "An active account with maintenance.plan permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية maintenance.plan ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Plan preventive maintenance.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: تخطيط الصيانة الوقائية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-maintenance-plan.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Plan preventive maintenance).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تخطيط الصيانة الوقائية).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-maintenance-supervise",
+      "title_en": "Supervise maintenance work",
+      "title_ar": "الإشراف على أعمال الصيانة",
+      "keywords_en": [
+        "assets",
+        "supervise",
+        "maintenance",
+        "work"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "الإشراف",
+        "على",
+        "أعمال",
+        "الصيانة"
+      ],
+      "required_permission": "maintenance.supervise",
+      "prerequisites_en": "An active account with maintenance.supervise permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية maintenance.supervise ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: Supervise maintenance work.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: الإشراف على أعمال الصيانة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-maintenance-supervise.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Supervise maintenance work.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ الإشراف على أعمال الصيانة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    },
+    {
+      "id": "op-maintenance-view",
+      "title_en": "View maintenance work",
+      "title_ar": "عرض أعمال الصيانة",
+      "keywords_en": [
+        "assets",
+        "view",
+        "maintenance",
+        "work"
+      ],
+      "keywords_ar": [
+        "الأصول",
+        "عرض",
+        "أعمال",
+        "الصيانة"
+      ],
+      "required_permission": "maintenance.view",
+      "prerequisites_en": "An active account with maintenance.view permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية maintenance.view ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Assets and select the target scope to start: View maintenance work.",
+          "text_ar": "افتح قسم الأصول وحدد النطاق المطلوب للبدء في: عرض أعمال الصيانة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/assets/op-maintenance-view.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for View maintenance work.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض أعمال الصيانة.",
+          "fields": []
+        }
+      ],
+      "route": "/assets"
+    }
+  ]
+}

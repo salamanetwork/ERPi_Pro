@@ -1,0 +1,85 @@
+{
+  "id": "customers",
+  "version": "1.8.3",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "group": "Sales",
+  "required_dependencies": [],
+  "optional_dependencies": [],
+  "permissions": [
+    "sales.view",
+    "sales.customer"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/sales/customers"
+  ],
+  "name": {
+    "en": "Customers",
+    "ar": "العملاء"
+  },
+  "description": {
+    "en": "Manage the customer directory.",
+    "ar": "إدارة دليل العملاء."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "global",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "sales.view": {
+      "name_en": "View sales documents",
+      "name_ar": "عرض مستندات المبيعات",
+      "description_en": "Allows the role holder to view sales documents within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض مستندات المبيعات ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "sales.customer": {
+      "name_en": "Maintain customer records",
+      "name_ar": "إدارة بيانات العملاء",
+      "description_en": "Allows the role holder to maintain customer records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة بيانات العملاء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/sales/customers",
+      "label": {
+        "en": "Customers",
+        "ar": "العملاء"
+      },
+      "required_permission": "sales.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "directory",
+      "title_en": "Work with Customers",
+      "title_ar": "دليل العملاء",
+      "route": "/sales/customers",
+      "required_permission": "sales.view",
+      "keywords_en": [
+        "Customers"
+      ],
+      "keywords_ar": [
+        "العملاء"
+      ],
+      "steps": [
+        {
+          "text_en": "Open Customers and choose the site.",
+          "text_ar": "افتح العملاء واختر الموقع.",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Inspect the record details before saving changes.",
+          "text_ar": "راجع تفاصيل السجل قبل حفظ التعديلات.",
+          "id": "step-2"
+        }
+      ]
+    }
+  ]
+}

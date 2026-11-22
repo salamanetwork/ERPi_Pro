@@ -1,0 +1,252 @@
+{
+  "id": "publication",
+  "version": "2.6.1",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [
+    "media_service",
+    "public_identity"
+  ],
+  "permissions": [
+    "publication.view",
+    "publication.manage",
+    "publication.publish",
+    "publication.moderate"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/publication"
+  ],
+  "group": "General",
+  "name": {
+    "en": "Public Sites",
+    "ar": "المواقع العامة"
+  },
+  "description": {
+    "en": "Platform Services Foundation",
+    "ar": "خدمات المنصة المشتركة"
+  },
+  "contract_version": "0.1",
+  "scope_mode": "space_scoped",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [
+    "submit-review",
+    "publish",
+    "unpublish",
+    "archive",
+    "menu_update",
+    "approve",
+    "reject",
+    "hide",
+    "comment_pending"
+  ],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "publication.view": {
+      "name_en": "View publication spaces",
+      "name_ar": "عرض مواقع النشر",
+      "description_en": "Allows the role holder to view publication spaces within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض مواقع النشر ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "publication.manage": {
+      "name_en": "Manage publication spaces",
+      "name_ar": "إدارة مواقع النشر",
+      "description_en": "Allows the role holder to manage publication spaces within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة مواقع النشر ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "publication.publish": {
+      "name_en": "Publish public content",
+      "name_ar": "نشر المحتوى العام",
+      "description_en": "Publish, withdraw and archive public pages and posts.",
+      "description_ar": "نشر الصفحات والمقالات وسحبها وأرشفتها.",
+      "action_type": "admin"
+    },
+    "publication.moderate": {
+      "name_en": "Moderate public comments",
+      "name_ar": "مراجعة التعليقات العامة",
+      "description_en": "Approve, reject or hide customer comments.",
+      "description_ar": "اعتماد تعليقات العملاء أو رفضها أو إخفاؤها.",
+      "action_type": "admin"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/publication",
+      "label": {
+        "en": "Public Sites",
+        "ar": "المواقع العامة"
+      },
+      "required_permission": "publication.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Publish a revised page",
+      "title_ar": "نشر تحديث لصفحة",
+      "keywords_en": [
+        "publish",
+        "a",
+        "revised",
+        "page"
+      ],
+      "keywords_ar": [
+        "نشر",
+        "تحديث",
+        "لصفحة"
+      ],
+      "required_permission": "publication.view",
+      "route": "/publication",
+      "prerequisites_en": "An active account with publication.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية publication.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Select the space and locale and edit the working revision.",
+          "text_ar": "حدد مساحة النشر واللغة ثم عدّل نسخة العمل.",
+          "screenshot": "docs/screenshots/publication/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Review the preview and explicitly publish to replace the live revision.",
+          "text_ar": "راجع المعاينة ثم انشر صراحة لتحديث النسخة العامة.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-publication-manage",
+      "title_en": "Manage publication spaces",
+      "title_ar": "إدارة مواقع النشر",
+      "keywords_en": [
+        "public",
+        "sites",
+        "manage",
+        "publication",
+        "spaces"
+      ],
+      "keywords_ar": [
+        "المواقع",
+        "العامة",
+        "إدارة",
+        "مواقع",
+        "النشر"
+      ],
+      "required_permission": "publication.manage",
+      "prerequisites_en": "An active account with publication.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية publication.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Public Sites and select the target scope to start: Manage publication spaces.",
+          "text_ar": "افتح قسم المواقع العامة وحدد النطاق المطلوب للبدء في: إدارة مواقع النشر.",
+          "fields": [],
+          "screenshot": "docs/screenshots/publication/op-publication-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Manage publication spaces and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة مواقع النشر وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/publication"
+    },
+    {
+      "id": "op-publication-publish",
+      "title_en": "Publish public content",
+      "title_ar": "نشر المحتوى العام",
+      "keywords_en": [
+        "public",
+        "sites",
+        "publish",
+        "content"
+      ],
+      "keywords_ar": [
+        "المواقع",
+        "العامة",
+        "نشر",
+        "المحتوى",
+        "العام"
+      ],
+      "required_permission": "publication.publish",
+      "prerequisites_en": "An active account with publication.publish permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية publication.publish ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Public Sites and select the target scope to start: Publish public content.",
+          "text_ar": "افتح قسم المواقع العامة وحدد النطاق المطلوب للبدء في: نشر المحتوى العام.",
+          "fields": [],
+          "screenshot": "docs/screenshots/publication/op-publication-publish.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Publish public content and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد نشر المحتوى العام وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/publication"
+    },
+    {
+      "id": "op-publication-moderate",
+      "title_en": "Moderate public comments",
+      "title_ar": "مراجعة التعليقات العامة",
+      "keywords_en": [
+        "public",
+        "sites",
+        "moderate",
+        "comments"
+      ],
+      "keywords_ar": [
+        "المواقع",
+        "العامة",
+        "مراجعة",
+        "التعليقات"
+      ],
+      "required_permission": "publication.moderate",
+      "prerequisites_en": "An active account with publication.moderate permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية publication.moderate ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Public Sites and select the target scope to start: Moderate public comments.",
+          "text_ar": "افتح قسم المواقع العامة وحدد النطاق المطلوب للبدء في: مراجعة التعليقات العامة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/publication/op-publication-moderate.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Moderate public comments and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد مراجعة التعليقات العامة وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/publication"
+    }
+  ]
+}

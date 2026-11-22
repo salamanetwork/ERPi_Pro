@@ -1,0 +1,87 @@
+{
+  "id": "platform",
+  "name": {
+    "en": "Platform Core",
+    "ar": "أساس المنصة"
+  },
+  "description": {
+    "en": "Identity, access, sites and shared platform services.",
+    "ar": "الهوية والصلاحيات والمواقع والخدمات المشتركة."
+  },
+  "version": "2.6.2",
+  "runtime": "internal",
+  "group": "General",
+  "platform_compatibility": "0.1",
+  "required_dependencies": [],
+  "optional_dependencies": [],
+  "ui_entries": [],
+  "permissions": [
+    "platform.audit",
+    "platform.delegate",
+    "platform.export"
+  ],
+  "contract_version": "0.1",
+  "scope_mode": "global",
+  "category": "platform_core",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "platform.audit": {
+      "name_en": "Review the audit trail",
+      "name_ar": "مراجعة سجل التدقيق",
+      "description_en": "Allows the role holder to review the audit trail within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور مراجعة سجل التدقيق ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "platform.delegate": {
+      "name_en": "Manage approval delegations",
+      "name_ar": "إدارة تفويضات الاعتماد",
+      "description_en": "Allows the role holder to manage approval delegations within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة تفويضات الاعتماد ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "platform.export": {
+      "name_en": "Export permitted records",
+      "name_ar": "تصدير السجلات المسموح بها",
+      "description_en": "Allows the role holder to export permitted records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تصدير السجلات المسموح بها ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    }
+  },
+  "navigation": [],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review audit activity",
+      "title_ar": "مراجعة سجل التدقيق",
+      "keywords_en": [
+        "review",
+        "audit",
+        "activity"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "سجل",
+        "التدقيق"
+      ],
+      "required_permission": "platform.audit",
+      "route": "/admin/audit-trail",
+      "prerequisites_en": "An active account with platform.audit in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية platform.audit في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Choose a date range and search by actor or action.",
+          "text_ar": "حدد المدة وابحث باسم المستخدم أو الإجراء.",
+          "screenshot": "docs/screenshots/platform/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Review the target and timestamp before exporting the filtered results.",
+          "text_ar": "راجع السجل المستهدف والتوقيت قبل تصدير النتائج.",
+          "id": "step-2"
+        }
+      ]
+    }
+  ]
+}

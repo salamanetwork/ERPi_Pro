@@ -1,0 +1,17 @@
+{
+  "ambiguous_time": "Enter the UTC offset for this repeated local time.",
+  "invalid_local_time": "Choose a time that exists in this site timezone.",
+  "invalid_shift_end": "Choose an end time after the start and no later than now, within 31 days.",
+  "invalid": "Enter a valid value.",
+  "invalid_number": "Enter a number with the allowed digits and decimal places.",
+  "invalid_date": "Enter a valid date.",
+  "date_order": "The end date must be on or after the start date.",
+  "employment_date": "Choose a date within the employment period.",
+  "invalid_image": "Choose an image with the supported format and size.",
+  "line_direction": "Enter a positive amount on either debit or credit.",
+  "min_value": "Enter a value greater than zero.",
+  "max_length": "The value is too long.",
+  "duplicate": "This value is already in use.",
+  "invalid_choice": "Select a valid option.",
+  "invalid_resolution_minutes": "Resolution time must be at least the first response time and at most one year."
+}

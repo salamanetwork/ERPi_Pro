@@ -1,0 +1,241 @@
+{
+  "id": "billing_core",
+  "contract_version": "0.1",
+  "name": {
+    "en": "Documents & Billing",
+    "ar": "المستندات والفوترة"
+  },
+  "description": {
+    "en": "Documents & Billing",
+    "ar": "المستندات والفوترة"
+  },
+  "version": "2.6.5",
+  "category": "shared_business",
+  "group": "General",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "dependencies": [
+    "parties",
+    "scheduling"
+  ],
+  "required_dependencies": [
+    "parties",
+    "scheduling"
+  ],
+  "optional_dependencies": [],
+  "runtime": "internal",
+  "permissions": [
+    "billing_core.view",
+    "billing_core.manage",
+    "billing_core.issue",
+    "billing_core.pay"
+  ],
+  "permission_definitions": {
+    "billing_core.view": {
+      "name_en": "View Documents & Billing",
+      "name_ar": "عرض المستندات والفوترة",
+      "description_en": "View Documents & Billing in the assigned site and selected publication space.",
+      "description_ar": "عرض المستندات والفوترة داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "read"
+    },
+    "billing_core.manage": {
+      "name_en": "Manage Documents & Billing",
+      "name_ar": "إدارة المستندات والفوترة",
+      "description_en": "Manage Documents & Billing in the assigned site and selected publication space.",
+      "description_ar": "إدارة المستندات والفوترة داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "write"
+    },
+    "billing_core.issue": {
+      "name_en": "Issue or void Documents & Billing",
+      "name_ar": "إصدار أو إلغاء المستندات والفوترة",
+      "description_en": "Issue or void Documents & Billing in the assigned site and selected publication space.",
+      "description_ar": "إصدار أو إلغاء المستندات والفوترة داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "write"
+    },
+    "billing_core.pay": {
+      "name_en": "Record payments for Documents & Billing",
+      "name_ar": "تسجيل دفعات المستندات والفوترة",
+      "description_en": "Record payments for Documents & Billing in the assigned site and selected publication space.",
+      "description_ar": "تسجيل دفعات المستندات والفوترة داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "write"
+    }
+  },
+  "ui_entries": [
+    "/billing_core"
+  ],
+  "navigation": [
+    {
+      "route": "/billing_core",
+      "label": {
+        "en": "Documents & Billing",
+        "ar": "المستندات والفوترة"
+      },
+      "required_permission": "billing_core.view"
+    }
+  ],
+  "events_published": [
+    "invoice.created",
+    "invoice.issued",
+    "invoice.paid",
+    "invoice.void",
+    "receipt.recorded"
+  ],
+  "events_subscribed": [],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "directory",
+      "title_en": "Work with Documents & Billing",
+      "title_ar": "دليل المستندات والفوترة",
+      "route": "/billing_core",
+      "required_permission": "billing_core.view",
+      "keywords_en": [
+        "Documents & Billing"
+      ],
+      "keywords_ar": [
+        "المستندات والفوترة"
+      ],
+      "steps": [
+        {
+          "text_en": "Open Documents & Billing and choose the site.",
+          "text_ar": "افتح المستندات والفوترة واختر الموقع.",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Inspect the record details before saving changes.",
+          "text_ar": "راجع تفاصيل السجل قبل حفظ التعديلات.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-billing-core-manage",
+      "title_en": "Manage Documents & Billing",
+      "title_ar": "إدارة المستندات والفوترة",
+      "keywords_en": [
+        "documents",
+        "billing",
+        "manage"
+      ],
+      "keywords_ar": [
+        "المستندات",
+        "والفوترة",
+        "إدارة"
+      ],
+      "required_permission": "billing_core.manage",
+      "prerequisites_en": "An active account with billing_core.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية billing_core.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Documents & Billing and select the target scope to start: Manage Documents & Billing.",
+          "text_ar": "افتح قسم المستندات والفوترة وحدد النطاق المطلوب للبدء في: إدارة المستندات والفوترة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/billing_core/op-billing-core-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Manage Documents & Billing).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة المستندات والفوترة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/billing_core"
+    },
+    {
+      "id": "op-billing-core-issue",
+      "title_en": "Issue or void Documents & Billing",
+      "title_ar": "إصدار أو إلغاء المستندات والفوترة",
+      "keywords_en": [
+        "documents",
+        "billing",
+        "issue",
+        "or",
+        "void"
+      ],
+      "keywords_ar": [
+        "المستندات",
+        "والفوترة",
+        "إصدار",
+        "أو",
+        "إلغاء"
+      ],
+      "required_permission": "billing_core.issue",
+      "prerequisites_en": "An active account with billing_core.issue permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية billing_core.issue ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Documents & Billing and select the target scope to start: Issue or void Documents & Billing.",
+          "text_ar": "افتح قسم المستندات والفوترة وحدد النطاق المطلوب للبدء في: إصدار أو إلغاء المستندات والفوترة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/billing_core/op-billing-core-issue.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Issue or void Documents & Billing).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إصدار أو إلغاء المستندات والفوترة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/billing_core"
+    },
+    {
+      "id": "op-billing-core-pay",
+      "title_en": "Record payments for Documents & Billing",
+      "title_ar": "تسجيل دفعات المستندات والفوترة",
+      "keywords_en": [
+        "documents",
+        "billing",
+        "record",
+        "payments",
+        "for"
+      ],
+      "keywords_ar": [
+        "المستندات",
+        "والفوترة",
+        "تسجيل",
+        "دفعات"
+      ],
+      "required_permission": "billing_core.pay",
+      "prerequisites_en": "An active account with billing_core.pay permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية billing_core.pay ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Documents & Billing and select the target scope to start: Record payments for Documents & Billing.",
+          "text_ar": "افتح قسم المستندات والفوترة وحدد النطاق المطلوب للبدء في: تسجيل دفعات المستندات والفوترة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/billing_core/op-billing-core-pay.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Record payments for Documents & Billing).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل دفعات المستندات والفوترة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/billing_core"
+    }
+  ]
+}

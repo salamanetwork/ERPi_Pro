@@ -1,0 +1,347 @@
+{
+  "id": "manufacturing",
+  "version": "2.2.1",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "inventory",
+    "accounting",
+    "supply"
+  ],
+  "optional_dependencies": [
+    "sales",
+    "purchasing"
+  ],
+  "permissions": [
+    "manufacturing.view",
+    "manufacturing.bom",
+    "manufacturing.prepare",
+    "manufacturing.execute",
+    "manufacturing.approve",
+    "manufacturing.plan"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/manufacturing"
+  ],
+  "group": "Inventory",
+  "name": {
+    "en": "Manufacturing",
+    "ar": "التصنيع"
+  },
+  "description": {
+    "en": "Bills of materials, manufacturing orders and material planning.",
+    "ar": "قوائم المواد وأوامر الإنتاج وتخطيط الاحتياجات."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "domain_module",
+  "dependencies": [
+    "inventory",
+    "accounting",
+    "supply"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "manufacturing.view": {
+      "name_en": "View production records",
+      "name_ar": "عرض سجلات الإنتاج",
+      "description_en": "Allows the role holder to view production records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض سجلات الإنتاج ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "manufacturing.bom": {
+      "name_en": "Maintain bills of materials",
+      "name_ar": "إدارة قوائم مواد التصنيع",
+      "description_en": "Allows the role holder to maintain bills of materials within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة قوائم مواد التصنيع ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "manufacturing.prepare": {
+      "name_en": "Prepare production orders",
+      "name_ar": "إعداد أوامر الإنتاج",
+      "description_en": "Allows the role holder to prepare production orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد أوامر الإنتاج ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "manufacturing.execute": {
+      "name_en": "Record production operations",
+      "name_ar": "تسجيل عمليات الإنتاج",
+      "description_en": "Allows the role holder to record production operations within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل عمليات الإنتاج ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "manufacturing.approve": {
+      "name_en": "Approve production operations",
+      "name_ar": "اعتماد عمليات الإنتاج",
+      "description_en": "Allows the role holder to approve production operations within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد عمليات الإنتاج ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "manufacturing.plan": {
+      "name_en": "Plan material requirements",
+      "name_ar": "تخطيط احتياجات المواد",
+      "description_en": "Allows the role holder to plan material requirements within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تخطيط احتياجات المواد ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/manufacturing",
+      "label": {
+        "en": "Manufacturing",
+        "ar": "التصنيع"
+      },
+      "required_permission": "manufacturing.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review production materials",
+      "title_ar": "مراجعة خامات أمر إنتاج",
+      "keywords_en": [
+        "review",
+        "production",
+        "materials"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "خامات",
+        "أمر",
+        "إنتاج"
+      ],
+      "required_permission": "manufacturing.view",
+      "route": "/manufacturing",
+      "prerequisites_en": "An active account with manufacturing.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية manufacturing.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open a released order and inspect its bill of materials.",
+          "text_ar": "افتح أمر إنتاج صادرًا وراجع قائمة مكوناته.",
+          "screenshot": "docs/screenshots/manufacturing/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Check each component location and shortage before reserving or issuing stock.",
+          "text_ar": "راجع موقع كل خامة والعجز قبل الحجز أو الصرف.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-manufacturing-bom",
+      "title_en": "Maintain bills of materials",
+      "title_ar": "إدارة قوائم مواد التصنيع",
+      "keywords_en": [
+        "manufacturing",
+        "maintain",
+        "bills",
+        "of",
+        "materials"
+      ],
+      "keywords_ar": [
+        "التصنيع",
+        "إدارة",
+        "قوائم",
+        "مواد"
+      ],
+      "required_permission": "manufacturing.bom",
+      "prerequisites_en": "An active account with manufacturing.bom permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية manufacturing.bom ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Manufacturing and select the target scope to start: Maintain bills of materials.",
+          "text_ar": "افتح قسم التصنيع وحدد النطاق المطلوب للبدء في: إدارة قوائم مواد التصنيع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/manufacturing/op-manufacturing-bom.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Maintain bills of materials).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة قوائم مواد التصنيع).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/manufacturing"
+    },
+    {
+      "id": "op-manufacturing-prepare",
+      "title_en": "Prepare production orders",
+      "title_ar": "إعداد أوامر الإنتاج",
+      "keywords_en": [
+        "manufacturing",
+        "prepare",
+        "production",
+        "orders"
+      ],
+      "keywords_ar": [
+        "التصنيع",
+        "إعداد",
+        "أوامر",
+        "الإنتاج"
+      ],
+      "required_permission": "manufacturing.prepare",
+      "prerequisites_en": "An active account with manufacturing.prepare permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية manufacturing.prepare ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Manufacturing and select the target scope to start: Prepare production orders.",
+          "text_ar": "افتح قسم التصنيع وحدد النطاق المطلوب للبدء في: إعداد أوامر الإنتاج.",
+          "fields": [],
+          "screenshot": "docs/screenshots/manufacturing/op-manufacturing-prepare.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare production orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد أوامر الإنتاج).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/manufacturing"
+    },
+    {
+      "id": "op-manufacturing-execute",
+      "title_en": "Record production operations",
+      "title_ar": "تسجيل عمليات الإنتاج",
+      "keywords_en": [
+        "manufacturing",
+        "record",
+        "production",
+        "operations"
+      ],
+      "keywords_ar": [
+        "التصنيع",
+        "تسجيل",
+        "عمليات",
+        "الإنتاج"
+      ],
+      "required_permission": "manufacturing.execute",
+      "prerequisites_en": "An active account with manufacturing.execute permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية manufacturing.execute ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Manufacturing and select the target scope to start: Record production operations.",
+          "text_ar": "افتح قسم التصنيع وحدد النطاق المطلوب للبدء في: تسجيل عمليات الإنتاج.",
+          "fields": [],
+          "screenshot": "docs/screenshots/manufacturing/op-manufacturing-execute.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Record production operations).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تسجيل عمليات الإنتاج).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/manufacturing"
+    },
+    {
+      "id": "op-manufacturing-approve",
+      "title_en": "Approve production operations",
+      "title_ar": "اعتماد عمليات الإنتاج",
+      "keywords_en": [
+        "manufacturing",
+        "approve",
+        "production",
+        "operations"
+      ],
+      "keywords_ar": [
+        "التصنيع",
+        "اعتماد",
+        "عمليات",
+        "الإنتاج"
+      ],
+      "required_permission": "manufacturing.approve",
+      "prerequisites_en": "An active account with manufacturing.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية manufacturing.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Manufacturing and select the target scope to start: Approve production operations.",
+          "text_ar": "افتح قسم التصنيع وحدد النطاق المطلوب للبدء في: اعتماد عمليات الإنتاج.",
+          "fields": [],
+          "screenshot": "docs/screenshots/manufacturing/op-manufacturing-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve production operations.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد عمليات الإنتاج.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/manufacturing"
+    },
+    {
+      "id": "op-manufacturing-plan",
+      "title_en": "Plan material requirements",
+      "title_ar": "تخطيط احتياجات المواد",
+      "keywords_en": [
+        "manufacturing",
+        "plan",
+        "material",
+        "requirements"
+      ],
+      "keywords_ar": [
+        "التصنيع",
+        "تخطيط",
+        "احتياجات",
+        "المواد"
+      ],
+      "required_permission": "manufacturing.plan",
+      "prerequisites_en": "An active account with manufacturing.plan permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية manufacturing.plan ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Manufacturing and select the target scope to start: Plan material requirements.",
+          "text_ar": "افتح قسم التصنيع وحدد النطاق المطلوب للبدء في: تخطيط احتياجات المواد.",
+          "fields": [],
+          "screenshot": "docs/screenshots/manufacturing/op-manufacturing-plan.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Plan material requirements).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تخطيط احتياجات المواد).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/manufacturing"
+    }
+  ]
+}

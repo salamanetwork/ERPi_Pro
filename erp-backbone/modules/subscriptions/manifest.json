@@ -1,0 +1,265 @@
+{
+  "id": "subscriptions",
+  "contract_version": "1.0",
+  "name": {
+    "en": "Subscriptions",
+    "ar": "الاشتراكات"
+  },
+  "description": {
+    "en": "Subscriptions",
+    "ar": "الاشتراكات"
+  },
+  "version": "2.8.1",
+  "category": "shared_business",
+  "group": "Sales",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.8,<3.0",
+  "dependencies": [
+    "parties",
+    "billing_core",
+    "accounting"
+  ],
+  "required_dependencies": [
+    "parties",
+    "billing_core",
+    "accounting"
+  ],
+  "optional_dependencies": [
+    "public_identity",
+    "marketing"
+  ],
+  "runtime": "internal",
+  "permissions": [
+    "subscriptions.view",
+    "subscriptions.manage",
+    "subscriptions.bill",
+    "subscriptions.override"
+  ],
+  "permission_definitions": {
+    "subscriptions.view": {
+      "name_en": "View subscriptions",
+      "name_ar": "عرض الاشتراكات",
+      "description_en": "View subscriptions within assigned sites.",
+      "description_ar": "عرض الاشتراكات ضمن المواقع المصرح بها.",
+      "action_type": "read"
+    },
+    "subscriptions.manage": {
+      "name_en": "Manage plans and contracts",
+      "name_ar": "إدارة الخطط والعقود",
+      "description_en": "Manage plans and contracts within assigned sites.",
+      "description_ar": "إدارة الخطط والعقود ضمن المواقع المصرح بها.",
+      "action_type": "write"
+    },
+    "subscriptions.bill": {
+      "name_en": "Run subscription billing",
+      "name_ar": "إصدار فواتير الاشتراكات",
+      "description_en": "Run subscription billing within assigned sites.",
+      "description_ar": "إصدار فواتير الاشتراكات ضمن المواقع المصرح بها.",
+      "action_type": "post"
+    },
+    "subscriptions.override": {
+      "name_en": "Review cancellation and override status",
+      "name_ar": "مراجعة الإلغاء وتعديل الحالة",
+      "description_en": "Review cancellation and override status within assigned sites.",
+      "description_ar": "مراجعة الإلغاء وتعديل الحالة ضمن المواقع المصرح بها.",
+      "action_type": "approve"
+    }
+  },
+  "ui_entries": [
+    "/subscriptions"
+  ],
+  "navigation": [
+    {
+      "route": "/subscriptions",
+      "label": {
+        "en": "Subscriptions",
+        "ar": "الاشتراكات"
+      },
+      "required_permission": "subscriptions.view"
+    }
+  ],
+  "events_published": [
+    "cycle.queued",
+    "cycle.billed",
+    "contract.changed",
+    "notice.queued",
+    "cancellation.requested",
+    "credit.created",
+    "recognition.due"
+  ],
+  "events_subscribed": [
+    "billing_core.invoice.paid",
+    "billing_core.invoice.void",
+    "billing_core.receipt.recorded",
+    "subscriptions.credit.created",
+    "subscriptions.recognition.due",
+    "subscriptions.cycle.billed",
+    "billing_core.invoice.issued"
+  ],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "subscription-cycle",
+      "title_en": "Bill a recurring contract",
+      "title_ar": "فوترة عقد دوري",
+      "required_permission": "subscriptions.view",
+      "route": "/subscriptions",
+      "keywords_en": [
+        "plan",
+        "billing"
+      ],
+      "keywords_ar": [
+        "الخطة",
+        "الفوترة"
+      ],
+      "steps": [
+        {
+          "id": "plan",
+          "text_en": "Choose a site and create a plan with a price and interval.",
+          "text_ar": "حدد الموقع وأنشئ خطة بسعر وفترة."
+        },
+        {
+          "id": "contract",
+          "text_en": "Select the party and start date. Review the first paid period after trial.",
+          "text_ar": "حدد الطرف وتاريخ البدء وراجع أول فترة مدفوعة بعد التجربة."
+        },
+        {
+          "id": "collect",
+          "text_en": "Record payment in Documents & Billing and review the balance.",
+          "text_ar": "سجل السداد في المستندات والفوترة ثم راجع الرصيد."
+        }
+      ]
+    },
+    {
+      "id": "op-subscriptions-manage",
+      "title_en": "Manage plans and contracts",
+      "title_ar": "إدارة الخطط والعقود",
+      "keywords_en": [
+        "subscriptions",
+        "manage",
+        "plans",
+        "and",
+        "contracts"
+      ],
+      "keywords_ar": [
+        "الاشتراكات",
+        "إدارة",
+        "الخطط",
+        "والعقود"
+      ],
+      "required_permission": "subscriptions.manage",
+      "prerequisites_en": "An active account with subscriptions.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية subscriptions.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Subscriptions and select the target scope to start: Manage plans and contracts.",
+          "text_ar": "افتح قسم الاشتراكات وحدد النطاق المطلوب للبدء في: إدارة الخطط والعقود.",
+          "fields": [],
+          "screenshot": "docs/screenshots/subscriptions/op-subscriptions-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Manage plans and contracts).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة الخطط والعقود).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/subscriptions"
+    },
+    {
+      "id": "op-subscriptions-bill",
+      "title_en": "Run subscription billing",
+      "title_ar": "إصدار فواتير الاشتراكات",
+      "keywords_en": [
+        "subscriptions",
+        "run",
+        "subscription",
+        "billing"
+      ],
+      "keywords_ar": [
+        "الاشتراكات",
+        "إصدار",
+        "فواتير"
+      ],
+      "required_permission": "subscriptions.bill",
+      "prerequisites_en": "An active account with subscriptions.bill permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية subscriptions.bill ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Subscriptions and select the target scope to start: Run subscription billing.",
+          "text_ar": "افتح قسم الاشتراكات وحدد النطاق المطلوب للبدء في: إصدار فواتير الاشتراكات.",
+          "fields": [],
+          "screenshot": "docs/screenshots/subscriptions/op-subscriptions-bill.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Run subscription billing and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إصدار فواتير الاشتراكات وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/subscriptions"
+    },
+    {
+      "id": "op-subscriptions-override",
+      "title_en": "Review cancellation and override status",
+      "title_ar": "مراجعة الإلغاء وتعديل الحالة",
+      "keywords_en": [
+        "subscriptions",
+        "review",
+        "cancellation",
+        "and",
+        "override",
+        "status"
+      ],
+      "keywords_ar": [
+        "الاشتراكات",
+        "مراجعة",
+        "الإلغاء",
+        "وتعديل",
+        "الحالة"
+      ],
+      "required_permission": "subscriptions.override",
+      "prerequisites_en": "An active account with subscriptions.override permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية subscriptions.override ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Subscriptions and select the target scope to start: Review cancellation and override status.",
+          "text_ar": "افتح قسم الاشتراكات وحدد النطاق المطلوب للبدء في: مراجعة الإلغاء وتعديل الحالة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/subscriptions/op-subscriptions-override.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Review cancellation and override status.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ مراجعة الإلغاء وتعديل الحالة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/subscriptions"
+    }
+  ]
+}

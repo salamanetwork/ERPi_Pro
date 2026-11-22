@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ language }}" dir="{% if language == 'ar' %}rtl{% else %}ltr{% endif %}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ document.document_number }} · {{ layout.heading|default:labels.title }}</title>
+<style>
+@font-face{font-family:PrintArabic;src:url('{% static "print/noto-arabic.woff2" %}') format('woff2')}
+@page{size:A4;margin:16mm}
+body{font-family:PrintArabic,Arial,sans-serif;color:#182231;max-width:190mm;margin:20px auto;padding:0 12px;line-height:1.5}
+header{border-bottom:2px solid #2c4968;padding-bottom:12px}
+.logo{max-width:44mm;max-height:21mm;object-fit:contain}
+h1{margin:4px 0} .metadata{color:#405269} table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{text-align:start;border-bottom:1px solid #cbd4df;padding:7px 5px;vertical-align:top;overflow-wrap:anywhere}
+th{background:#eef2f6} thead{display:table-header-group} tr{break-inside:avoid}
+.total{font-weight:bold;text-align:end} footer{white-space:pre-line;border-top:1px solid #cbd4df;margin-top:28px;padding-top:10px}
+button{padding:8px 13px;margin-bottom:16px}
+@media print{body{max-width:none;margin:0;padding:0}.print-controls{display:none}th{background:#eef2f6}}
+</style>
+<body>
+<div class="print-controls"><button type="button" onclick="window.print()">{% if language == 'ar' %}طباعة أو حفظ PDF{% else %}Print or save as PDF{% endif %}</button></div>
+<header>
+  {% if layout.logo %}<img class="logo" src="{{ layout.logo }}" alt="{{ layout.company_name }}">{% endif %}
+  {% if layout.company_name %}<div>{{ layout.company_name }}</div>{% endif %}
+  <h1>{{ layout.heading|default:labels.title }} · <bdi>{{ document.document_number }}</bdi></h1>
+  <div>{{ document.title }}</div>
+  <div class="metadata">{{ labels.site }} · <bdi>{{ site }}</bdi> | {{ labels.status }} · {{ status }} | {{ labels.currency }} · <bdi>{{ document.currency }}</bdi></div>
+  {% for label, value in details %}<div class="metadata">{{ label }} · <bdi>{{ value }}</bdi></div>{% endfor %}
+</header>
+<table>
+<thead><tr><th>{{ labels.description }}</th><th>{{ labels.quantity }}</th><th>{{ labels.price }}</th><th>{{ labels.amount }}</th></tr></thead>
+<tbody>{% for line in document.lines %}
+<tr><td>{{ line.description }}</td><td><bdi>{{ line.quantity }}</bdi></td><td><bdi>{{ line.unit_price }}</bdi></td><td><bdi>{{ line.amount }}</bdi></td></tr>
+{% endfor %}</tbody>
+</table>
+<p class="total">{{ labels.total }} · <bdi>{{ total }} {{ document.currency }}</bdi></p>
+{% if layout.footer %}<footer>{{ layout.footer }}</footer>{% endif %}
+</body></html>

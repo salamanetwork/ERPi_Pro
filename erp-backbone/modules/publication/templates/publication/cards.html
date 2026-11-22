@@ -1,0 +1,1 @@
+{% for c in items %}<article><h3><a href="{{c.url}}">{{c.title}}</a></h3>{% if c.summary %}<p>{{c.summary}}</p>{% endif %}</article>{% empty %}<p>{% if lang == 'ar' %}لا يوجد محتوى منشور هنا بهذه اللغة.{% else %}No published entries here in this language.{% endif %}</p>{% endfor %}

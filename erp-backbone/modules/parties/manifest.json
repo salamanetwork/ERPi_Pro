@@ -1,0 +1,145 @@
+{
+  "id": "parties",
+  "contract_version": "0.1",
+  "name": {
+    "en": "Parties & Contacts",
+    "ar": "الأطراف وجهات الاتصال"
+  },
+  "description": {
+    "en": "Parties & Contacts",
+    "ar": "الأطراف وجهات الاتصال"
+  },
+  "version": "2.6.5",
+  "category": "shared_business",
+  "group": "General",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "dependencies": [
+    "public_identity",
+    "publication"
+  ],
+  "required_dependencies": [
+    "public_identity",
+    "publication"
+  ],
+  "optional_dependencies": [],
+  "runtime": "internal",
+  "permissions": [
+    "parties.view",
+    "parties.manage"
+  ],
+  "permission_definitions": {
+    "parties.view": {
+      "name_en": "View Parties & Contacts",
+      "name_ar": "عرض الأطراف وجهات الاتصال",
+      "description_en": "View Parties & Contacts in the assigned site and selected publication space.",
+      "description_ar": "عرض الأطراف وجهات الاتصال داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "read"
+    },
+    "parties.manage": {
+      "name_en": "Manage Parties & Contacts",
+      "name_ar": "إدارة الأطراف وجهات الاتصال",
+      "description_en": "Manage Parties & Contacts in the assigned site and selected publication space.",
+      "description_ar": "إدارة الأطراف وجهات الاتصال داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "write"
+    }
+  },
+  "ui_entries": [
+    "/parties"
+  ],
+  "navigation": [
+    {
+      "route": "/parties",
+      "label": {
+        "en": "Parties & Contacts",
+        "ar": "الأطراف وجهات الاتصال"
+      },
+      "required_permission": "parties.view"
+    }
+  ],
+  "events_published": [
+    "party.created",
+    "party.updated"
+  ],
+  "events_subscribed": [],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Link a portal account",
+      "title_ar": "ربط حساب بوابة بطرف",
+      "keywords_en": [
+        "link",
+        "a",
+        "portal",
+        "account"
+      ],
+      "keywords_ar": [
+        "ربط",
+        "حساب",
+        "بوابة",
+        "بطرف"
+      ],
+      "required_permission": "parties.view",
+      "route": "/parties",
+      "prerequisites_en": "An active account with parties.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية parties.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Select the internal site and publication space, then edit the party.",
+          "text_ar": "حدد الموقع الداخلي ومساحة النشر ثم افتح تعديل الطرف.",
+          "screenshot": "docs/screenshots/parties/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Find the active account by email, save and inspect Party 360°.",
+          "text_ar": "ابحث عن الحساب النشط بالبريد واحفظ ثم افتح ملف الطرف.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-parties-manage",
+      "title_en": "Manage Parties & Contacts",
+      "title_ar": "إدارة الأطراف وجهات الاتصال",
+      "keywords_en": [
+        "parties",
+        "contacts",
+        "manage"
+      ],
+      "keywords_ar": [
+        "الأطراف",
+        "وجهات",
+        "الاتصال",
+        "إدارة"
+      ],
+      "required_permission": "parties.manage",
+      "prerequisites_en": "An active account with parties.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية parties.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Parties & Contacts and select the target scope to start: Manage Parties & Contacts.",
+          "text_ar": "افتح قسم الأطراف وجهات الاتصال وحدد النطاق المطلوب للبدء في: إدارة الأطراف وجهات الاتصال.",
+          "fields": [],
+          "screenshot": "docs/screenshots/parties/op-parties-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Manage Parties & Contacts).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة الأطراف وجهات الاتصال).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/parties"
+    }
+  ]
+}

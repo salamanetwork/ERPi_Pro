@@ -1,0 +1,117 @@
+{
+  "id": "supplier_invoices",
+  "version": "1.8.3",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "group": "Procurement",
+  "required_dependencies": [
+    "purchase_orders",
+    "inventory",
+    "accounting"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "ap.view",
+    "ap.create",
+    "ap.post",
+    "ap.pay",
+    "ap.credit"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/payables/invoices"
+  ],
+  "name": {
+    "en": "Supplier invoices",
+    "ar": "فواتير الموردين"
+  },
+  "description": {
+    "en": "Match and post supplier invoices and payments.",
+    "ar": "مطابقة فواتير الموردين وترحيلها وتسجيل الدفعات."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [
+    "purchase_orders",
+    "inventory",
+    "accounting"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "ap.view": {
+      "name_en": "Review supplier payables",
+      "name_ar": "عرض مستحقات الموردين",
+      "description_en": "Allows the role holder to review supplier payables within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض مستحقات الموردين ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "ap.create": {
+      "name_en": "Prepare supplier invoices",
+      "name_ar": "إعداد فواتير الموردين",
+      "description_en": "Allows the role holder to prepare supplier invoices within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد فواتير الموردين ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "ap.post": {
+      "name_en": "Post matched supplier invoices",
+      "name_ar": "ترحيل فواتير الموردين المطابقة",
+      "description_en": "Allows the role holder to post matched supplier invoices within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ترحيل فواتير الموردين المطابقة ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "ap.pay": {
+      "name_en": "Record supplier payments",
+      "name_ar": "تسجيل مدفوعات الموردين",
+      "description_en": "Allows the role holder to record supplier payments within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل مدفوعات الموردين ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "ap.credit": {
+      "name_en": "Record supplier credit notes",
+      "name_ar": "تسجيل إشعارات الموردين الدائنة",
+      "description_en": "Allows the role holder to record supplier credit notes within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل إشعارات الموردين الدائنة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/payables/invoices",
+      "label": {
+        "en": "Supplier invoices",
+        "ar": "فواتير الموردين"
+      },
+      "required_permission": "ap.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "directory",
+      "title_en": "Work with Supplier invoices",
+      "title_ar": "دليل فواتير الموردين",
+      "route": "/payables/invoices",
+      "required_permission": "ap.view",
+      "keywords_en": [
+        "Supplier invoices"
+      ],
+      "keywords_ar": [
+        "فواتير الموردين"
+      ],
+      "steps": [
+        {
+          "text_en": "Open Supplier invoices and choose the site.",
+          "text_ar": "افتح فواتير الموردين واختر الموقع.",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Inspect the record details before saving changes.",
+          "text_ar": "راجع تفاصيل السجل قبل حفظ التعديلات.",
+          "id": "step-2"
+        }
+      ]
+    }
+  ]
+}

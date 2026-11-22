@@ -1,0 +1,754 @@
+{
+  "id": "hr",
+  "version": "1.0.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [],
+  "requested_service_permissions": [],
+  "permissions": [
+    "attendance.record",
+    "attendance.approve",
+    "attendance.setup",
+    "attendance.correct",
+    "attendance.reopen",
+    "hr.view",
+    "hr.manage",
+    "hr.identity.link",
+    "hr.identity.view_full",
+    "hr.self",
+    "hr.leave.request",
+    "hr.leave.approve",
+    "hr.offboarding.request",
+    "hr.offboarding.approve"
+  ],
+  "ui_entries": [
+    "/hr"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Human Resources",
+    "ar": "الموارد البشرية"
+  },
+  "description": {
+    "en": "Employees, leave, attendance and offboarding",
+    "ar": "الموظفون والإجازات والحضور وإنهاء الخدمة"
+  },
+  "group": "Human Resources",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "attendance.record": {
+      "name_en": "Record attendance and work time",
+      "name_ar": "تسجيل الحضور ووقت العمل",
+      "description_en": "Allows the role holder to record attendance and work time within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تسجيل الحضور ووقت العمل ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "attendance.approve": {
+      "name_en": "Approve weekly timesheets",
+      "name_ar": "اعتماد كشوف الوقت الأسبوعية",
+      "description_en": "Allows the role holder to approve weekly timesheets within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد كشوف الوقت الأسبوعية ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "attendance.setup": {
+      "name_en": "Configure site attendance policies",
+      "name_ar": "ضبط سياسات الحضور بالموقع",
+      "description_en": "Allows the role holder to configure site attendance policies within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ضبط سياسات الحضور بالموقع ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "attendance.correct": {
+      "name_en": "Review attendance corrections",
+      "name_ar": "مراجعة تصحيحات الحضور",
+      "description_en": "Allows the role holder to review attendance corrections within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور مراجعة تصحيحات الحضور ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "attendance.reopen": {
+      "name_en": "Reopen approved timesheets",
+      "name_ar": "إعادة فتح كشوف الوقت المعتمدة",
+      "description_en": "Allows the role holder to reopen approved timesheets within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعادة فتح كشوف الوقت المعتمدة ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "hr.view": {
+      "name_en": "View employee files",
+      "name_ar": "عرض ملفات الموظفين",
+      "description_en": "Allows the role holder to view employee files within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض ملفات الموظفين ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "hr.manage": {
+      "name_en": "Maintain employee records",
+      "name_ar": "إدارة ملفات الموظفين",
+      "description_en": "Allows the role holder to maintain employee records within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة ملفات الموظفين ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "hr.identity.link": {
+      "name_en": "Link employee files to accounts",
+      "name_ar": "ربط الموظفين بحسابات الدخول",
+      "description_en": "Allows the role holder to link employee files to accounts within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ربط الموظفين بحسابات الدخول ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "hr.identity.view_full": {
+      "name_en": "View unmasked national IDs",
+      "name_ar": "عرض أرقام الهوية كاملة",
+      "description_en": "Reveal the full national ID in an authorized employee file.",
+      "description_ar": "إظهار رقم الهوية كاملاً داخل ملف موظف يملك المستخدم حق الوصول إليه.",
+      "action_type": "read"
+    },
+    "hr.self": {
+      "name_en": "View own employee file",
+      "name_ar": "عرض الملف الوظيفي الشخصي",
+      "description_en": "Allows the role holder to view own employee file within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض الملف الوظيفي الشخصي ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "hr.leave.request": {
+      "name_en": "Request employee leave",
+      "name_ar": "تقديم طلبات الإجازة",
+      "description_en": "Allows the role holder to request employee leave within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تقديم طلبات الإجازة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "hr.leave.approve": {
+      "name_en": "Approve leave requests",
+      "name_ar": "اعتماد طلبات الإجازة",
+      "description_en": "Allows the role holder to approve leave requests within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد طلبات الإجازة ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "hr.offboarding.request": {
+      "name_en": "Request employee offboarding",
+      "name_ar": "طلب إنهاء خدمة الموظف",
+      "description_en": "Allows the role holder to request employee offboarding within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور طلب إنهاء خدمة الموظف ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "hr.offboarding.approve": {
+      "name_en": "Approve offboarding requests",
+      "name_ar": "اعتماد طلبات إنهاء الخدمة",
+      "description_en": "Allows the role holder to approve offboarding requests within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد طلبات إنهاء الخدمة ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/hr",
+      "label": {
+        "en": "Human Resources",
+        "ar": "الموارد البشرية"
+      },
+      "required_permission": "hr.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Record attendance",
+      "title_ar": "تسجيل الحضور",
+      "keywords_en": [
+        "record",
+        "attendance"
+      ],
+      "keywords_ar": [
+        "تسجيل",
+        "الحضور"
+      ],
+      "required_permission": "attendance.record",
+      "route": "/hr/attendance",
+      "prerequisites_en": "An active account with attendance.record in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية attendance.record في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Use the staff account linked to the employee and select the working site.",
+          "text_ar": "استخدم حساب الموظف المرتبط بملفه وحدد موقع العمل.",
+          "screenshot": "docs/screenshots/hr/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Check in, record breaks and check out before reviewing the weekly timesheet.",
+          "text_ar": "سجل الدخول الوظيفي والاستراحات والانصراف ثم راجع كشف الأسبوع.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-attendance-approve",
+      "title_en": "Approve weekly timesheets",
+      "title_ar": "اعتماد كشوف الوقت الأسبوعية",
+      "keywords_en": [
+        "human",
+        "resources",
+        "approve",
+        "weekly",
+        "timesheets"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "اعتماد",
+        "كشوف",
+        "الوقت",
+        "الأسبوعية"
+      ],
+      "required_permission": "attendance.approve",
+      "prerequisites_en": "An active account with attendance.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية attendance.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Approve weekly timesheets.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: اعتماد كشوف الوقت الأسبوعية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-attendance-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve weekly timesheets.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد كشوف الوقت الأسبوعية.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-attendance-setup",
+      "title_en": "Configure site attendance policies",
+      "title_ar": "ضبط سياسات الحضور بالموقع",
+      "keywords_en": [
+        "human",
+        "resources",
+        "configure",
+        "site",
+        "attendance",
+        "policies"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "ضبط",
+        "سياسات",
+        "الحضور",
+        "بالموقع"
+      ],
+      "required_permission": "attendance.setup",
+      "prerequisites_en": "An active account with attendance.setup permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية attendance.setup ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Configure site attendance policies.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: ضبط سياسات الحضور بالموقع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-attendance-setup.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Configure site attendance policies and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ضبط سياسات الحضور بالموقع وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-attendance-correct",
+      "title_en": "Review attendance corrections",
+      "title_ar": "مراجعة تصحيحات الحضور",
+      "keywords_en": [
+        "human",
+        "resources",
+        "review",
+        "attendance",
+        "corrections"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "مراجعة",
+        "تصحيحات",
+        "الحضور"
+      ],
+      "required_permission": "attendance.correct",
+      "prerequisites_en": "An active account with attendance.correct permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية attendance.correct ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Review attendance corrections.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: مراجعة تصحيحات الحضور.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-attendance-correct.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Review attendance corrections).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (مراجعة تصحيحات الحضور).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-attendance-reopen",
+      "title_en": "Reopen approved timesheets",
+      "title_ar": "إعادة فتح كشوف الوقت المعتمدة",
+      "keywords_en": [
+        "human",
+        "resources",
+        "reopen",
+        "approved",
+        "timesheets"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "إعادة",
+        "فتح",
+        "كشوف",
+        "الوقت",
+        "المعتمدة"
+      ],
+      "required_permission": "attendance.reopen",
+      "prerequisites_en": "An active account with attendance.reopen permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية attendance.reopen ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Reopen approved timesheets.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: إعادة فتح كشوف الوقت المعتمدة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-attendance-reopen.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Reopen approved timesheets.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ إعادة فتح كشوف الوقت المعتمدة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-view",
+      "title_en": "View employee files",
+      "title_ar": "عرض ملفات الموظفين",
+      "keywords_en": [
+        "human",
+        "resources",
+        "view",
+        "employee",
+        "files"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "عرض",
+        "ملفات",
+        "الموظفين"
+      ],
+      "required_permission": "hr.view",
+      "prerequisites_en": "An active account with hr.view permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.view ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: View employee files.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: عرض ملفات الموظفين.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-view.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for View employee files.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض ملفات الموظفين.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-manage",
+      "title_en": "Maintain employee records",
+      "title_ar": "إدارة ملفات الموظفين",
+      "keywords_en": [
+        "human",
+        "resources",
+        "maintain",
+        "employee",
+        "records"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "إدارة",
+        "ملفات",
+        "الموظفين"
+      ],
+      "required_permission": "hr.manage",
+      "prerequisites_en": "An active account with hr.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Maintain employee records.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: إدارة ملفات الموظفين.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Maintain employee records and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة ملفات الموظفين وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-identity-link",
+      "title_en": "Link employee files to accounts",
+      "title_ar": "ربط الموظفين بحسابات الدخول",
+      "keywords_en": [
+        "human",
+        "resources",
+        "link",
+        "employee",
+        "files",
+        "to",
+        "accounts"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "ربط",
+        "الموظفين",
+        "بحسابات",
+        "الدخول"
+      ],
+      "required_permission": "hr.identity.link",
+      "prerequisites_en": "An active account with hr.identity.link permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.identity.link ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Link employee files to accounts.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: ربط الموظفين بحسابات الدخول.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-identity-link.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Link employee files to accounts and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ربط الموظفين بحسابات الدخول وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-identity-view-full",
+      "title_en": "View unmasked national IDs",
+      "title_ar": "عرض أرقام الهوية كاملة",
+      "keywords_en": [
+        "human",
+        "resources",
+        "view",
+        "unmasked",
+        "national",
+        "ids"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "عرض",
+        "أرقام",
+        "الهوية",
+        "كاملة"
+      ],
+      "required_permission": "hr.identity.view_full",
+      "prerequisites_en": "An active account with hr.identity.view_full permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.identity.view_full ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: View unmasked national IDs.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: عرض أرقام الهوية كاملة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-identity-view-full.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for View unmasked national IDs.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض أرقام الهوية كاملة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-self",
+      "title_en": "View own employee file",
+      "title_ar": "عرض الملف الوظيفي الشخصي",
+      "keywords_en": [
+        "human",
+        "resources",
+        "view",
+        "own",
+        "employee",
+        "file"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "عرض",
+        "الملف",
+        "الوظيفي",
+        "الشخصي"
+      ],
+      "required_permission": "hr.self",
+      "prerequisites_en": "An active account with hr.self permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.self ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: View own employee file.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: عرض الملف الوظيفي الشخصي.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-self.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for View own employee file.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض الملف الوظيفي الشخصي.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-leave-request",
+      "title_en": "Request employee leave",
+      "title_ar": "تقديم طلبات الإجازة",
+      "keywords_en": [
+        "human",
+        "resources",
+        "request",
+        "employee",
+        "leave"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "تقديم",
+        "طلبات",
+        "الإجازة"
+      ],
+      "required_permission": "hr.leave.request",
+      "prerequisites_en": "An active account with hr.leave.request permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.leave.request ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Request employee leave.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: تقديم طلبات الإجازة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-leave-request.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Request employee leave).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تقديم طلبات الإجازة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-leave-approve",
+      "title_en": "Approve leave requests",
+      "title_ar": "اعتماد طلبات الإجازة",
+      "keywords_en": [
+        "human",
+        "resources",
+        "approve",
+        "leave",
+        "requests"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "اعتماد",
+        "طلبات",
+        "الإجازة"
+      ],
+      "required_permission": "hr.leave.approve",
+      "prerequisites_en": "An active account with hr.leave.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.leave.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Approve leave requests.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: اعتماد طلبات الإجازة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-leave-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve leave requests.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد طلبات الإجازة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-offboarding-request",
+      "title_en": "Request employee offboarding",
+      "title_ar": "طلب إنهاء خدمة الموظف",
+      "keywords_en": [
+        "human",
+        "resources",
+        "request",
+        "employee",
+        "offboarding"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "طلب",
+        "إنهاء",
+        "خدمة",
+        "الموظف"
+      ],
+      "required_permission": "hr.offboarding.request",
+      "prerequisites_en": "An active account with hr.offboarding.request permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.offboarding.request ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Request employee offboarding.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: طلب إنهاء خدمة الموظف.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-offboarding-request.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Request employee offboarding).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (طلب إنهاء خدمة الموظف).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    },
+    {
+      "id": "op-hr-offboarding-approve",
+      "title_en": "Approve offboarding requests",
+      "title_ar": "اعتماد طلبات إنهاء الخدمة",
+      "keywords_en": [
+        "human",
+        "resources",
+        "approve",
+        "offboarding",
+        "requests"
+      ],
+      "keywords_ar": [
+        "الموارد",
+        "البشرية",
+        "اعتماد",
+        "طلبات",
+        "إنهاء",
+        "الخدمة"
+      ],
+      "required_permission": "hr.offboarding.approve",
+      "prerequisites_en": "An active account with hr.offboarding.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية hr.offboarding.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Human Resources and select the target scope to start: Approve offboarding requests.",
+          "text_ar": "افتح قسم الموارد البشرية وحدد النطاق المطلوب للبدء في: اعتماد طلبات إنهاء الخدمة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/hr/op-hr-offboarding-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve offboarding requests.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد طلبات إنهاء الخدمة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/hr"
+    }
+  ]
+}

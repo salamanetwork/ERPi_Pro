@@ -1,0 +1,142 @@
+{
+  "id": "scheduling",
+  "contract_version": "0.1",
+  "name": {
+    "en": "Scheduling & Appointments",
+    "ar": "الجداول والمواعيد"
+  },
+  "description": {
+    "en": "Scheduling & Appointments",
+    "ar": "الجداول والمواعيد"
+  },
+  "version": "2.6.5",
+  "category": "shared_business",
+  "group": "General",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "dependencies": [
+    "parties"
+  ],
+  "required_dependencies": [
+    "parties"
+  ],
+  "optional_dependencies": [],
+  "runtime": "internal",
+  "permissions": [
+    "scheduling.view",
+    "scheduling.manage"
+  ],
+  "permission_definitions": {
+    "scheduling.view": {
+      "name_en": "View Scheduling & Appointments",
+      "name_ar": "عرض الجداول والمواعيد",
+      "description_en": "View Scheduling & Appointments in the assigned site and selected publication space.",
+      "description_ar": "عرض الجداول والمواعيد داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "read"
+    },
+    "scheduling.manage": {
+      "name_en": "Manage Scheduling & Appointments",
+      "name_ar": "إدارة الجداول والمواعيد",
+      "description_en": "Manage Scheduling & Appointments in the assigned site and selected publication space.",
+      "description_ar": "إدارة الجداول والمواعيد داخل الموقع المعين ومساحة النشر المختارة.",
+      "action_type": "write"
+    }
+  },
+  "ui_entries": [
+    "/scheduling"
+  ],
+  "navigation": [
+    {
+      "route": "/scheduling",
+      "label": {
+        "en": "Scheduling & Appointments",
+        "ar": "الجداول والمواعيد"
+      },
+      "required_permission": "scheduling.view"
+    }
+  ],
+  "events_published": [
+    "appointment.created",
+    "appointment.confirmed",
+    "appointment.completed",
+    "appointment.cancelled",
+    "appointment.no_show"
+  ],
+  "events_subscribed": [],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Book an appointment",
+      "title_ar": "حجز موعد",
+      "keywords_en": [
+        "book",
+        "an",
+        "appointment"
+      ],
+      "keywords_ar": [
+        "حجز",
+        "موعد"
+      ],
+      "required_permission": "scheduling.view",
+      "route": "/scheduling",
+      "prerequisites_en": "An active account with scheduling.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية scheduling.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Choose a site and space with a resource and an active party.",
+          "text_ar": "اختر موقعًا ومساحة بها مورد وطرف نشط.",
+          "screenshot": "docs/screenshots/scheduling/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Choose Appointments, select the resource and party, enter a free start time and save.",
+          "text_ar": "افتح المواعيد وحدد المورد والطرف ووقت بداية متاحًا ثم احفظ.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-scheduling-manage",
+      "title_en": "Manage Scheduling & Appointments",
+      "title_ar": "إدارة الجداول والمواعيد",
+      "keywords_en": [
+        "scheduling",
+        "appointments",
+        "manage"
+      ],
+      "keywords_ar": [
+        "الجداول",
+        "والمواعيد",
+        "إدارة"
+      ],
+      "required_permission": "scheduling.manage",
+      "prerequisites_en": "An active account with scheduling.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية scheduling.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Scheduling & Appointments and select the target scope to start: Manage Scheduling & Appointments.",
+          "text_ar": "افتح قسم الجداول والمواعيد وحدد النطاق المطلوب للبدء في: إدارة الجداول والمواعيد.",
+          "fields": [],
+          "screenshot": "docs/screenshots/scheduling/op-scheduling-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Manage Scheduling & Appointments).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إدارة الجداول والمواعيد).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/scheduling"
+    }
+  ]
+}

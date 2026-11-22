@@ -1,0 +1,265 @@
+.iam-stack {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+.iam-row,
+.iam-chips {
+  display: flex;
+  gap: 0.7rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.iam-row label {
+  display: grid;
+  gap: 0.3rem;
+  flex: 1 1 10rem;
+}
+.iam-row > * {
+  min-width: 0;
+}
+.iam-wide {
+  flex-basis: 100%;
+}
+.iam-chips {
+  align-items: center;
+}
+.iam-chips code,
+.iam-pill {
+  border: 1px solid #52657c;
+  border-radius: 1rem;
+  padding: 0.12rem 0.6rem;
+  overflow-wrap: anywhere;
+}
+.iam-cols {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+  gap: 1rem;
+}
+.iam-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.iam-list {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  max-height: 70vh;
+  overflow: auto;
+}
+.iam-list button {
+  text-align: start;
+}
+.iam-list small,
+.iam-identity small,
+.iam-perm code {
+  display: block;
+}
+.iam-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.iam-nav [aria-pressed='true'],
+.iam-list [aria-pressed='true'] {
+  border-color: #71c8ef;
+  box-shadow: inset 0 -2px #71c8ef;
+}
+.iam-perm {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-block: 0.5rem;
+}
+.iam-perm input {
+  width: auto;
+}
+.iam-perm code {
+  font-size: 0.78em;
+  direction: ltr;
+  overflow-wrap: anywhere;
+}
+.iam-save {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: var(--surface, #1e293b);
+  padding: 0.75rem;
+  border: 1px solid #506179;
+  border-radius: 0.5rem;
+}
+.iam-dialog {
+  background: var(--surface, #1e293b);
+  color: inherit;
+  max-width: min(32rem, 95vw);
+  width: 100%;
+  border: 1px solid #54657a;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.iam-dialog::backdrop {
+  background: #050b16ba;
+}
+.iam-dialog label,
+.iam-field {
+  display: grid;
+  gap: 0.4rem;
+}
+.iam-avatar {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: #27485c;
+  color: #ddf4ff;
+}
+.iam-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.iam-perm[data-tone='approve'] code {
+  color: #e5b152;
+}
+.iam-perm[data-tone='write'] code {
+  color: #65b5e0;
+}
+@media (max-width: 840px) {
+  .iam-cols,
+  .iam-grid {
+    grid-template-columns: 1fr;
+  }
+  .iam-list {
+    max-height: 16rem;
+  }
+}
+.iam-cols {
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  align-items: start;
+}
+.iam-list button[aria-pressed] {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 0.35rem;
+  padding: 12px 14px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.iam-list small {
+  color: var(--muted);
+  font-weight: 400;
+}
+.iam-accordion {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+.iam-accordion h3 {
+  flex: 1;
+  margin: 0;
+}
+.iam-rule {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-block-start: 1px solid var(--border);
+  padding-block: 0.45rem;
+}
+.iam-rule .iam-perm {
+  min-width: 0;
+}
+.iam-info {
+  border-radius: 50%;
+  padding: 0.35rem 0.55rem;
+}
+.iam-hint,
+.iam-rule > .iam-wide {
+  grid-column: 1/-1;
+}
+.iam-hint {
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+}
+.iam-hint p {
+  margin: 0.35rem 0 0;
+}
+.iam-preview {
+  max-height: 35vh;
+  overflow: auto;
+}
+.iam-stack .iam-status {
+  display: inline-block;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  width: max-content;
+}
+.iam-status[data-active='true'] {
+  background: #184534;
+  color: #bbf7d0;
+}
+.iam-status[data-active='false'] {
+  background: #443c2b;
+  color: #ffe5ae;
+}
+.iam-form {
+  display: grid;
+  gap: 1.1rem;
+  max-width: 44rem;
+  width: 100%;
+  box-sizing: border-box;
+  justify-items: stretch;
+}
+.iam-form label,
+.iam-assign label {
+  display: grid;
+  gap: 0.45rem;
+}
+.iam-form > button {
+  justify-self: start;
+}
+.iam-stack .iam-assign {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+}
+.iam-stack .iam-assign.personal {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+}
+.iam-assign details {
+  grid-column: 1/-1;
+}
+.iam-stack .table-panel {
+  overflow-x: auto;
+}
+.iam-stack .table-panel table {
+  min-width: 34rem;
+}
+.iam-stack mark {
+  background: #facc6b;
+  color: #182035;
+  border-radius: 2px;
+}
+@media (max-width: 900px) {
+  .iam-cols,
+  .iam-grid {
+    grid-template-columns: 1fr;
+  }
+  .iam-stack .iam-assign,
+  .iam-stack .iam-assign.personal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 540px) {
+  .iam-stack .iam-assign,
+  .iam-stack .iam-assign.personal {
+    grid-template-columns: 1fr;
+  }
+}

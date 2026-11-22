@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>{{ title }} {{ row.number }}</title>
+<style>
+body {font-family:system-ui,sans-serif;margin:2rem;color:#18212d}
+table {width:100%;border-collapse:collapse}
+th,td {text-align:start;border-bottom:1px solid #ddd;padding:.55rem}
+@media print {button {display:none}}
+</style>
+<button type="button" onclick="window.print()">Print or save as PDF</button>
+<h1>{{ title }} {{ row.number }}</h1>
+<p>{{ row.date|date:"Y-m-d" }} · {{ row.status }}</p>
+<p>{{ customer.name }}{% if customer.legal_name %} · {{ customer.legal_name }}{% endif %}</p>
+{% if customer.billing %}<p>{{ customer.billing }}</p>{% endif %}
+{% if row.due %}<p>Due {{ row.due|date:"Y-m-d" }}</p>{% endif %}
+{% if row.expires %}<p>Valid through {{ row.expires|date:"Y-m-d" }}</p>{% endif %}
+{% if row.source %}<p>Source {{ row.source.number }}</p>{% endif %}
+<table><thead><tr><th>Item</th><th>Quantity</th><th>Unit price</th><th>Amount AED</th></tr></thead>
+<tbody>{% for line in row.lines %}<tr><td>{{ line.name }}</td><td>{{ line.quantity }} {{ line.unit }}</td><td>{{ line.price }}</td><td>{{ line.amount }}</td></tr>{% endfor %}</tbody></table>
+<p>Total <strong>{{ row.amount }} AED</strong></p>
+{% if row.kind != "quote" %}<p>Operational document · VAT not calculated</p>{% endif %}
+</html>

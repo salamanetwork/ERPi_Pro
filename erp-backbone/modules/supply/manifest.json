@@ -1,0 +1,300 @@
+{
+  "id": "supply",
+  "version": "2.1.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "inventory"
+  ],
+  "optional_dependencies": [
+    "sales",
+    "accounting"
+  ],
+  "permissions": [
+    "supply.view",
+    "supply.prepare",
+    "supply.dispatch",
+    "supply.receive",
+    "supply.settle"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/supply"
+  ],
+  "name": {
+    "en": "Supply Chain",
+    "ar": "الإمداد"
+  },
+  "description": {
+    "en": "Stock transfers, reservations and shipments in transit.",
+    "ar": "تحويلات المخزون والحجوزات والشحنات في الطريق."
+  },
+  "group": "Inventory",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "domain_module",
+  "dependencies": [
+    "inventory"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "supply.view": {
+      "name_en": "Track transfers and shipments",
+      "name_ar": "تتبع التحويلات والشحنات",
+      "description_en": "Allows the role holder to track transfers and shipments within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تتبع التحويلات والشحنات ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "supply.prepare": {
+      "name_en": "Prepare stock transfers",
+      "name_ar": "إعداد تحويلات المخزون",
+      "description_en": "Allows the role holder to prepare stock transfers within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد تحويلات المخزون ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "supply.dispatch": {
+      "name_en": "Dispatch stock transfers",
+      "name_ar": "شحن تحويلات المخزون",
+      "description_en": "Allows the role holder to dispatch stock transfers within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور شحن تحويلات المخزون ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "supply.receive": {
+      "name_en": "Receive transferred stock",
+      "name_ar": "استلام المخزون المحول",
+      "description_en": "Allows the role holder to receive transferred stock within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور استلام المخزون المحول ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "supply.settle": {
+      "name_en": "Approve in-transit discrepancies",
+      "name_ar": "اعتماد تسوية فروق البضاعة بالطريق",
+      "description_en": "Allows the role holder to approve in-transit discrepancies within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد تسوية فروق البضاعة بالطريق ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/supply",
+      "label": {
+        "en": "Supply Chain",
+        "ar": "الإمداد"
+      },
+      "required_permission": "supply.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Track stock in transit",
+      "title_ar": "تتبع المخزون في الطريق",
+      "keywords_en": [
+        "track",
+        "stock",
+        "in",
+        "transit"
+      ],
+      "keywords_ar": [
+        "تتبع",
+        "المخزون",
+        "في",
+        "الطريق"
+      ],
+      "required_permission": "supply.view",
+      "route": "/supply",
+      "prerequisites_en": "An active account with supply.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية supply.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open the transfer and check its dispatch and destination locations.",
+          "text_ar": "افتح التحويل وراجع موقع الشحن والوجهة.",
+          "screenshot": "docs/screenshots/supply/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Compare quantities dispatched and received and resolve remaining differences.",
+          "text_ar": "قارن الكمية المشحونة والمستلمة وسوّ الفروق المتبقية.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-supply-prepare",
+      "title_en": "Prepare stock transfers",
+      "title_ar": "إعداد تحويلات المخزون",
+      "keywords_en": [
+        "supply",
+        "chain",
+        "prepare",
+        "stock",
+        "transfers"
+      ],
+      "keywords_ar": [
+        "الإمداد",
+        "إعداد",
+        "تحويلات",
+        "المخزون"
+      ],
+      "required_permission": "supply.prepare",
+      "prerequisites_en": "An active account with supply.prepare permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية supply.prepare ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Supply Chain and select the target scope to start: Prepare stock transfers.",
+          "text_ar": "افتح قسم الإمداد وحدد النطاق المطلوب للبدء في: إعداد تحويلات المخزون.",
+          "fields": [],
+          "screenshot": "docs/screenshots/supply/op-supply-prepare.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare stock transfers).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد تحويلات المخزون).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/supply"
+    },
+    {
+      "id": "op-supply-dispatch",
+      "title_en": "Dispatch stock transfers",
+      "title_ar": "شحن تحويلات المخزون",
+      "keywords_en": [
+        "supply",
+        "chain",
+        "dispatch",
+        "stock",
+        "transfers"
+      ],
+      "keywords_ar": [
+        "الإمداد",
+        "شحن",
+        "تحويلات",
+        "المخزون"
+      ],
+      "required_permission": "supply.dispatch",
+      "prerequisites_en": "An active account with supply.dispatch permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية supply.dispatch ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Supply Chain and select the target scope to start: Dispatch stock transfers.",
+          "text_ar": "افتح قسم الإمداد وحدد النطاق المطلوب للبدء في: شحن تحويلات المخزون.",
+          "fields": [],
+          "screenshot": "docs/screenshots/supply/op-supply-dispatch.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Dispatch stock transfers).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (شحن تحويلات المخزون).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/supply"
+    },
+    {
+      "id": "op-supply-receive",
+      "title_en": "Receive transferred stock",
+      "title_ar": "استلام المخزون المحول",
+      "keywords_en": [
+        "supply",
+        "chain",
+        "receive",
+        "transferred",
+        "stock"
+      ],
+      "keywords_ar": [
+        "الإمداد",
+        "استلام",
+        "المخزون",
+        "المحول"
+      ],
+      "required_permission": "supply.receive",
+      "prerequisites_en": "An active account with supply.receive permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية supply.receive ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Supply Chain and select the target scope to start: Receive transferred stock.",
+          "text_ar": "افتح قسم الإمداد وحدد النطاق المطلوب للبدء في: استلام المخزون المحول.",
+          "fields": [],
+          "screenshot": "docs/screenshots/supply/op-supply-receive.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Receive transferred stock).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (استلام المخزون المحول).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/supply"
+    },
+    {
+      "id": "op-supply-settle",
+      "title_en": "Approve in-transit discrepancies",
+      "title_ar": "اعتماد تسوية فروق البضاعة بالطريق",
+      "keywords_en": [
+        "supply",
+        "chain",
+        "approve",
+        "in",
+        "transit",
+        "discrepancies"
+      ],
+      "keywords_ar": [
+        "الإمداد",
+        "اعتماد",
+        "تسوية",
+        "فروق",
+        "البضاعة",
+        "بالطريق"
+      ],
+      "required_permission": "supply.settle",
+      "prerequisites_en": "An active account with supply.settle permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية supply.settle ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Supply Chain and select the target scope to start: Approve in-transit discrepancies.",
+          "text_ar": "افتح قسم الإمداد وحدد النطاق المطلوب للبدء في: اعتماد تسوية فروق البضاعة بالطريق.",
+          "fields": [],
+          "screenshot": "docs/screenshots/supply/op-supply-settle.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve in-transit discrepancies.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد تسوية فروق البضاعة بالطريق.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/supply"
+    }
+  ]
+}

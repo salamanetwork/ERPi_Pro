@@ -1,0 +1,348 @@
+{
+  "id": "helpdesk",
+  "version": "2.4.3",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.4,<3.0",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [
+    "workorders",
+    "projects"
+  ],
+  "permissions": [
+    "helpdesk.view",
+    "helpdesk.request",
+    "helpdesk.agent",
+    "helpdesk.dispatch",
+    "helpdesk.reopen",
+    "helpdesk.configure"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/helpdesk"
+  ],
+  "group": "General",
+  "name": {
+    "en": "Helpdesk",
+    "ar": "الدعم الفني"
+  },
+  "description": {
+    "en": "Internal service tickets and response targets.",
+    "ar": "بلاغات الخدمة الداخلية ومواعيد الاستجابة."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "domain_module",
+  "dependencies": [],
+  "events_published": [
+    "helpdesk_opened",
+    "helpdesk_assigned",
+    "helpdesk_resolved",
+    "helpdesk_transition",
+    "helpdesk_commented",
+    "helpdesk_sla_first_response",
+    "helpdesk_sla_resolution"
+  ],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "helpdesk.view": {
+      "name_en": "View support tickets",
+      "name_ar": "عرض بلاغات الدعم",
+      "description_en": "Allows the role holder to view support tickets within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض بلاغات الدعم ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "helpdesk.request": {
+      "name_en": "Submit support requests",
+      "name_ar": "تقديم بلاغات الدعم",
+      "description_en": "Allows the role holder to submit support requests within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تقديم بلاغات الدعم ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "helpdesk.agent": {
+      "name_en": "Handle assigned tickets",
+      "name_ar": "معالجة بلاغات الدعم",
+      "description_en": "Work assigned tickets and collaborate with support staff using internal notes.",
+      "description_ar": "معالجة البلاغات المسندة والتعاون مع فريق الدعم من خلال الملاحظات الداخلية.",
+      "action_type": "write"
+    },
+    "helpdesk.dispatch": {
+      "name_en": "Assign support tickets",
+      "name_ar": "توجيه بلاغات الدعم",
+      "description_en": "Allows the role holder to assign support tickets within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور توجيه بلاغات الدعم ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "helpdesk.reopen": {
+      "name_en": "Reopen support tickets",
+      "name_ar": "إعادة فتح بلاغات الدعم",
+      "description_en": "Allows the role holder to reopen support tickets within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعادة فتح بلاغات الدعم ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "helpdesk.configure": {
+      "name_en": "Configure service policies",
+      "name_ar": "ضبط سياسات الدعم",
+      "description_en": "Allows the role holder to configure service policies within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ضبط سياسات الدعم ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/helpdesk",
+      "label": {
+        "en": "Helpdesk",
+        "ar": "الدعم الفني"
+      },
+      "required_permission": "helpdesk.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Follow a support ticket",
+      "title_ar": "متابعة بلاغ دعم",
+      "keywords_en": [
+        "follow",
+        "a",
+        "support",
+        "ticket"
+      ],
+      "keywords_ar": [
+        "متابعة",
+        "بلاغ",
+        "دعم"
+      ],
+      "required_permission": "helpdesk.view",
+      "route": "/helpdesk",
+      "prerequisites_en": "An active account with helpdesk.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية helpdesk.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open your ticket and review its assignment and SLA deadline.",
+          "text_ar": "افتح البلاغ وراجع المسؤول والموعد المستهدف.",
+          "screenshot": "docs/screenshots/helpdesk/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Use a public reply for the requester and reserve internal notes for support staff.",
+          "text_ar": "استخدم التعليق العام للموظف والملاحظة الداخلية لفريق الدعم.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-helpdesk-request",
+      "title_en": "Submit support requests",
+      "title_ar": "تقديم بلاغات الدعم",
+      "keywords_en": [
+        "helpdesk",
+        "submit",
+        "support",
+        "requests"
+      ],
+      "keywords_ar": [
+        "الدعم",
+        "الفني",
+        "تقديم",
+        "بلاغات"
+      ],
+      "required_permission": "helpdesk.request",
+      "prerequisites_en": "An active account with helpdesk.request permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية helpdesk.request ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Helpdesk and select the target scope to start: Submit support requests.",
+          "text_ar": "افتح قسم الدعم الفني وحدد النطاق المطلوب للبدء في: تقديم بلاغات الدعم.",
+          "fields": [],
+          "screenshot": "docs/screenshots/helpdesk/op-helpdesk-request.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Submit support requests).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تقديم بلاغات الدعم).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/helpdesk"
+    },
+    {
+      "id": "op-helpdesk-agent",
+      "title_en": "Handle assigned tickets",
+      "title_ar": "معالجة بلاغات الدعم",
+      "keywords_en": [
+        "helpdesk",
+        "handle",
+        "assigned",
+        "tickets"
+      ],
+      "keywords_ar": [
+        "الدعم",
+        "الفني",
+        "معالجة",
+        "بلاغات"
+      ],
+      "required_permission": "helpdesk.agent",
+      "prerequisites_en": "An active account with helpdesk.agent permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية helpdesk.agent ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Helpdesk and select the target scope to start: Handle assigned tickets.",
+          "text_ar": "افتح قسم الدعم الفني وحدد النطاق المطلوب للبدء في: معالجة بلاغات الدعم.",
+          "fields": [],
+          "screenshot": "docs/screenshots/helpdesk/op-helpdesk-agent.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Handle assigned tickets).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (معالجة بلاغات الدعم).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/helpdesk"
+    },
+    {
+      "id": "op-helpdesk-dispatch",
+      "title_en": "Assign support tickets",
+      "title_ar": "توجيه بلاغات الدعم",
+      "keywords_en": [
+        "helpdesk",
+        "assign",
+        "support",
+        "tickets"
+      ],
+      "keywords_ar": [
+        "الدعم",
+        "الفني",
+        "توجيه",
+        "بلاغات"
+      ],
+      "required_permission": "helpdesk.dispatch",
+      "prerequisites_en": "An active account with helpdesk.dispatch permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية helpdesk.dispatch ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Helpdesk and select the target scope to start: Assign support tickets.",
+          "text_ar": "افتح قسم الدعم الفني وحدد النطاق المطلوب للبدء في: توجيه بلاغات الدعم.",
+          "fields": [],
+          "screenshot": "docs/screenshots/helpdesk/op-helpdesk-dispatch.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Assign support tickets).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (توجيه بلاغات الدعم).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/helpdesk"
+    },
+    {
+      "id": "op-helpdesk-reopen",
+      "title_en": "Reopen support tickets",
+      "title_ar": "إعادة فتح بلاغات الدعم",
+      "keywords_en": [
+        "helpdesk",
+        "reopen",
+        "support",
+        "tickets"
+      ],
+      "keywords_ar": [
+        "الدعم",
+        "الفني",
+        "إعادة",
+        "فتح",
+        "بلاغات"
+      ],
+      "required_permission": "helpdesk.reopen",
+      "prerequisites_en": "An active account with helpdesk.reopen permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية helpdesk.reopen ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Helpdesk and select the target scope to start: Reopen support tickets.",
+          "text_ar": "افتح قسم الدعم الفني وحدد النطاق المطلوب للبدء في: إعادة فتح بلاغات الدعم.",
+          "fields": [],
+          "screenshot": "docs/screenshots/helpdesk/op-helpdesk-reopen.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Reopen support tickets.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ إعادة فتح بلاغات الدعم.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/helpdesk"
+    },
+    {
+      "id": "op-helpdesk-configure",
+      "title_en": "Configure service policies",
+      "title_ar": "ضبط سياسات الدعم",
+      "keywords_en": [
+        "helpdesk",
+        "configure",
+        "service",
+        "policies"
+      ],
+      "keywords_ar": [
+        "الدعم",
+        "الفني",
+        "ضبط",
+        "سياسات"
+      ],
+      "required_permission": "helpdesk.configure",
+      "prerequisites_en": "An active account with helpdesk.configure permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية helpdesk.configure ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Helpdesk and select the target scope to start: Configure service policies.",
+          "text_ar": "افتح قسم الدعم الفني وحدد النطاق المطلوب للبدء في: ضبط سياسات الدعم.",
+          "fields": [],
+          "screenshot": "docs/screenshots/helpdesk/op-helpdesk-configure.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Configure service policies and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ضبط سياسات الدعم وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/helpdesk"
+    }
+  ]
+}

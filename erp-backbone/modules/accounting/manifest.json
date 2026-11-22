@@ -1,0 +1,535 @@
+{
+  "id": "accounting",
+  "version": "0.1.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "inventory"
+  ],
+  "optional_dependencies": [],
+  "permissions": [
+    "accounting.view",
+    "accounting.setup",
+    "accounting.post",
+    "accounting.manual",
+    "accounting.manual.post",
+    "accounting.close",
+    "budget.view",
+    "budget.centers",
+    "budget.prepare",
+    "budget.approve"
+  ],
+  "requested_service_permissions": [],
+  "ui_entries": [
+    "/accounting"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Accounting",
+    "ar": "المحاسبة"
+  },
+  "description": {
+    "en": "General ledger, inventory posting and financial periods.",
+    "ar": "الأستاذ العام وترحيل المخزون والفترات المالية."
+  },
+  "group": "Finance",
+  "contract_version": "0.1",
+  "scope_mode": "global",
+  "category": "shared_business",
+  "dependencies": [
+    "inventory"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "accounting.view": {
+      "name_en": "Review ledgers and balances",
+      "name_ar": "عرض الدفاتر والأرصدة",
+      "description_en": "Allows the role holder to review ledgers and balances within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض الدفاتر والأرصدة ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "accounting.setup": {
+      "name_en": "Configure accounting rules",
+      "name_ar": "ضبط قواعد المحاسبة",
+      "description_en": "Allows the role holder to configure accounting rules within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ضبط قواعد المحاسبة ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "accounting.post": {
+      "name_en": "Process accounting postings",
+      "name_ar": "معالجة الترحيل المحاسبي",
+      "description_en": "Allows the role holder to process accounting postings within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور معالجة الترحيل المحاسبي ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "accounting.manual": {
+      "name_en": "Prepare manual journal entries",
+      "name_ar": "إعداد قيود اليومية اليدوية",
+      "description_en": "Allows the role holder to prepare manual journal entries within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد قيود اليومية اليدوية ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "accounting.manual.post": {
+      "name_en": "Post manual journal entries",
+      "name_ar": "ترحيل القيود اليدوية",
+      "description_en": "Allows the role holder to post manual journal entries within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور ترحيل القيود اليدوية ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "accounting.close": {
+      "name_en": "Close accounting periods",
+      "name_ar": "إقفال الفترات المحاسبية",
+      "description_en": "Allows the role holder to close accounting periods within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إقفال الفترات المحاسبية ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "budget.view": {
+      "name_en": "Review budgets and actual expenses",
+      "name_ar": "عرض الموازنة والمصروف الفعلي",
+      "description_en": "Allows the role holder to review budgets and actual expenses within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض الموازنة والمصروف الفعلي ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "budget.centers": {
+      "name_en": "Manage cost centers",
+      "name_ar": "إدارة مراكز التكلفة",
+      "description_en": "Allows the role holder to manage cost centers within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة مراكز التكلفة ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "budget.prepare": {
+      "name_en": "Prepare budget versions",
+      "name_ar": "إعداد إصدارات الموازنة",
+      "description_en": "Allows the role holder to prepare budget versions within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إعداد إصدارات الموازنة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "budget.approve": {
+      "name_en": "Approve budget versions",
+      "name_ar": "اعتماد إصدارات الموازنة",
+      "description_en": "Allows the role holder to approve budget versions within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد إصدارات الموازنة ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/accounting",
+      "label": {
+        "en": "Accounting",
+        "ar": "المحاسبة"
+      },
+      "required_permission": "accounting.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review a journal entry",
+      "title_ar": "مراجعة قيد يومية",
+      "keywords_en": [
+        "review",
+        "a",
+        "journal",
+        "entry"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "قيد",
+        "يومية"
+      ],
+      "required_permission": "accounting.view",
+      "route": "/accounting/journals",
+      "prerequisites_en": "An active account with accounting.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية accounting.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Open the journal in the intended financial period.",
+          "text_ar": "افتح القيد في الفترة المالية المطلوبة.",
+          "screenshot": "docs/screenshots/accounting/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Check its reason and confirm that total debits equal total credits before posting.",
+          "text_ar": "راجع السبب وتأكد من تساوي المدين والدائن قبل الترحيل.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-accounting-setup",
+      "title_en": "Configure accounting rules",
+      "title_ar": "ضبط قواعد المحاسبة",
+      "keywords_en": [
+        "accounting",
+        "configure",
+        "rules"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "ضبط",
+        "قواعد"
+      ],
+      "required_permission": "accounting.setup",
+      "prerequisites_en": "An active account with accounting.setup permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية accounting.setup ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Configure accounting rules.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: ضبط قواعد المحاسبة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-accounting-setup.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Configure accounting rules and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ضبط قواعد المحاسبة وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-accounting-post",
+      "title_en": "Process accounting postings",
+      "title_ar": "معالجة الترحيل المحاسبي",
+      "keywords_en": [
+        "accounting",
+        "process",
+        "postings"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "معالجة",
+        "الترحيل",
+        "المحاسبي"
+      ],
+      "required_permission": "accounting.post",
+      "prerequisites_en": "An active account with accounting.post permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية accounting.post ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Process accounting postings.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: معالجة الترحيل المحاسبي.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-accounting-post.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Process accounting postings.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ معالجة الترحيل المحاسبي.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-accounting-manual",
+      "title_en": "Prepare manual journal entries",
+      "title_ar": "إعداد قيود اليومية اليدوية",
+      "keywords_en": [
+        "accounting",
+        "prepare",
+        "manual",
+        "journal",
+        "entries"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "إعداد",
+        "قيود",
+        "اليومية",
+        "اليدوية"
+      ],
+      "required_permission": "accounting.manual",
+      "prerequisites_en": "An active account with accounting.manual permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية accounting.manual ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Prepare manual journal entries.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: إعداد قيود اليومية اليدوية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-accounting-manual.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare manual journal entries).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد قيود اليومية اليدوية).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-accounting-manual-post",
+      "title_en": "Post manual journal entries",
+      "title_ar": "ترحيل القيود اليدوية",
+      "keywords_en": [
+        "accounting",
+        "post",
+        "manual",
+        "journal",
+        "entries"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "ترحيل",
+        "القيود",
+        "اليدوية"
+      ],
+      "required_permission": "accounting.manual.post",
+      "prerequisites_en": "An active account with accounting.manual.post permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية accounting.manual.post ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Post manual journal entries.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: ترحيل القيود اليدوية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-accounting-manual-post.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Post manual journal entries.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ ترحيل القيود اليدوية.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-accounting-close",
+      "title_en": "Close accounting periods",
+      "title_ar": "إقفال الفترات المحاسبية",
+      "keywords_en": [
+        "accounting",
+        "close",
+        "periods"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "إقفال",
+        "الفترات",
+        "المحاسبية"
+      ],
+      "required_permission": "accounting.close",
+      "prerequisites_en": "An active account with accounting.close permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية accounting.close ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Close accounting periods.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: إقفال الفترات المحاسبية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-accounting-close.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Close accounting periods.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ إقفال الفترات المحاسبية.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-budget-view",
+      "title_en": "Review budgets and actual expenses",
+      "title_ar": "عرض الموازنة والمصروف الفعلي",
+      "keywords_en": [
+        "accounting",
+        "review",
+        "budgets",
+        "and",
+        "actual",
+        "expenses"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "عرض",
+        "الموازنة",
+        "والمصروف",
+        "الفعلي"
+      ],
+      "required_permission": "budget.view",
+      "prerequisites_en": "An active account with budget.view permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية budget.view ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Review budgets and actual expenses.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: عرض الموازنة والمصروف الفعلي.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-budget-view.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for Review budgets and actual expenses.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض الموازنة والمصروف الفعلي.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-budget-centers",
+      "title_en": "Manage cost centers",
+      "title_ar": "إدارة مراكز التكلفة",
+      "keywords_en": [
+        "accounting",
+        "manage",
+        "cost",
+        "centers"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "إدارة",
+        "مراكز",
+        "التكلفة"
+      ],
+      "required_permission": "budget.centers",
+      "prerequisites_en": "An active account with budget.centers permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية budget.centers ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Manage cost centers.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: إدارة مراكز التكلفة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-budget-centers.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Manage cost centers and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة مراكز التكلفة وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-budget-prepare",
+      "title_en": "Prepare budget versions",
+      "title_ar": "إعداد إصدارات الموازنة",
+      "keywords_en": [
+        "accounting",
+        "prepare",
+        "budget",
+        "versions"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "إعداد",
+        "إصدارات",
+        "الموازنة"
+      ],
+      "required_permission": "budget.prepare",
+      "prerequisites_en": "An active account with budget.prepare permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية budget.prepare ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Prepare budget versions.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: إعداد إصدارات الموازنة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-budget-prepare.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare budget versions).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد إصدارات الموازنة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    },
+    {
+      "id": "op-budget-approve",
+      "title_en": "Approve budget versions",
+      "title_ar": "اعتماد إصدارات الموازنة",
+      "keywords_en": [
+        "accounting",
+        "approve",
+        "budget",
+        "versions"
+      ],
+      "keywords_ar": [
+        "المحاسبة",
+        "اعتماد",
+        "إصدارات",
+        "الموازنة"
+      ],
+      "required_permission": "budget.approve",
+      "prerequisites_en": "An active account with budget.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية budget.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Accounting and select the target scope to start: Approve budget versions.",
+          "text_ar": "افتح قسم المحاسبة وحدد النطاق المطلوب للبدء في: اعتماد إصدارات الموازنة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/accounting/op-budget-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve budget versions.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد إصدارات الموازنة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/accounting"
+    }
+  ]
+}

@@ -1,0 +1,434 @@
+{
+  "id": "purchasing",
+  "version": "0.2.0",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [],
+  "optional_dependencies": [],
+  "permissions": [
+    "purchasing.view",
+    "purchasing.create",
+    "purchasing.edit",
+    "purchasing.submit",
+    "purchasing.approve",
+    "purchasing.po.create",
+    "purchasing.po.issue",
+    "purchasing.po.void"
+  ],
+  "requested_service_permissions": [],
+  "ui_entries": [
+    "/purchase-requests"
+  ],
+  "offline_requirements": [],
+  "name": {
+    "en": "Purchase requisitions",
+    "ar": "طلبات الشراء"
+  },
+  "description": {
+    "en": "Request purchases and review them against the approval threshold.",
+    "ar": "قدّم طلبات الشراء وراجعها وفق حد الموافقة المالي."
+  },
+  "group": "Procurement",
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "shared_business",
+  "dependencies": [],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "purchasing.view": {
+      "name_en": "View purchasing documents",
+      "name_ar": "عرض مستندات الشراء",
+      "description_en": "Allows the role holder to view purchasing documents within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض مستندات الشراء ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "purchasing.create": {
+      "name_en": "Create purchase requisitions",
+      "name_ar": "إنشاء طلبات الشراء",
+      "description_en": "Allows the role holder to create purchase requisitions within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إنشاء طلبات الشراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.edit": {
+      "name_en": "Edit purchase requisitions",
+      "name_ar": "تعديل طلبات الشراء",
+      "description_en": "Allows the role holder to edit purchase requisitions within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تعديل طلبات الشراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.submit": {
+      "name_en": "Submit requisitions for review",
+      "name_ar": "إرسال طلبات الشراء للمراجعة",
+      "description_en": "Allows the role holder to submit requisitions for review within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إرسال طلبات الشراء للمراجعة ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.approve": {
+      "name_en": "Approve purchase requisitions",
+      "name_ar": "اعتماد طلبات الشراء",
+      "description_en": "Allows the role holder to approve purchase requisitions within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور اعتماد طلبات الشراء ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "purchasing.po.create": {
+      "name_en": "Convert requisitions to orders",
+      "name_ar": "تحويل الطلبات إلى أوامر شراء",
+      "description_en": "Allows the role holder to convert requisitions to orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تحويل الطلبات إلى أوامر شراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.po.issue": {
+      "name_en": "Issue purchase orders",
+      "name_ar": "إصدار أوامر الشراء",
+      "description_en": "Allows the role holder to issue purchase orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إصدار أوامر الشراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "purchasing.po.void": {
+      "name_en": "Void purchase orders",
+      "name_ar": "إلغاء أوامر الشراء",
+      "description_en": "Allows the role holder to void purchase orders within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إلغاء أوامر الشراء ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/purchase-requests",
+      "label": {
+        "en": "Purchase requisitions",
+        "ar": "طلبات الشراء"
+      },
+      "required_permission": "purchasing.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Submit a purchase request",
+      "title_ar": "إرسال طلب شراء",
+      "keywords_en": [
+        "submit",
+        "a",
+        "purchase",
+        "request"
+      ],
+      "keywords_ar": [
+        "إرسال",
+        "طلب",
+        "شراء"
+      ],
+      "required_permission": "purchasing.view",
+      "route": "/purchase-requests",
+      "prerequisites_en": "An active account with purchasing.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية purchasing.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Create a request for the correct site and complete its item lines.",
+          "text_ar": "أنشئ طلبًا للموقع الصحيح وأكمل بنود الأصناف.",
+          "screenshot": "docs/screenshots/purchasing/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Review quantities and estimated prices, save and submit for approval.",
+          "text_ar": "راجع الكميات والأسعار التقديرية ثم احفظ وأرسل للاعتماد.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-purchasing-create",
+      "title_en": "Create purchase requisitions",
+      "title_ar": "إنشاء طلبات الشراء",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "create"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "إنشاء"
+      ],
+      "required_permission": "purchasing.create",
+      "prerequisites_en": "An active account with purchasing.create permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.create ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Create purchase requisitions.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: إنشاء طلبات الشراء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-create.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Create purchase requisitions).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إنشاء طلبات الشراء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    },
+    {
+      "id": "op-purchasing-edit",
+      "title_en": "Edit purchase requisitions",
+      "title_ar": "تعديل طلبات الشراء",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "edit"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "تعديل"
+      ],
+      "required_permission": "purchasing.edit",
+      "prerequisites_en": "An active account with purchasing.edit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.edit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Edit purchase requisitions.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: تعديل طلبات الشراء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-edit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Edit purchase requisitions).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تعديل طلبات الشراء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    },
+    {
+      "id": "op-purchasing-submit",
+      "title_en": "Submit requisitions for review",
+      "title_ar": "إرسال طلبات الشراء للمراجعة",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "submit",
+        "for",
+        "review"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "إرسال",
+        "للمراجعة"
+      ],
+      "required_permission": "purchasing.submit",
+      "prerequisites_en": "An active account with purchasing.submit permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.submit ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Submit requisitions for review.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: إرسال طلبات الشراء للمراجعة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-submit.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Submit requisitions for review).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إرسال طلبات الشراء للمراجعة).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    },
+    {
+      "id": "op-purchasing-approve",
+      "title_en": "Approve purchase requisitions",
+      "title_ar": "اعتماد طلبات الشراء",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "approve"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "اعتماد"
+      ],
+      "required_permission": "purchasing.approve",
+      "prerequisites_en": "An active account with purchasing.approve permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.approve ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Approve purchase requisitions.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: اعتماد طلبات الشراء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-approve.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Approve purchase requisitions.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ اعتماد طلبات الشراء.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    },
+    {
+      "id": "op-purchasing-po-create",
+      "title_en": "Convert requisitions to orders",
+      "title_ar": "تحويل الطلبات إلى أوامر شراء",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "convert",
+        "to",
+        "orders"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "تحويل",
+        "الطلبات",
+        "إلى",
+        "أوامر",
+        "شراء"
+      ],
+      "required_permission": "purchasing.po.create",
+      "prerequisites_en": "An active account with purchasing.po.create permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.po.create ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Convert requisitions to orders.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: تحويل الطلبات إلى أوامر شراء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-po-create.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Convert requisitions to orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تحويل الطلبات إلى أوامر شراء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    },
+    {
+      "id": "op-purchasing-po-issue",
+      "title_en": "Issue purchase orders",
+      "title_ar": "إصدار أوامر الشراء",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "issue",
+        "orders"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "إصدار",
+        "أوامر"
+      ],
+      "required_permission": "purchasing.po.issue",
+      "prerequisites_en": "An active account with purchasing.po.issue permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.po.issue ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Issue purchase orders.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: إصدار أوامر الشراء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-po-issue.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Issue purchase orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إصدار أوامر الشراء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    },
+    {
+      "id": "op-purchasing-po-void",
+      "title_en": "Void purchase orders",
+      "title_ar": "إلغاء أوامر الشراء",
+      "keywords_en": [
+        "purchase",
+        "requisitions",
+        "void",
+        "orders"
+      ],
+      "keywords_ar": [
+        "طلبات",
+        "الشراء",
+        "إلغاء",
+        "أوامر"
+      ],
+      "required_permission": "purchasing.po.void",
+      "prerequisites_en": "An active account with purchasing.po.void permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية purchasing.po.void ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Purchase requisitions and select the target scope to start: Void purchase orders.",
+          "text_ar": "افتح قسم طلبات الشراء وحدد النطاق المطلوب للبدء في: إلغاء أوامر الشراء.",
+          "fields": [],
+          "screenshot": "docs/screenshots/purchasing/op-purchasing-po-void.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Void purchase orders).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إلغاء أوامر الشراء).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/purchase-requests"
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "id": "bank_reconciliation",
+  "contract_version": "1.0",
+  "name": {
+    "en": "Bank reconciliation",
+    "ar": "التسوية البنكية"
+  },
+  "description": {
+    "en": "Bank reconciliation",
+    "ar": "التسوية البنكية"
+  },
+  "version": "2.7.2",
+  "category": "shared_business",
+  "group": "Finance",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.6,<3.0",
+  "dependencies": [
+    "accounting",
+    "media_service"
+  ],
+  "required_dependencies": [
+    "accounting",
+    "media_service"
+  ],
+  "optional_dependencies": [],
+  "runtime": "internal",
+  "permissions": [
+    "bank_reconciliation.view",
+    "bank_reconciliation.import",
+    "bank_reconciliation.reconcile",
+    "bank_reconciliation.post_adjustment",
+    "bank_reconciliation.close"
+  ],
+  "permission_definitions": {
+    "bank_reconciliation.view": {
+      "name_en": "View bank statements",
+      "name_ar": "عرض كشوف البنك",
+      "description_en": "View bank statements within assigned sites.",
+      "description_ar": "عرض كشوف البنك في المواقع المصرح بها.",
+      "action_type": "read"
+    },
+    "bank_reconciliation.import": {
+      "name_en": "Prepare bank statements",
+      "name_ar": "إعداد واستيراد كشوف البنك",
+      "description_en": "Prepare bank statements within assigned sites.",
+      "description_ar": "إعداد واستيراد كشوف البنك في المواقع المصرح بها.",
+      "action_type": "write"
+    },
+    "bank_reconciliation.reconcile": {
+      "name_en": "Match bank transactions",
+      "name_ar": "مطابقة الحركات البنكية",
+      "description_en": "Match bank transactions within assigned sites.",
+      "description_ar": "مطابقة الحركات البنكية في المواقع المصرح بها.",
+      "action_type": "write"
+    },
+    "bank_reconciliation.post_adjustment": {
+      "name_en": "Post bank adjustments",
+      "name_ar": "ترحيل التسويات البنكية",
+      "description_en": "Post bank adjustments within assigned sites.",
+      "description_ar": "ترحيل التسويات البنكية في المواقع المصرح بها.",
+      "action_type": "post"
+    },
+    "bank_reconciliation.close": {
+      "name_en": "Close reconciled statements",
+      "name_ar": "إقفال الكشوف المطابقة",
+      "description_en": "Close reconciled statements within assigned sites.",
+      "description_ar": "إقفال الكشوف المطابقة في المواقع المصرح بها.",
+      "action_type": "approve"
+    }
+  },
+  "ui_entries": [
+    "/bank_reconciliation"
+  ],
+  "navigation": [
+    {
+      "route": "/bank_reconciliation",
+      "label": {
+        "en": "Bank reconciliation",
+        "ar": "التسوية البنكية"
+      },
+      "required_permission": "bank_reconciliation.view"
+    }
+  ],
+  "events_published": [
+    "statement.changed"
+  ],
+  "events_subscribed": [],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "bank-cycle",
+      "title_en": "Reconcile and close a bank statement",
+      "title_ar": "مطابقة كشف البنك وإقفاله",
+      "route": "/bank_reconciliation",
+      "required_permission": "bank_reconciliation.view",
+      "keywords_en": [
+        "bank",
+        "statement",
+        "match"
+      ],
+      "keywords_ar": [
+        "البنك",
+        "كشف",
+        "مطابقة"
+      ],
+      "prerequisites_en": "Configure a bank profile and post source payments to its account and site.",
+      "prerequisites_ar": "جهز ملف البنك ورحّل الدفعات إلى حسابه وموقعه.",
+      "steps": [
+        {
+          "id": "1",
+          "text_en": "Enter the opening and closing balances. Map and preview CSV columns before importing.",
+          "text_ar": "أدخل رصيدي الافتتاح والإقفال وراجع ربط أعمدة الملف قبل الاستيراد."
+        },
+        {
+          "id": "2",
+          "text_en": "Start reconciliation. Select bank and ledger rows with equal signed totals and confirm.",
+          "text_ar": "ابدأ التسوية وحدد سطور البنك والأستاذ المتساوية في مجموعها ثم أكد المطابقة."
+        },
+        {
+          "id": "3",
+          "text_en": "Post any bank fees, verify both differences are zero and close the statement.",
+          "text_ar": "رحّل الرسوم وتأكد أن كلا الفرقين صفر ثم أقفل الكشف."
+        }
+      ]
+    },
+    {
+      "id": "op-bank-reconciliation-import",
+      "title_en": "Prepare bank statements",
+      "title_ar": "إعداد واستيراد كشوف البنك",
+      "keywords_en": [
+        "bank",
+        "reconciliation",
+        "prepare",
+        "statements"
+      ],
+      "keywords_ar": [
+        "التسوية",
+        "البنكية",
+        "إعداد",
+        "واستيراد",
+        "كشوف",
+        "البنك"
+      ],
+      "required_permission": "bank_reconciliation.import",
+      "prerequisites_en": "An active account with bank_reconciliation.import permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية bank_reconciliation.import ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Bank reconciliation and select the target scope to start: Prepare bank statements.",
+          "text_ar": "افتح قسم التسوية البنكية وحدد النطاق المطلوب للبدء في: إعداد واستيراد كشوف البنك.",
+          "fields": [],
+          "screenshot": "docs/screenshots/bank_reconciliation/op-bank-reconciliation-import.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Prepare bank statements).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (إعداد واستيراد كشوف البنك).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/bank_reconciliation"
+    },
+    {
+      "id": "op-bank-reconciliation-reconcile",
+      "title_en": "Match bank transactions",
+      "title_ar": "مطابقة الحركات البنكية",
+      "keywords_en": [
+        "bank",
+        "reconciliation",
+        "match",
+        "transactions"
+      ],
+      "keywords_ar": [
+        "التسوية",
+        "البنكية",
+        "مطابقة",
+        "الحركات"
+      ],
+      "required_permission": "bank_reconciliation.reconcile",
+      "prerequisites_en": "An active account with bank_reconciliation.reconcile permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية bank_reconciliation.reconcile ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Bank reconciliation and select the target scope to start: Match bank transactions.",
+          "text_ar": "افتح قسم التسوية البنكية وحدد النطاق المطلوب للبدء في: مطابقة الحركات البنكية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/bank_reconciliation/op-bank-reconciliation-reconcile.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Match bank transactions).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (مطابقة الحركات البنكية).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/bank_reconciliation"
+    },
+    {
+      "id": "op-bank-reconciliation-post-adjustment",
+      "title_en": "Post bank adjustments",
+      "title_ar": "ترحيل التسويات البنكية",
+      "keywords_en": [
+        "bank",
+        "reconciliation",
+        "post",
+        "adjustments"
+      ],
+      "keywords_ar": [
+        "التسوية",
+        "البنكية",
+        "ترحيل",
+        "التسويات"
+      ],
+      "required_permission": "bank_reconciliation.post_adjustment",
+      "prerequisites_en": "An active account with bank_reconciliation.post_adjustment permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية bank_reconciliation.post_adjustment ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Bank reconciliation and select the target scope to start: Post bank adjustments.",
+          "text_ar": "افتح قسم التسوية البنكية وحدد النطاق المطلوب للبدء في: ترحيل التسويات البنكية.",
+          "fields": [],
+          "screenshot": "docs/screenshots/bank_reconciliation/op-bank-reconciliation-post-adjustment.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Post bank adjustments and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد ترحيل التسويات البنكية وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/bank_reconciliation"
+    },
+    {
+      "id": "op-bank-reconciliation-close",
+      "title_en": "Close reconciled statements",
+      "title_ar": "إقفال الكشوف المطابقة",
+      "keywords_en": [
+        "bank",
+        "reconciliation",
+        "close",
+        "reconciled",
+        "statements"
+      ],
+      "keywords_ar": [
+        "التسوية",
+        "البنكية",
+        "إقفال",
+        "الكشوف",
+        "المطابقة"
+      ],
+      "required_permission": "bank_reconciliation.close",
+      "prerequisites_en": "An active account with bank_reconciliation.close permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية bank_reconciliation.close ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Bank reconciliation and select the target scope to start: Close reconciled statements.",
+          "text_ar": "افتح قسم التسوية البنكية وحدد النطاق المطلوب للبدء في: إقفال الكشوف المطابقة.",
+          "fields": [],
+          "screenshot": "docs/screenshots/bank_reconciliation/op-bank-reconciliation-close.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Close reconciled statements.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ إقفال الكشوف المطابقة.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/bank_reconciliation"
+    }
+  ]
+}

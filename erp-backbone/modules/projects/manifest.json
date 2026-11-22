@@ -1,0 +1,286 @@
+{
+  "id": "projects",
+  "version": "2.3.1",
+  "platform_compatibility": "0.1",
+  "runtime": "internal",
+  "required_dependencies": [
+    "hr"
+  ],
+  "optional_dependencies": [
+    "workorders",
+    "purchasing",
+    "purchase_orders",
+    "accounting",
+    "supplier_invoices"
+  ],
+  "permissions": [
+    "projects.view",
+    "projects.manage",
+    "projects.time",
+    "projects.review",
+    "projects.cost"
+  ],
+  "requested_service_permissions": [],
+  "offline_requirements": [],
+  "ui_entries": [
+    "/projects"
+  ],
+  "group": "General",
+  "name": {
+    "en": "Projects",
+    "ar": "المشاريع"
+  },
+  "description": {
+    "en": "Project tasks, weekly time and budget tracking.",
+    "ar": "المهام وكشوف الوقت ومتابعة ميزانيات المشاريع."
+  },
+  "contract_version": "0.1",
+  "scope_mode": "site_scoped",
+  "category": "domain_module",
+  "dependencies": [
+    "hr"
+  ],
+  "events_published": [],
+  "events_subscribed": [],
+  "permission_definitions": {
+    "projects.view": {
+      "name_en": "View projects",
+      "name_ar": "عرض المشاريع",
+      "description_en": "Allows the role holder to view projects within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض المشاريع ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    },
+    "projects.manage": {
+      "name_en": "Manage projects and tasks",
+      "name_ar": "إدارة المشاريع والمهام",
+      "description_en": "Allows the role holder to manage projects and tasks within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور إدارة المشاريع والمهام ضمن النطاق المعيّن له.",
+      "action_type": "admin"
+    },
+    "projects.time": {
+      "name_en": "Allocate time to tasks",
+      "name_ar": "تخصيص الوقت للمهام",
+      "description_en": "Allows the role holder to allocate time to tasks within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور تخصيص الوقت للمهام ضمن النطاق المعيّن له.",
+      "action_type": "write"
+    },
+    "projects.review": {
+      "name_en": "Review project allocations",
+      "name_ar": "مراجعة تخصيصات المشاريع",
+      "description_en": "Allows the role holder to review project allocations within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور مراجعة تخصيصات المشاريع ضمن النطاق المعيّن له.",
+      "action_type": "approve"
+    },
+    "projects.cost": {
+      "name_en": "Review project costs",
+      "name_ar": "عرض تكاليف المشاريع",
+      "description_en": "Allows the role holder to review project costs within the assigned scope.",
+      "description_ar": "تتيح لحامل الدور عرض تكاليف المشاريع ضمن النطاق المعيّن له.",
+      "action_type": "read"
+    }
+  },
+  "navigation": [
+    {
+      "route": "/projects",
+      "label": {
+        "en": "Projects",
+        "ar": "المشاريع"
+      },
+      "required_permission": "projects.view"
+    }
+  ],
+  "sop_guides": [
+    {
+      "id": "workflow",
+      "title_en": "Review project costs",
+      "title_ar": "مراجعة تكاليف المشروع",
+      "keywords_en": [
+        "review",
+        "project",
+        "costs"
+      ],
+      "keywords_ar": [
+        "مراجعة",
+        "تكاليف",
+        "المشروع"
+      ],
+      "required_permission": "projects.view",
+      "route": "/projects",
+      "prerequisites_en": "An active account with projects.view in the intended scope.",
+      "prerequisites_ar": "حساب نشط لديه صلاحية projects.view في النطاق المطلوب.",
+      "steps": [
+        {
+          "text_en": "Choose a project you belong to and inspect its approved baseline.",
+          "text_ar": "اختر مشروعًا أنت عضو فيه وافتح خطته المعتمدة.",
+          "screenshot": "docs/screenshots/projects/workflow.png",
+          "id": "step-1"
+        },
+        {
+          "text_en": "Compare commitments, actual costs and allocated time for the same period.",
+          "text_ar": "قارن الالتزامات والتكلفة الفعلية والوقت المخصص لنفس الفترة.",
+          "id": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "op-projects-manage",
+      "title_en": "Manage projects and tasks",
+      "title_ar": "إدارة المشاريع والمهام",
+      "keywords_en": [
+        "projects",
+        "manage",
+        "and",
+        "tasks"
+      ],
+      "keywords_ar": [
+        "المشاريع",
+        "إدارة",
+        "والمهام"
+      ],
+      "required_permission": "projects.manage",
+      "prerequisites_en": "An active account with projects.manage permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية projects.manage ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Projects and select the target scope to start: Manage projects and tasks.",
+          "text_ar": "افتح قسم المشاريع وحدد النطاق المطلوب للبدء في: إدارة المشاريع والمهام.",
+          "fields": [],
+          "screenshot": "docs/screenshots/projects/op-projects-manage.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Update the configuration parameters for Manage projects and tasks and validate dependencies.",
+          "text_ar": "حدّث إعدادات وقواعد إدارة المشاريع والمهام وتأكد من توافقها مع باقي الإعدادات.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save changes and verify they apply to active workflows.",
+          "text_ar": "احفظ التعديلات وتأكد من سريانها على العمليات النشطة.",
+          "fields": []
+        }
+      ],
+      "route": "/projects"
+    },
+    {
+      "id": "op-projects-time",
+      "title_en": "Allocate time to tasks",
+      "title_ar": "تخصيص الوقت للمهام",
+      "keywords_en": [
+        "projects",
+        "allocate",
+        "time",
+        "to",
+        "tasks"
+      ],
+      "keywords_ar": [
+        "المشاريع",
+        "تخصيص",
+        "الوقت",
+        "للمهام"
+      ],
+      "required_permission": "projects.time",
+      "prerequisites_en": "An active account with projects.time permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية projects.time ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Projects and select the target scope to start: Allocate time to tasks.",
+          "text_ar": "افتح قسم المشاريع وحدد النطاق المطلوب للبدء في: تخصيص الوقت للمهام.",
+          "fields": [],
+          "screenshot": "docs/screenshots/projects/op-projects-time.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Fill in the required fields and verify values before saving (Allocate time to tasks).",
+          "text_ar": "أدخل البيانات المطلوبة وتأكد من صحة القيم قبل الحفظ (تخصيص الوقت للمهام).",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Save the record and confirm its updated status in the list.",
+          "text_ar": "احفظ السجل وتأكد من تحديث حالته في القائمة.",
+          "fields": []
+        }
+      ],
+      "route": "/projects"
+    },
+    {
+      "id": "op-projects-review",
+      "title_en": "Review project allocations",
+      "title_ar": "مراجعة تخصيصات المشاريع",
+      "keywords_en": [
+        "projects",
+        "review",
+        "project",
+        "allocations"
+      ],
+      "keywords_ar": [
+        "المشاريع",
+        "مراجعة",
+        "تخصيصات"
+      ],
+      "required_permission": "projects.review",
+      "prerequisites_en": "An active account with projects.review permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية projects.review ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Projects and select the target scope to start: Review project allocations.",
+          "text_ar": "افتح قسم المشاريع وحدد النطاق المطلوب للبدء في: مراجعة تخصيصات المشاريع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/projects/op-projects-review.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Review the pending item details, attachments, and amounts before executing Review project allocations.",
+          "text_ar": "راجع تفاصيل السجل المعلّق والمرفقات والقيم قبل تنفيذ مراجعة تخصيصات المشاريع.",
+          "fields": []
+        },
+        {
+          "id": "step-3",
+          "text_en": "Confirm the action and verify the audit status and downstream impact.",
+          "text_ar": "أكّد الإجراء وتأكد من تحديث حالة الاعتماد/الترحيل وأثرها في النظام.",
+          "fields": []
+        }
+      ],
+      "route": "/projects"
+    },
+    {
+      "id": "op-projects-cost",
+      "title_en": "Review project costs",
+      "title_ar": "عرض تكاليف المشاريع",
+      "keywords_en": [
+        "projects",
+        "review",
+        "project",
+        "costs"
+      ],
+      "keywords_ar": [
+        "المشاريع",
+        "عرض",
+        "تكاليف"
+      ],
+      "required_permission": "projects.cost",
+      "prerequisites_en": "An active account with projects.cost permission in the target scope.",
+      "prerequisites_ar": "حساب نشط يمتلك صلاحية projects.cost ضمن النطاق المطلوب.",
+      "steps": [
+        {
+          "id": "step-1",
+          "text_en": "Open Projects and select the target scope to start: Review project costs.",
+          "text_ar": "افتح قسم المشاريع وحدد النطاق المطلوب للبدء في: عرض تكاليف المشاريع.",
+          "fields": [],
+          "screenshot": "docs/screenshots/projects/op-projects-cost.png"
+        },
+        {
+          "id": "step-2",
+          "text_en": "Filter or search records, then review the details and status for Review project costs.",
+          "text_ar": "استخدم البحث أو الفلاتر للوصول للسجلات المطلوبة ومراجعة تفاصيل وحالة عرض تكاليف المشاريع.",
+          "fields": []
+        }
+      ],
+      "route": "/projects"
+    }
+  ]
+}
