@@ -38,7 +38,7 @@ def page(query, rows, fields=()):
     try:
         size=int(query.get('page_size',25))
         index=int(query.get('page',1))
-        if size not in (10,25,50) or index<1: raise ValueError
+        if size not in (10,25,50,100,200) or index<1: raise ValueError
     except (ValueError,TypeError):
         raise Problem('invalid_page',field='page')
     paginator=Paginator(rows,size)

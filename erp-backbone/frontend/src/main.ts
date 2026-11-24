@@ -10,7 +10,7 @@ import App from './App.vue'
 import { workspaceExtensions } from './extensions'
 import FieldHint from './FieldHint.vue'
 import EntityAutocomplete from './EntityAutocomplete.vue'
-import { validatedForm } from './formValidation'
+import { validatedForm, installGlobalFormValidation } from './formValidation'
 
 const screen = defineComponent({ render: () => null })
 const router = createRouter({

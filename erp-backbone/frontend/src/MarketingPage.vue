@@ -178,13 +178,13 @@ function provider() {void execute(()=>post('/marketing/settings/'+site.value,{ch
     </nav>
     <p v-if="error" class="alert" role="alert">{{ t(error) }}</p>
     <section v-if="panel==='settings' && admin" class="panel">
-      <form class="record-form" @submit.prevent="mode">
+      <form v-validated-form class="record-form" @submit.prevent="mode">
         <label>{{ t('Marketing Consent Mode') }}<select v-model="consentMode"><option value="single">{{ t('Single Opt-in') }}</option><option value="double">{{ t('Double Opt-in') }}</option></select></label>
         <p>{{ t('Site timezone') }} · {{ zone }}</p>
         <button class="primary" :disabled="busy">{{ t('Save') }}</button>
       </form>
       <hr>
-      <form class="record-form" @submit.prevent="provider">
+      <form v-validated-form class="record-form" @submit.prevent="provider">
         <label>{{ t('Channel') }}<select v-model="channel" @change="adminAdapter=channel==='email'?'mailpit':'mock'"><option>email</option><option>sms</option><option>whatsapp</option></select></label>
         <label>{{ t('Provider') }}<select v-model="adminAdapter"><option v-if="channel==='email'">mailpit</option><option v-if="channel==='email'">ses</option><option v-if="channel!=='email'">mock</option><option v-if="channel!=='email'">twilio</option></select></label>
         <label>{{ t('Sender') }}<input v-model="address" required></label>
@@ -197,7 +197,7 @@ function provider() {void execute(()=>post('/marketing/settings/'+site.value,{ch
       </form>
     </section>
     <template v-else-if="!campaignDetail">
-      <form v-if="editor && ['contacts','segments','templates','campaigns','surveys','automation-rules'].includes(panel)" class="panel record-form" @submit.prevent="create">
+      <form v-validated-form v-if="editor && ['contacts','segments','templates','campaigns','surveys','automation-rules'].includes(panel)" class="panel record-form" @submit.prevent="create">
         <h2>{{ t(labels[panel]) }}</h2>
         <label v-if="panel!=='automation-rules'">{{ t('Name') }}<input v-model="name" maxlength="160" :required="panel!=='contacts'"></label>
         <label v-if="['campaigns','contacts','templates'].includes(panel)">{{ t('Channel') }}

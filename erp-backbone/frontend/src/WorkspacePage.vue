@@ -4,7 +4,7 @@ import {useStudio,local,presets,type Size} from './dashboardStudio'
 import { useRoute, useRouter } from 'vue-router'
 import { api, allows, type Workspace } from './api'
 import { actionLabels } from './experience'
-import { locale, message, t } from './i18n'
+import { locale, localizedText, message, t } from './i18n'
 import { activeScreen, groups, screenVisible, visibleScreen } from './navigation'
 import { bucketLabels, type Aging, type ChartSeries, type Charts, type Filters, type Link, type Summary } from './dashboard'
 
@@ -280,7 +280,7 @@ watch([options,ready,()=>loading.value.charts,()=>loading.value.summary,loadingB
       </div>
       <button v-if="ready" class="secondary" @click="editing=!editing">{{editing?local('Done','تم'):local('Edit dashboard','تعديل اللوحة')}}</button>
     </header>
-    <nav class="studio-tabs" :aria-label="local('Dashboards','اللوحات')"><button v-for="id in options" :key="id" :aria-pressed="active===id" @click="active=id;modal=''">{{boards[id][locale]}}</button><button :disabled="!ready||busy" @click="open('new')">＋ {{local('New dashboard','لوحة جديدة')}}</button></nav>
+    <nav class="studio-tabs" :aria-label="local('Dashboards','اللوحات')"><button v-for="id in options" :key="id" :aria-pressed="active===id" @click="active=id;modal=''">{{localizedText(boards[id] as any, locale)}}</button><button :disabled="!ready||busy" @click="open('new')">＋ {{local('New dashboard','لوحة جديدة')}}</button></nav>
     <p v-if="note" role="status">{{note}}</p>
     <fieldset v-if="editing" :disabled="busy" class="studio-actions"><button @click="open('catalog')">＋ {{local('Add widget','إضافة عنصر')}}</button><button @click="open('duplicate')">{{local('Duplicate','نسخ اللوحة')}}</button><button v-if="!presets[active]" @click="open('rename')">{{local('Rename','تغيير الاسم')}}</button><button :disabled="layout.default===active" @click="setDefault">{{local('Set as default','تعيين كافتراضية')}}</button><button @click="reset">{{local('Reset dashboard','استعادة اللوحة')}}</button><button v-if="!presets[active]" @click="remove">{{local('Delete','حذف')}}</button></fieldset>
     <dialog ref="dialog" v-if="modal" @cancel.prevent="modal=''" class="studio-dialog panel" @keydown.esc="modal=''"><header class="actions"><h2>{{modal==='catalog'?local('Widget catalog','دليل العناصر'):local('Dashboard name','اسم اللوحة')}}</h2><button @click="modal=''" :aria-label="local('Close','إغلاق')">×</button></header>

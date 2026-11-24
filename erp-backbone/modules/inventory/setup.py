@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.models import F
 
 from backbone.access import audit, visible
+from backbone.deletion import perform_record_deletion
 from backbone.http import Problem, body, endpoint, identifier, require, site, string
 from backbone.models import Site
 from purchasing.money import decimal_value
@@ -25,30 +26,71 @@ def coded(model, data, user, action, **scope):
     code = string(data, "code", 24 if model is Unit else 32).upper()
     if not re.fullmatch(r"[A-Z0-9][A-Z0-9_-]*", code):
         raise Problem("invalid_code")
+    extra_defaults = {}
+    if model is Item:
+        barcode = (data.get("barcode") or "").strip()[:64]
+        if barcode and Item.objects.filter(barcode=barcode).exists():
+            raise Problem("inventory_barcode_exists", 409)
+        raw_price = data.get("default_price")
+        price_val = decimal_value(raw_price, 12, 2, "default_price") if raw_price not in (None, "") else 0
+        if price_val < 0:
+            raise Problem("invalid_default_price")
+        extra_defaults = {
+            "base_unit": resolve(Unit, data.get("base_unit_id"), "base_unit"),
+            "barcode": barcode,
+            "default_price": price_val,
+        }
+    name_val = string(data, "name", 80 if model is Unit else 120)
+    has_active_field = any(f.name == "active" for f in model._meta.fields)
+    if has_active_field and "active" in data:
+        if type(data.get("active")) is not bool:
+            raise Problem("invalid_active")
+        extra_defaults["active"] = data["active"]
+    raw_id = data.get("id")
+    if raw_id is not None:
+        row = resolve(model, raw_id, "id")
+        if model.objects.filter(code=code).exclude(pk=row.pk).exists():
+            raise Problem("inventory_code_exists", 409)
+        if has_active_field and extra_defaults.get("active") is False and getattr(row, "active", True):
+            from .models import Position, Receipt
+            from backbone.services.documents import archive_rows
+            if model is Warehouse and (Position.objects.filter(location__warehouse=row).exclude(quantity=0).exists()
+                    or Receipt.objects.filter(warehouse=row, status="draft")
+                        .exclude(pk__in=archive_rows("grn").values("object_id")).exists()):
+                raise Problem("warehouse_has_open_records", 409)
+            if model is Location and Position.objects.filter(location=row).exclude(quantity=0).exists():
+                raise Problem("location_has_open_records", 409)
+        row.code = code
+        row.name = name_val
+        for k, v in {**scope, **extra_defaults}.items():
+            setattr(row, k, v)
+        row.save()
+        audit(user, f"inventory.{action}", code)
+        return {"id": row.pk, "code": row.code, **({"active": row.active} if has_active_field else {})}, 200
     row, created = model.objects.get_or_create(code=code, **scope, defaults={
-        "name": string(data, "name", 80 if model is Unit else 120),
-        **({"base_unit": resolve(Unit, data.get("base_unit_id"), "base_unit")} if model is Item else {}),
+        "name": name_val,
+        **extra_defaults,
     })
     if not created:
         raise Problem("inventory_code_exists", 409)
     audit(user, f"inventory.{action}", code)
-    return {"id": row.pk, "code": row.code}, 201
+    return {"id": row.pk, "code": row.code, **({"active": row.active} if has_active_field else {})}, 201
 
 
 @endpoint("GET", module="inventory")
 def catalog(request):
     user = request.user
     require(user, "inventory.view")
-    warehouses = visible(Warehouse.objects.order_by("code"), user, "inventory.view")
+    warehouses = visible(Warehouse.objects.filter(is_deleted=False).order_by("code"), user, "inventory.view")
     settings = visible(SiteSettings.objects.all(), user, "inventory.view")
     return {
-        "units": list(Unit.objects.order_by("code").values()),
+        "units": list(Unit.objects.filter(is_deleted=False).order_by("code").values()),
         "items": list(Item.objects.order_by("code").values()),
         "conversions": [{"id": row.pk, "item_id": row.item_id, "unit_id": row.unit_id,
                          "base_unit_id": row.base_unit_id, "factor": str(row.factor)}
                         for row in Conversion.objects.order_by("id")],
         "warehouses": list(warehouses.values()),
-        "locations": list(Location.objects.filter(warehouse__in=warehouses).order_by("code").values()),
+        "locations": list(Location.objects.filter(warehouse__in=warehouses, is_deleted=False).order_by("code").values()),
         "sites": list(visible_sites(user)),
         "settings": [{"site_id": row.site_id, "timezone": row.timezone, "day_start": row.day_start.isoformat(),
                       "opening_closed_at": row.opening_closed_at.isoformat() if row.opening_closed_at else None}
@@ -163,7 +205,30 @@ def item_directory(params):
 
 def item_record(row):
     return {"id": row.pk, "code": row.code, "name": row.name, "active": row.active,
+            "barcode": row.barcode or "", "default_price": f"{row.default_price:.2f}",
             "base_unit_id": row.base_unit_id, "unit": row.base_unit.code, "revision": row.revision}
+
+
+@endpoint("PATCH", module="inventory")
+def location_state(request, pk):
+    from backbone.site_admin import require_active_site
+    from .models import Position
+
+    active = body(request).get("active")
+    if type(active) is not bool:
+        raise Problem("invalid_location")
+    with transaction.atomic():
+        row = resolve(Location, pk, "location")
+        require(request.user, "inventory.setup", row.warehouse.site_id)
+        require(request.user, "inventory.view", row.warehouse.site_id)
+        require_active_site(row.warehouse.site_id, lock=True)
+        row = Location.objects.select_for_update().get(pk=pk)
+        if not active and Position.objects.filter(location=row).exclude(quantity=0).exists():
+            raise Problem("location_has_open_records", 409)
+        row.active = active
+        row.save(update_fields=["active"])
+        audit(request.user, "inventory.location.state", f"{row.code}:{active}")
+    return {"id": row.pk, "active": row.active}
 
 
 @endpoint("GET", "POST", module="inventory")
@@ -197,8 +262,63 @@ def item(request, pk):
             raise Problem("revision_conflict", 409)
         if data.get("code", row.code) != row.code or data.get("base_unit_id", row.base_unit_id) != row.base_unit_id:
             raise Problem("inventory_item_identity_locked", 409)
-        row.name, row.active = name, data["active"]
+        barcode = (data.get("barcode") if "barcode" in data else (row.barcode or "")).strip()[:64]
+        if barcode and Item.objects.filter(barcode=barcode).exclude(pk=row.pk).exists():
+            raise Problem("inventory_barcode_exists", 409)
+        if "default_price" in data and data.get("default_price") not in (None, ""):
+            price_val = decimal_value(data.get("default_price"), 12, 2, "default_price")
+            if price_val < 0:
+                raise Problem("invalid_default_price")
+            row.default_price = price_val
+        row.name, row.active, row.barcode = name, data["active"], barcode
         row.revision += 1
-        row.save(update_fields=["name", "active", "revision"])
+        row.save(update_fields=["name", "active", "barcode", "default_price", "revision"])
         audit(request.user, "inventory.item.update", row.code)
     return item_record(row)
+
+
+@endpoint("DELETE", module="inventory")
+def delete_setup(request, kind, pk):
+    from backbone.site_admin import require_active_site
+    from .models import Position, Receipt
+    from backbone.services.documents import archive_rows
+
+    user = request.user
+    require(user, "inventory.view")
+    if kind == "warehouse":
+        row = resolve(Warehouse, pk, "warehouse", is_deleted=False)
+        require(user, "inventory.setup", row.site_id)
+        require(user, "inventory.view", row.site_id)
+        require_active_site(row.site_id, lock=True)
+        return perform_record_deletion(
+            row,
+            user,
+            "inventory.warehouse.delete",
+            has_dependencies_fn=lambda w: (
+                Position.objects.filter(location__warehouse=w).exclude(quantity=0).exists()
+                or Receipt.objects.filter(warehouse=w, status="draft")
+                    .exclude(pk__in=archive_rows("grn").values("object_id")).exists()
+                or Location.objects.filter(warehouse=w, is_deleted=False).exists()
+            ),
+        )
+    if kind == "location":
+        row = resolve(Location, pk, "location", is_deleted=False)
+        require(user, "inventory.setup", row.warehouse.site_id)
+        require(user, "inventory.view", row.warehouse.site_id)
+        require_active_site(row.warehouse.site_id, lock=True)
+        return perform_record_deletion(
+            row,
+            user,
+            "inventory.location.delete",
+            has_dependencies_fn=lambda loc: Position.objects.filter(location=loc).exclude(quantity=0).exists(),
+        )
+    if kind == "unit":
+        require(user, "inventory.setup", None)
+        row = resolve(Unit, pk, "unit", is_deleted=False)
+        return perform_record_deletion(
+            row,
+            user,
+            "inventory.unit.delete",
+            has_dependencies_fn=lambda u: Item.objects.filter(base_unit=u).exists() or Conversion.objects.filter(unit=u).exists() or Conversion.objects.filter(base_unit=u).exists(),
+        )
+    raise Problem("not_found", 404)

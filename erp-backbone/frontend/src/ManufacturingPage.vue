@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { allows, api, createRequest, type Workspace } from './api'
 import { message, t } from './i18n'
+import { notify } from './useUnifiedNotice'
 import DateInput from './DateInput.vue'
 
 type Entry = {id:number; name:string}
@@ -123,6 +124,8 @@ async function send<T>(path:string, payload:object, saved:(data:T)=>void) {
   try {
     saved(await request<T>(root+path,payload))
     success.value=true
+    const isWarn = ['cancel', 'scrap', 'return'].includes(mode.value)
+    notify(isWarn ? 'warning' : 'confirmation', 'Manufacturing Action Completed', 'Manufacturing order or BOM update has been saved.')
     mode.value=''
   } catch (failure) { error.value=message(failure) }
   finally { busy.value=false }

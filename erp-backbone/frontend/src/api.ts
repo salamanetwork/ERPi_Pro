@@ -1,6 +1,7 @@
+import { notifyApiMutation } from './useUnifiedNotice'
 import { captureFormRequest } from './formValidation'
 
-export type Language = 'en' | 'ar'
+export type Language = string
 export type Theme = 'system' | 'light' | 'dark'
 export type Entry = { id: number; name: string }
 export type SiteEntry = Entry & { active: boolean }
@@ -24,12 +25,13 @@ export interface Module {
   ui_entries: string[]
   required_dependencies: string[]
   optional_dependencies: string[]
-  name: Record<Language, string>
-  description: Record<Language, string>
+  name: Record<string, string>
+  description: Record<string, string>
 }
 
 export type ModuleView = 'list' | 'grid' | 'card'
 export interface UserProfile {
+  notice_mode_override?: 'system' | 'popup' | 'toast'
   username: string
   display_name: string
   first_name: string
@@ -40,7 +42,7 @@ export interface UserProfile {
   picture_url: string | null
 }
 
-export type CompanyBrand = {name:string;logo_url:string|null;revision:number}
+export type CompanyBrand = {name:string;logo_url:string|null;deletion_policy?:'soft'|'permanent';revision:number}
 
 export interface Workspace {
   username: string
@@ -115,8 +117,11 @@ export async function api<T>(url: string, method = 'GET', data?: object, key?: s
     if (Object.keys(failure.fieldErrors).length) formRequest?.(failure)
     throw failure
   }
-  if (method !== 'GET' && !/^\/(login|logout|preferences|profile|saved-views)(\/|$)/.test(url)) {
-    window.dispatchEvent(new Event('erp:work-changed'))
+  if (method !== 'GET') {
+    notifyApiMutation(url, method, data)
+    if (!/^\/(login|logout|preferences|profile|saved-views)(\/|$)/.test(url)) {
+      window.dispatchEvent(new Event('erp:work-changed'))
+    }
   }
   return result as T
 }

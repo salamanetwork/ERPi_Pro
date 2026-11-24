@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { api, allows, ApiError, type Workspace } from './api'
 import { attendanceAction, duration, type AttendanceStatus, type Span } from './attendance'
 import { message, t } from './i18n'
+import { notify } from './useUnifiedNotice'
 
 const props = defineProps<{ id: number; site: number; canStart: boolean; stage: string; workspace: Workspace }>()
 type OrderTimers = { open_timer: Span | null; totals: { employee: string; seconds: number }[] }
@@ -36,6 +37,8 @@ async function change() {
     await post('/work-orders/' + props.id + '/timers/' + (timer ? timer.id + '/stop' : 'start'),
       timer ? {} : {session_id: state.value?.session?.id})
     await load()
+    if (timer) notify('warning', 'Timer Stopped', 'Work order time entry has been recorded.', { suffix: `WO-${props.id}` })
+    else notify('confirmation', 'Timer Started', 'Work order time tracking timer is now running.', { suffix: `WO-${props.id}` })
   } catch (error) {
     if (error instanceof ApiError && error.status === 409) await load()
     failure.value = message(error)

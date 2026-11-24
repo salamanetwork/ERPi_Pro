@@ -13,10 +13,11 @@ class Profile(models.Model):
     iam_display_name = models.CharField(max_length=150, blank=True, db_default="")
     iam_revision = models.PositiveIntegerField(default=1, db_default=1)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    language = models.CharField(max_length=2, default="en")
+    language = models.CharField(max_length=12, default="en")
     theme = models.CharField(max_length=8, default="system")
     middle_name = models.CharField(max_length=150, blank=True)
     module_view = models.CharField(max_length=4, default="list")
+    notice_mode_override = models.CharField(max_length=10, default="system", db_default="system")
 
 
 class ModuleState(models.Model):
@@ -207,6 +208,7 @@ class SavedView(models.Model):
 
 
 class NavigationSettings(models.Model):
+    system_notice_mode = models.CharField(max_length=10, default="popup", db_default="popup")
     hidden_screens = models.JSONField(default=list)
 
 
@@ -220,6 +222,7 @@ class CompanyProfile(models.Model):
     name = models.CharField(max_length=120, blank=True)
     logo = models.BinaryField(default=bytes, blank=True)
     logo_type = models.CharField(max_length=24, blank=True)
+    deletion_policy = models.CharField(max_length=16, default="soft", db_default="soft")
     revision = models.PositiveIntegerField(default=0)
 
 

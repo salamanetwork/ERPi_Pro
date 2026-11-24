@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { api } from './api'
-import { locale, message } from './i18n'
+import { isRtl, locale, localizedText, message } from './i18n'
 
 type Step = { id: string; text_en: string; text_ar: string; screenshots?: Record<string, string> }
 type Guide = {
@@ -223,7 +223,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       {{ l('Module filter', 'تصفية حسب الموديول') }}
       <select v-model="filter">
         <option value="">{{ l('All modules', 'كل الموديولات') }}</option>
-        <option v-for="[k, n] in modules" :key="k" :value="k">{{ n[locale] }}</option>
+        <option v-for="[k, n] in modules" :key="k" :value="k">{{ localizedText(n, locale) }}</option>
       </select>
     </label>
 
@@ -254,7 +254,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
           </button>
         </li>
       </ol>
-      <RouterLink v-if="g.route" :to="g.route">{{ g.module_name[locale] }}</RouterLink>
+      <RouterLink v-if="g.route" :to="g.route">{{ localizedText(g.module_name, locale) }}</RouterLink>
     </details>
 
     <Teleport to="body">
@@ -263,7 +263,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         class="sop-lightbox"
         role="dialog"
         aria-modal="true"
-        :dir="locale === 'ar' ? 'rtl' : 'ltr'"
+        :dir="isRtl ? 'rtl' : 'ltr'"
         :aria-label="l(currentSlide.guideTitleEn, currentSlide.guideTitleAr)"
         @click.self="closeLightbox"
       >

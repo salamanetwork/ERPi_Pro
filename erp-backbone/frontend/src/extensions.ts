@@ -7,7 +7,7 @@ const views = import.meta.glob<{default:Component}>('../../modules/*/ui/ModulePa
 const generated:Extension[] = Object.entries(declarations).filter(([path])=>views[path.replace('manifest.json','ui/ModulePage.vue')]).map(([path, manifest])=>{
   const nav=manifest.navigation[0]
   const load=views[path.replace('manifest.json','ui/ModulePage.vue')]
-  return {id:manifest.id,group:manifest.id==='subscriptions'?'sales':['bank_reconciliation','expenses'].includes(manifest.id)?'finance':'general',label:nav.label.en,labelAr:nav.label.ar,permission:nav.required_permission,path:nav.route,route:nav.route,component:defineAsyncComponent(load)}
+  return {id:manifest.id,group:['subscriptions','pos'].includes(manifest.id)?'sales':['bank_reconciliation','expenses'].includes(manifest.id)?'finance':'general',label:nav.label.en,labelAr:nav.label.ar,permission:nav.required_permission,path:nav.route,route:nav.route,component:defineAsyncComponent(load)}
 })
 export const workspaceExtensions:Extension[] = [{
   id: 'publication', group: 'general', label: 'Public Sites', path: '/publication', route: '/publication/:entry(new)?',

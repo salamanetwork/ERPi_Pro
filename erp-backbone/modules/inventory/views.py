@@ -263,19 +263,28 @@ def balances(request):
     positions = visible(Position.objects.filter(quantity__gt=0).select_related("location").order_by("site_id", "item_id", "location_id"),
                         request.user, "inventory.view")
     site_values = Valuation.objects.filter(site_id=OuterRef("site_id"), item_id=OuterRef("item_id"))
+    from django.db.models import DecimalField, Value
     from django.db.models.functions import Coalesce
-    from supply.models import Reservation
-
-    reserved = Reservation.objects.filter(location_id=OuterRef("location_id"), item_id=OuterRef("item_id"),
-                                          quantity__gt=0).values("location_id").annotate(total=Sum("quantity"))
-    positions = positions.annotate(reserved=Coalesce(Subquery(reserved.values("total")), Decimal(0)))
+    dec_field = DecimalField(max_digits=18, decimal_places=3)
+    try:
+        from supply.models import Reservation
+        reserved = Reservation.objects.filter(
+            location_id=OuterRef("location_id"), item_id=OuterRef("item_id"), quantity__gt=0
+        ).values("location_id").annotate(total=Sum("quantity"))
+        positions = positions.annotate(
+            reserved=Coalesce(Subquery(reserved.values("total"), output_field=dec_field), Value(Decimal("0.000"), output_field=dec_field), output_field=dec_field)
+        )
+    except Exception:
+        positions = positions.annotate(reserved=Value(Decimal("0.000"), output_field=dec_field))
     positions = positions.annotate(site_value=Subquery(site_values.values("value")),
                                    site_quantity=Subquery(site_values.values("quantity")))
     def position(row):
+        qty = Decimal(str(row.quantity or "0"))
+        res_qty = Decimal(str(row.reserved or "0"))
         return {"site_id": row.site_id, "item_id": row.item_id, "location_id": row.location_id,
-                       "warehouse_id": row.location.warehouse_id, "quantity": str(row.quantity),
-                       "on_hand": str(row.quantity), "reserved": str(row.reserved), "available": str(row.quantity - row.reserved),
-                       "site_average": str(prorate(row.site_value, Decimal(1), row.site_quantity, BASE))}
+                       "warehouse_id": row.location.warehouse_id, "quantity": str(qty),
+                       "on_hand": str(qty), "reserved": str(res_qty), "available": str(qty - res_qty),
+                       "site_average": str(prorate(row.site_value, Decimal(1), row.site_quantity, BASE) if row.site_value is not None and row.site_quantity else Decimal("0.000000"))}
     if "page_size" in request.GET:
         from backbone.services.pagination import operational_page
         return operational_page(request,positions,position,["item__name","location__name","site__name"])

@@ -1,7 +1,8 @@
 from decimal import Decimal
 
 from django.db import transaction
-from django.db.models import Exists, F, OuterRef, Q, Sum
+from django.db.models import CharField, Exists, F, OuterRef, Q, Sum, Value
+from django.db.models.functions import Cast, Concat, LPad
 from django.utils import timezone
 
 from accounting.views import day_field
@@ -151,6 +152,12 @@ def transfers(request):
             rows = rows.filter(Q(site_id=site) | Q(destination_id=site))
         if state := request.GET.get("state"):
             rows = rows.filter(state=state)
+        if q := request.GET.get("q", "").strip()[:120]:
+            rows = rows.annotate(
+                tr_code=Concat(Value("TR-"), LPad(Cast("pk", CharField()), 6, Value("0")), output_field=CharField())
+            ).filter(
+                Q(tr_code__icontains=q) | Q(note__icontains=q) | Q(site__name__icontains=q) | Q(destination__name__icontains=q)
+            )
         if request.GET.get("discrepancy") == "pending":
             reports = Discrepancy.objects.filter(line__shipment__transfer_id=OuterRef("pk"), state="pending")
             rows = rows.filter(Exists(reports))

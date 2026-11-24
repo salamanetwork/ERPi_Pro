@@ -9,7 +9,7 @@ import { useDirectory, useDirtyForm } from './useDirectory'
 
 type DirectoryRow = { id: number; revision: number; code: string; name: string; active: boolean;
   currency_default?: string; legal_name?: string; contact?: string; tax_id?: string; billing?: string;
-  shipping?: string; terms?: number; base_unit_id?: number; unit?: string }
+  shipping?: string; terms?: number; base_unit_id?: number; unit?: string; barcode?: string; default_price?: string }
 type Info = { currencies?: string[]; units?: {id:number;code:string;name:string}[];
   conversions?: {id:number;unit_id:number;unit:string;factor:string}[] }
 const props = defineProps<{workspace: Workspace; kind: string}>()
@@ -86,7 +86,7 @@ async function loadForm() {
     if (version !== serial) return
     info.value = result
     form.value = result.record ?? {id:0,revision:0,code:'',name:'',active:true,legal_name:'',contact:'',tax_id:'',
-      billing:'',shipping:'',currency_default:result.currencies?.[0],terms:30,base_unit_id:0}
+      billing:'',shipping:'',currency_default:result.currencies?.[0],terms:30,base_unit_id:0,barcode:'',default_price:'0.00'}
     reset()
   } catch (failure) { if (version === serial) formError.value = message(failure) }
 }
@@ -148,9 +148,9 @@ async function saveConversion() {
         <option v-for="unit in page?.units" :key="unit.id" :value="unit.id">{{ unit.code }} · {{ t(unit.name) }}</option></select></label>
       <CsvExport v-if="config.export" :workspace="workspace" :screen="config.export" :filters="filters" />
     </div>
-    <DataTable :page="page" :headings="['Code','Name',...(kind === 'item' ? ['Base unit'] : []),'Status','Actions']"
+    <DataTable :page="page" :headings="['Code','Name',...(kind === 'item' ? ['Barcode','Default price','Base unit'] : []),'Status','Actions']"
       :loading="loading" :error="error" @page="change('page',$event)" v-slot="{row}">
-      <td><bdi>{{ row.code }}</bdi></td><td>{{ row.name }}</td><td v-if="kind === 'item'">{{ row.unit }}</td>
+      <td><bdi>{{ row.code }}</bdi></td><td>{{ row.name }}</td><template v-if="kind === 'item'"><td><bdi>{{ row.barcode || '—' }}</bdi></td><td>{{ row.default_price ?? '0.00' }}</td><td>{{ row.unit }}</td></template>
       <td>{{ t(row.active ? 'Active' : 'Archived') }}</td>
       <td><div v-if="allowed" class="actions">
         <RouterLink class="button secondary" :to="{path:config.path+'/'+row.id+'/edit',query:route.query}">{{ t('Edit') }}</RouterLink>
@@ -188,6 +188,10 @@ async function saveConversion() {
         <div class="field-wrap"><label>{{ t('Billing address') }}<input data-field="billing" :placeholder="t('Enter {field}').replace('{field}', t('Billing address'))" v-model="form.billing" maxlength="240"></label><FieldHint :label="t('Billing address')" /></div>
         <div class="field-wrap"><label>{{ t('Shipping address') }}<input data-field="shipping" :placeholder="t('Enter {field}').replace('{field}', t('Shipping address'))" v-model="form.shipping" maxlength="240"></label><FieldHint :label="t('Shipping address')" /></div>
         <div class="field-wrap"><label>{{ t('Payment terms (days)') }}<input data-field="terms" :placeholder="t('Enter {field}').replace('{field}', t('Payment terms (days)'))" v-model.number="form.terms" type="number" min="0" max="365" required></label><FieldHint :label="t('Payment terms (days)')" required /></div>
+      </template>
+      <template v-if="kind === 'item'">
+        <div class="field-wrap"><label>{{ t('Default price') }}<input data-field="default_price" v-model="form.default_price" inputmode="decimal" placeholder="0.00" dir="ltr"></label><FieldHint :label="t('Default price')" /></div>
+        <div class="field-wrap"><label>{{ t('Barcode') }}<input data-field="barcode" v-model="form.barcode" maxlength="64" placeholder="e.g., 6291000001234" dir="ltr"></label><FieldHint :label="t('Barcode')" /></div>
       </template>
       <div v-if="kind === 'item'" class="field-wrap"><label>{{ t('Base unit') }}<select data-field="base_unit_id" v-model="form.base_unit_id" required :disabled="!!id"><option :value="0" disabled>{{ t('Select') }}</option>
         <option v-for="unit in info.units" :key="unit.id" :value="unit.id">{{ unit.code }} · {{ t(unit.name) }}</option></select></label><FieldHint :label="t('Base unit')" required :readonly="!!id" /></div>
