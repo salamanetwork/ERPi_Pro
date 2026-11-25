@@ -28,7 +28,7 @@ const statusWords: Record<string,string> = {in_progress:'In progress', completed
   waiting:'Awaiting execution', pending:'Pending', issued:'Issued', confirmed:'Confirmed', recorded:'Recorded', invoice:'Sales invoice', credit:'Credit note'}
 const fields: Record<string, string> = {site: 'Site', as_of: 'As of date', from: 'From', to: 'To',
   supplier: 'Supplier', customer: 'Customer', account: 'Account', item: 'Item', asset: 'Asset', bucket: 'Aging bucket', currency:'Currency'}
-const columns: Record<string, string> = {reference:'Record number', description:'Description', site_id:'Site',
+const columns: Record<string, string> = {reference:'Record number', description: t('Description'), site_id:'Site',
   party:'Party', date:'Date', due_date:'Due date', status:'Status', quantity:'Quantity', amount:'Amount',
   currency:'Currency', locations:'Stock locations', account_id:'Account ID', issued:'Issued value', returned:'Returned value', on_time:'Completed on time', order:'Purchase order'}
 const states: Record<string,string> = {credit:'Credit balance', current:'Not overdue', overdue:'Overdue', undated:'Without date',

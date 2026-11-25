@@ -43,6 +43,13 @@ def _serialize_terminal(t: PosTerminal):
         "is_active": t.is_active,
         "warehouse_id": t.warehouse_id,
         "location_id": t.location_id,
+        "cash_account_id": t.cash_account_id,
+        "card_account_id": t.card_account_id,
+        "over_short_account_id": t.over_short_account_id,
+        "revenue_account_id": t.revenue_account_id,
+        "tax_account_id": t.tax_account_id,
+        "cogs_account_id": t.cogs_account_id,
+        "inventory_account_id": t.inventory_account_id,
         "open_shift": _serialize_shift(active_shift) if active_shift else None,
     }
 

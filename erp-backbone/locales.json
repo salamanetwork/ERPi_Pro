@@ -13,6 +13,48 @@
       "name": "العربية",
       "dir": "rtl",
       "numberLocale": "ar-EG"
+    },
+    {
+      "code": "ur",
+      "name": "اردو",
+      "dir": "rtl",
+      "numberLocale": "ur-PK"
+    },
+    {
+      "code": "fa",
+      "name": "فارسی",
+      "dir": "rtl",
+      "numberLocale": "fa-IR"
+    },
+    {
+      "code": "fr",
+      "name": "Français",
+      "dir": "ltr",
+      "numberLocale": "fr-FR"
+    },
+    {
+      "code": "es",
+      "name": "Español",
+      "dir": "ltr",
+      "numberLocale": "es-ES"
+    },
+    {
+      "code": "de",
+      "name": "Deutsch",
+      "dir": "ltr",
+      "numberLocale": "de-DE"
+    },
+    {
+      "code": "tr",
+      "name": "Türkçe",
+      "dir": "ltr",
+      "numberLocale": "tr-TR"
+    },
+    {
+      "code": "hi",
+      "name": "हिन्दी",
+      "dir": "ltr",
+      "numberLocale": "hi-IN"
     }
   ]
 }

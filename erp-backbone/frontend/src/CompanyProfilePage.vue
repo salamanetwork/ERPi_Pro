@@ -124,6 +124,7 @@ onUnmounted(() => { mounted = false; clearPreview() })
       <button class="primary" :disabled="busy">{{ t('Save') }}</button>
       <button v-if="logo" type="button" class="secondary" :disabled="busy" @click="removeLogo">{{ t('Remove logo') }}</button>
       <button v-if="remove" type="button" class="secondary" :disabled="busy" @click="remove = false">{{ t('Undo') }}</button>
+      <RouterLink to="/settings/trash" class="button secondary">{{ t('Trash & Restore') }}</RouterLink>
     </div>
   </form>
   <button v-else-if="failure" type="button" class="secondary" :disabled="busy" @click="load">{{ t('Retry') }}</button>

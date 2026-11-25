@@ -169,3 +169,38 @@ def company_logo(request):
     response["X-Content-Type-Options"] = "nosniff"
     response["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; sandbox"
     return response
+
+
+@never_cache
+@endpoint("GET", admin=True)
+def trash_list(request):
+    from .deletion import DELETION_REGISTRY, list_deleted_records
+    kind = request.GET.get("kind") or None
+    return {
+        "records": list_deleted_records(kind),
+        "kinds": list(DELETION_REGISTRY.keys()),
+    }
+
+
+@never_cache
+@endpoint("POST", admin=True)
+def trash_restore(request, kind, pk):
+    from .deletion import restore_deleted_record
+    return restore_deleted_record(kind, int(pk), request.user)
+
+
+@never_cache
+@endpoint("POST", admin=True)
+def trash_purge(request, kind, pk):
+    from .deletion import purge_deleted_record
+    return purge_deleted_record(kind, int(pk), request.user)
+
+
+@never_cache
+@endpoint("POST", admin=True)
+def trash_purge_all(request):
+    from .deletion import purge_all_deleted_records
+    payload = body(request) if request.body else {}
+    kind = payload.get("kind") or None
+    items = payload.get("items") if isinstance(payload.get("items"), list) else None
+    return purge_all_deleted_records(request.user, kind_filter=kind, items=items)

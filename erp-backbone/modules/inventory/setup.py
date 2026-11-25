@@ -85,7 +85,7 @@ def catalog(request):
     settings = visible(SiteSettings.objects.all(), user, "inventory.view")
     return {
         "units": list(Unit.objects.filter(is_deleted=False).order_by("code").values()),
-        "items": list(Item.objects.order_by("code").values()),
+        "items": list(Item.objects.filter(is_deleted=False).order_by("code").values()),
         "conversions": [{"id": row.pk, "item_id": row.item_id, "unit_id": row.unit_id,
                          "base_unit_id": row.base_unit_id, "factor": str(row.factor)}
                         for row in Conversion.objects.order_by("id")],
@@ -198,7 +198,7 @@ def warehouse_state(request, pk):
 def item_directory(params):
     from backbone.services.pagination import directory_rows, positive_filter
 
-    rows = directory_rows(Item.objects.select_related("base_unit").order_by("code"), params)
+    rows = directory_rows(Item.objects.filter(is_deleted=False).select_related("base_unit").order_by("code"), params)
     unit = positive_filter(params, "unit")
     return rows.filter(base_unit_id=unit) if unit else rows
 
@@ -242,10 +242,24 @@ def items(request):
     return configure(request, "item")
 
 
-@endpoint("GET", "PATCH", module="inventory")
+@endpoint("GET", "PATCH", "DELETE", module="inventory")
 def item(request, pk):
     require(request.user, "inventory.view")
-    row = resolve(Item, pk, "item")
+    row = resolve(Item, pk, "item", is_deleted=False)
+    if request.method == "DELETE":
+        from .models import Movement, OrderLine, Position
+        require(request.user, "inventory.setup", None)
+        return perform_record_deletion(
+            row,
+            request.user,
+            "inventory.item.delete",
+            has_dependencies_fn=lambda it: (
+                Position.objects.filter(item=it).exists()
+                or Movement.objects.filter(item=it).exists()
+                or OrderLine.objects.filter(item=it).exists()
+                or Conversion.objects.filter(item=it).exists()
+            ),
+        )
     if request.method == "GET":
         return {"record": item_record(row), "units": list(Unit.objects.order_by("code").values("id", "code", "name")),
                 "conversions": [{"id": entry.pk, "unit_id": entry.unit_id, "unit": entry.unit.code,
@@ -321,4 +335,17 @@ def delete_setup(request, kind, pk):
             "inventory.unit.delete",
             has_dependencies_fn=lambda u: Item.objects.filter(base_unit=u).exists() or Conversion.objects.filter(unit=u).exists() or Conversion.objects.filter(base_unit=u).exists(),
         )
+    if kind == "conversion":
+        require(user, "inventory.setup", None)
+        row = Conversion.objects.filter(pk=pk).first()
+        if row is None:
+            raise Problem("not_found", 404)
+        return perform_record_deletion(row, user, "inventory.conversion.delete")
+    if kind == "site":
+        from .models import SiteSettings
+        row = SiteSettings.objects.filter(site_id=pk).first()
+        if row is None:
+            raise Problem("not_found", 404)
+        require(user, "inventory.setup", row.site_id)
+        return perform_record_deletion(row, user, "inventory.site_settings.delete")
     raise Problem("not_found", 404)

@@ -41,20 +41,24 @@ def _resolve_gl_accounts(terminal):
     cash_acc = terminal.cash_account
     card_acc = terminal.card_account or cash_acc
     rev_acc = (
-        Account.objects.filter(ledger=ledger, kind="revenue", active=True, detail=True).order_by("code").first()
+        terminal.revenue_account
+        or Account.objects.filter(ledger=ledger, kind="revenue", active=True, detail=True).order_by("code").first()
         or Account.objects.filter(ledger=ledger, kind="revenue", active=True).order_by("code").first()
     )
     tax_acc = (
-        Account.objects.filter(ledger=ledger, kind="liability", active=True, detail=True).order_by("code").first()
+        terminal.tax_account
+        or Account.objects.filter(ledger=ledger, kind="liability", active=True, detail=True).order_by("code").first()
         or Account.objects.filter(ledger=ledger, kind="liability", active=True).order_by("code").first()
         or rev_acc
     )
     cogs_acc = (
-        Account.objects.filter(ledger=ledger, kind="expense", active=True, detail=True).order_by("code").first()
+        terminal.cogs_account
+        or Account.objects.filter(ledger=ledger, kind="expense", active=True, detail=True).order_by("code").first()
         or Account.objects.filter(ledger=ledger, kind="expense", active=True).order_by("code").first()
     )
     inv_acc = (
-        Account.objects.filter(ledger=ledger, kind="asset", active=True, detail=True).exclude(pk=cash_acc.pk).order_by("code").first()
+        terminal.inventory_account
+        or Account.objects.filter(ledger=ledger, kind="asset", active=True, detail=True).exclude(pk=cash_acc.pk).order_by("code").first()
         or cash_acc
     )
     over_short_acc = terminal.over_short_account or cogs_acc or rev_acc

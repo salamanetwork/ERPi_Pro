@@ -16,15 +16,16 @@ const props = defineProps<{workspace: Workspace; kind: string}>()
 const route = useRoute()
 const router = useRouter()
 const configs = {
-  supplier: {path:'/suppliers', api:'/suppliers', title:'Suppliers', create:'New supplier', permission:'suppliers.manage', export:'supplier'},
-  customer: {path:'/sales/customers', api:'/sales/customers', title:'Customers', create:'New customer', permission:'sales.customer', export:'customer'},
-  item: {path:'/inventory/items', api:'/inventory/items', title:'Inventory items', create:'New item', permission:'inventory.setup', export:'item'},
-  departments: {path:'/hr/setup/departments', api:'/hr/setup/departments', title:'Departments', create:'New department', permission:'hr.manage', export:''},
-  'job-titles': {path:'/hr/setup/job-titles', api:'/hr/setup/job-titles', title:'Job titles', create:'New job title', permission:'hr.manage', export:''},
-  grades: {path:'/hr/setup/grades', api:'/hr/setup/grades', title:'Grades', create:'New grade', permission:'hr.manage', export:''},
+  supplier: {path:'/suppliers', api:'/suppliers', title: t('Suppliers'), create:'New supplier', permission:'suppliers.manage', deletePermission:'suppliers.manage', export:'supplier'},
+  customer: {path:'/sales/customers', api:'/sales/customers', title: t('Customers'), create:'New customer', permission:'sales.customer', deletePermission:'sales.customer', export:'customer'},
+  item: {path:'/inventory/items', api:'/inventory/items', title: t('Inventory items'), create:'New item', permission:'inventory.setup', deletePermission:'inventory.setup', export:'item'},
+  departments: {path:'/hr/setup/departments', api:'/hr/setup/departments', title: t('Departments'), create:'New department', permission:'hr.manage', deletePermission:'hr.manage', export:''},
+  'job-titles': {path:'/hr/setup/job-titles', api:'/hr/setup/job-titles', title: t('Job titles'), create:'New job title', permission:'hr.manage', deletePermission:'hr.manage', export:''},
+  grades: {path:'/hr/setup/grades', api:'/hr/setup/grades', title: t('Grades'), create:'New grade', permission:'hr.manage', deletePermission:'hr.manage', export:''},
 }
 const config = computed(() => configs[props.kind as keyof typeof configs] ?? configs.departments)
 const allowed = computed(() => allows(props.workspace, config.value.permission, null))
+const canDelete = computed(() => Boolean(config.value.deletePermission) && allows(props.workspace, config.value.deletePermission, null))
 const formPage = computed(() => Boolean(route.params.entry))
 const id = computed(() => Number(route.params.entry) || 0)
 const list = useDirectory<DirectoryRow, Info>(() => config.value.api + (props.kind === 'supplier' ? '?directory=1' : ''),
@@ -114,6 +115,23 @@ async function save(row: DirectoryRow, active = row.active) {
     } else formError.value = message(failure)
   } finally { busy.value = false }
 }
+async function deleteRecord(row: DirectoryRow) {
+  if (busy.value || !canDelete.value) return
+  const label = `${row.code} · ${row.name}`
+  const isPermanent = props.workspace.company?.deletion_policy === 'permanent'
+  const promptText = isPermanent
+    ? `${t('Permanently delete')} "${label}"? ${t('This action cannot be undone.')}`
+    : `${t('Delete')} "${label}"? ${t('The record will be archived according to system deletion policy.')}`
+  if (!window.confirm(promptText)) return
+  busy.value = true
+  formError.value = ''
+  try {
+    await api(config.value.api + '/' + row.id, 'DELETE')
+    await list.load()
+  } catch (failure) {
+    formError.value = message(failure)
+  } finally { busy.value = false }
+}
 async function saveConversion() {
   if (busy.value || !form.value) return
   busy.value = true
@@ -155,6 +173,7 @@ async function saveConversion() {
       <td><div v-if="allowed" class="actions">
         <RouterLink class="button secondary" :to="{path:config.path+'/'+row.id+'/edit',query:route.query}">{{ t('Edit') }}</RouterLink>
         <button class="secondary" type="button" :disabled="busy" @click="save(row, !row.active)">{{ t(row.active ? 'Archive' : 'Reactivate') }}</button>
+        <button v-if="canDelete" class="danger" type="button" :disabled="busy" @click="deleteRecord(row)">{{ t('Delete') }}</button>
       </div></td>
     </DataTable>
   </template>

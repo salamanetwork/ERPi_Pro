@@ -3,7 +3,7 @@ import { workspaceExtensions } from './extensions'
 import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api, ApiError, allows, type CompanyBrand, type Module, type ModuleView, type Workspace } from './api'
-import { SUPPORTED_LOCALES, currentLocaleMeta, isRtl, locale, localizedText, message, t } from './i18n'
+import { SUPPORTED_LOCALES, currentLocaleMeta, getLocaleDir, isRtl, locale, localizedText, message, t } from './i18n'
 import { setSystemNoticeMode, syncNoticeUser, systemNoticeMode } from './notificationPreferences'
 import WorkspacePage from './WorkspacePage.vue'
 import ProfilePage from './ProfilePage.vue'
@@ -15,6 +15,7 @@ import SecurityHealth from './SecurityHealth.vue'
 import AppFooter from './AppFooter.vue'
 import PanelResizer from './PanelResizer.vue'
 import CompanyProfilePage from './CompanyProfilePage.vue'
+import TrashRestorePage from './TrashRestorePage.vue'
 import NavigationSettings from './NavigationSettings.vue'
 import { visibleScreen } from './navigation'
 import SitesPage from './SitesPage.vue'
@@ -304,7 +305,7 @@ onBeforeUnmount(() => {
 
 watch([locale, systemDark, () => workspace.value?.theme], ([language, dark, theme]) => {
   document.documentElement.lang = language
-  document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr'
+  document.documentElement.dir = getLocaleDir(language)
   document.documentElement.dataset.theme = theme === 'dark' || (!theme || theme === 'system') && dark ? 'dark' : 'light'
 }, { immediate: true })
 
@@ -642,10 +643,14 @@ function savePreferences() {
         <NotificationsPage v-else-if="page === 'notifications'" @unread="updateUnread" />
         <DocumentSettingsPage v-else-if="page === 'documentSettings' && workspace.admin" :workspace="workspace" />
         <CompanyProfilePage v-else-if="page === 'companyProfile' && workspace.admin" @saved="updateCompany" />
+        <TrashRestorePage v-else-if="page === 'trashRestore' && workspace.admin" />
         <template v-else-if="page === 'settings'">
           <div class="page-heading">
             <h1>{{ t('Settings') }}</h1>
-            <RouterLink v-if="workspace.admin" to="/settings/company" class="button secondary">{{ t('Company Profile') }}</RouterLink>
+            <div v-if="workspace.admin" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <RouterLink to="/settings/company" class="button secondary">{{ t('Company Profile') }}</RouterLink>
+              <RouterLink to="/settings/trash" class="button secondary">{{ t('Trash & Restore') }}</RouterLink>
+            </div>
           </div>
           <form v-validated-form class="panel settings-form" @submit.prevent="savePreferences">
             <div class="field-wrap"><label>{{ t('Language') }}<select data-field="language" v-model="workspace.language" @change="locale = workspace.language"><option v-for="lang in SUPPORTED_LOCALES" :key="lang.code" :value="lang.code">{{ lang.name }}</option></select></label><FieldHint :label="t('Language')" /></div>

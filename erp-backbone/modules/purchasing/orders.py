@@ -50,7 +50,7 @@ def suppliers(request):
                 raise Problem("forbidden", 403)
         else:
             require(user, "purchasing.view")
-        rows = Supplier.objects.order_by("code")
+        rows = Supplier.objects.filter(is_deleted=False).order_by("code")
         if directory and "page" in request.GET:
             return {**paginate(request, directory_rows(rows, request.GET), supplier_record), "currencies": CURRENCIES}
         if not directory and not user.is_superuser:
@@ -67,8 +67,20 @@ def suppliers(request):
         return supplier_record(row), 201
 
 
-@endpoint("GET", "PATCH", module="suppliers")
+@endpoint("GET", "PATCH", "DELETE", module="suppliers")
 def supplier(request, pk):
+    if request.method == "DELETE":
+        from backbone.deletion import perform_record_deletion
+        require(request.user, "suppliers.manage", None)
+        row = Supplier.objects.filter(pk=pk, is_deleted=False).first()
+        if row is None:
+            raise Problem("not_found", 404)
+        return perform_record_deletion(
+            row,
+            request.user,
+            "purchasing.supplier.delete",
+            has_dependencies_fn=lambda s: PurchaseOrder.objects.filter(supplier=s).exists(),
+        )
     if request.method == "GET":
         from backbone.access import has_permission
         if not any(has_permission(request.user, key, None) for key in ("suppliers.view", "suppliers.manage")):

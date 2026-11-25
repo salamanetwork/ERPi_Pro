@@ -31,10 +31,10 @@ const isPayroll = computed(() => props.area === 'payroll')
 const payrollEnabled = computed(() => props.workspace.modules.some(module => module.id === 'payroll' && module.enabled))
 const heading = computed(() => isPayroll.value ? 'Payroll' : 'Human Resources')
 const tabs = computed(() => [
-  {id:'employees', label:'Employees', show:has(['hr.view','hr.manage','hr.self','hr.identity.view_full','hr.offboarding.request','hr.offboarding.approve']) || payrollEnabled.value && can('payroll.prepare')},
-  {id:'leaves', label:'Leave requests', show:has(['hr.view','hr.self','hr.leave.request','hr.leave.approve','hr.manage'])},
-  {id:'runs', label:'Payroll runs', show:has(['payroll.prepare','payroll.approve','payroll.post','payroll.pay','payroll.summary'])},
-  {id:'payslips', label:'Payslips', show:has(['payroll.payslip','payroll.payslip.self'])},
+  {id:'employees', label: t('Employees'), show:has(['hr.view','hr.manage','hr.self','hr.identity.view_full','hr.offboarding.request','hr.offboarding.approve']) || payrollEnabled.value && can('payroll.prepare')},
+  {id:'leaves', label: t('Leave requests'), show:has(['hr.view','hr.self','hr.leave.request','hr.leave.approve','hr.manage'])},
+  {id:'runs', label: t('Payroll runs'), show:has(['payroll.prepare','payroll.approve','payroll.post','payroll.pay','payroll.summary'])},
+  {id:'payslips', label: t('Payslips'), show:has(['payroll.payslip','payroll.payslip.self'])},
 ].filter(tab => tab.show && (['runs','payslips'].includes(tab.id) === isPayroll.value)))
 const section = computed(() => String(route.params.section || (isPayroll.value && selectedId.value ? 'runs' : tabs.value[0]?.id) || ''))
 const selectedId = computed(() => Number(route.params.id) || 0)

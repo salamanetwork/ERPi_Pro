@@ -45,7 +45,7 @@ def customers(request):
     user = request.user
     require(user, "sales.view")
     if request.method == "GET":
-        rows = Customer.objects.order_by("code")
+        rows = Customer.objects.filter(is_deleted=False).order_by("code")
         if "page" in request.GET:
             return paginate(request, directory_rows(rows, request.GET), customer_data)
         return {"items": [customer_data(row) for row in rows]}
@@ -558,10 +558,19 @@ def catalog(request):
             "locations": list(Location.objects.filter(warehouse__in=warehouses).order_by("code").values())}
 
 
-@endpoint("GET", module="customers")
+@endpoint("GET", "DELETE", module="customers")
 def customer(request, pk):
     require(request.user, "sales.view")
-    row = Customer.objects.filter(pk=pk).first()
+    row = Customer.objects.filter(pk=pk, is_deleted=False).first()
     if row is None:
         raise Problem("not_found", 404)
+    if request.method == "DELETE":
+        from backbone.deletion import perform_record_deletion
+        require(request.user, "sales.customer", None)
+        return perform_record_deletion(
+            row,
+            request.user,
+            "sales.customer.delete",
+            has_dependencies_fn=lambda c: Document.objects.filter(customer=c).exists(),
+        )
     return customer_data(row)

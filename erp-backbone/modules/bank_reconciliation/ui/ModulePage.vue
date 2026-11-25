@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed,reactive,ref,watch} from 'vue'
 import {api,allows,requestKey,ApiError,type Workspace} from '../../../frontend/src/api'
-import {locale} from '../../../frontend/src/i18n'
+import {locale,t} from '../../../frontend/src/i18n'
 import TableToolbar from '../../../frontend/src/TableToolbar.vue'
 import FieldHint from '../../../frontend/src/FieldHint.vue'
 import EntityAutocomplete from '../../../frontend/src/EntityAutocomplete.vue'
@@ -144,7 +144,7 @@ function importRows(){return run(async()=>{await send(statementURL()+'/import_cs
     <form v-validated-form v-if="mode==='statement'" class="panel grid72" style="margin-block-end: 16px;" @submit.prevent="saveStatement()">
       <label v-for="k in ['start','end','opening','closing']" :key="k"><span>{{label(k)}} <FieldHint :label="label(k)" :hint-key="'bank.'+k" required/></span>
       <input required v-model="form[k]" :type="['start','end'].includes(k)?'date':'text'" maxlength="100"></label>
-      <button class="primary" :disabled="busy">{{l('Save','حفظ')}}</button>
+      <div class="actions"><button class="primary" :disabled="busy">{{l('Save','حفظ')}}</button><button type="button" class="secondary" :disabled="busy" @click="mode=''">{{t('Cancel')}}</button></div>
     </form>
 
     <section class="panel table-panel">
@@ -171,7 +171,7 @@ function importRows(){return run(async()=>{await send(statementURL()+'/import_cs
         <label v-for="k in ['name','last_four','account_id','charges_id','interest_id','tolerance']" :key="k"><span>{{label(k)}} <FieldHint :label="label(k)" :hint-key="'bank.'+k" required/></span>
         <select v-if="k.endsWith('_id')" required v-model.number="form[k]"><option :value="0" disabled>—</option><option v-for="a in accounts.filter(x=>x.kind===({account_id:'asset',charges_id:'expense',interest_id:'revenue'} as Row)[k])" :value="a.id">{{a.code}} · {{a.name}}</option></select>
         <input v-else required v-model="form[k]" type="text" :maxlength="k==='last_four'?4:100"></label>
-        <button class="primary" :disabled="busy">{{l('Save','حفظ')}}</button>
+        <div class="actions"><button class="primary" :disabled="busy">{{l('Save','حفظ')}}</button><button type="button" class="secondary" :disabled="busy" @click="mode=''">{{t('Cancel')}}</button></div>
       </form>
 
       <div class="actions">
@@ -222,8 +222,8 @@ function importRows(){return run(async()=>{await send(statementURL()+'/import_cs
 <div class="actions"><template v-if="editable&&can('import')"><button @click="setMode('line')">{{l('Add statement line','إضافة حركة')}}</button><button @click="setMode('csv')">{{l('Import CSV','استيراد CSV')}}</button><button @click="setMode('edit')">{{l('Edit closing balance','تعديل رصيد الإقفال')}}</button></template>
 <button v-if="s.status==='draft'&&can('reconcile')" @click="action('start')">{{l('Start reconciliation','بدء التسوية')}}</button><button v-if="active&&can('close')" @click="setMode('close')">{{l('Close statement','إقفال الكشف')}}</button>
 <a v-for="f in s.attachments" :href="'/api'+statementURL()+'/attachments/'+f.id" download>{{f.attachment__name}}</a></div>
-<div v-if="mode==='close'" class="panel">{{l('Closing permanently locks the statement and its matches.','الإقفال يمنع تعديل الكشف ومطابقاته نهائياً.')}} <button :disabled="busy" @click="action('close')">{{l('Confirm close','تأكيد الإقفال')}}</button></div>
-<form v-validated-form v-if="mode==='line'||mode==='edit'" class="panel grid72" @submit.prevent="action(mode,{...form})"><label v-for="k in mode==='line'?['date','description','reference','amount','running_balance']:['closing']"><span>{{label(k)}} <FieldHint :label="label(k)" :hint-key="'bank.'+k" :required="!['running_balance','reference'].includes(k)"/></span><input v-model="form[k]" :type="k==='date'?'date':'text'" :required="!['running_balance','reference'].includes(k)"></label><button :disabled="busy">{{l('Save','حفظ')}}</button></form>
+<div v-if="mode==='close'" class="panel">{{l('Closing permanently locks the statement and its matches.','الإقفال يمنع تعديل الكشف ومطابقاته نهائياً.')}} <button :disabled="busy" @click="action('close')">{{l('Confirm close','تأكيد الإقفال')}}</button> <button type="button" class="secondary" :disabled="busy" @click="mode=''">{{t('Cancel')}}</button></div>
+<form v-validated-form v-if="mode==='line'||mode==='edit'" class="panel grid72" @submit.prevent="action(mode,{...form})"><label v-for="k in mode==='line'?['date','description','reference','amount','running_balance']:['closing']"><span>{{label(k)}} <FieldHint :label="label(k)" :hint-key="'bank.'+k" :required="!['running_balance','reference'].includes(k)"/></span><input v-model="form[k]" :type="k==='date'?'date':'text'" :required="!['running_balance','reference'].includes(k)"></label><div class="actions"><button class="primary" :disabled="busy">{{l('Save','حفظ')}}</button><button type="button" class="secondary" :disabled="busy" @click="mode=''">{{t('Cancel')}}</button></div></form>
 <div v-if="mode==='csv'" class="panel stack"><label>{{label('file')}} <FieldHint :label="label('file')" hint-key="bank.file" required/><input ref="fileInput" type="file" accept=".csv,text/csv" @change="pick"></label>
 <div v-if="columns.length" class="grid72"><label v-for="k in mapFields"><span>{{label(k)}} <FieldHint :label="label(k)" :hint-key="'bank.'+k"/></span><select v-model="mapping[k]"><option value="">—</option><option v-for="col in columns">{{col}}</option></select></label></div>
 <label><input v-model="attach" type="checkbox"> {{label('attach')}} <FieldHint :label="label('attach')" hint-key="bank.attach"/></label>
@@ -235,4 +235,4 @@ function importRows(){return run(async()=>{await send(statementURL()+'/import_cs
 <span v-if="r.suggested" class="badge">{{r.exact?l('Suggested · exact amount','مقترح · مبلغ مطابق'):l('Suggested · within tolerance','مقترح · ضمن السماحية')}}</span><button v-if="active&&can('reconcile')&&r.exact&&bankIds.length===1" @click="action('match',{bank_ids:bankIds,gl_ids:[r.id]})">{{l('Confirm suggestion','تأكيد الاقتراح')}}</button></div></article></div>
 <div v-if="active" class="actions"><button v-if="can('reconcile')" class="primary" :disabled="busy||!bankIds.length||!glIds.length" @click="action('match',{bank_ids:bankIds,gl_ids:glIds})">{{l('Match selected','مطابقة المحدد')}} ({{bankIds.length}} / {{glIds.length}})</button>
 <template v-if="can('post_adjustment')"><label>{{l('Adjustment','التسوية')}} <FieldHint :label="l('Adjustment','التسوية')" hint-key="bank.adjust"/><select v-model="kind"><option v-for="k in ['fee','interest','rounding']" :value="k">{{label(k)}}</option></select></label><button :disabled="busy||bankIds.length!==1||(kind==='rounding'?!glIds.length:glIds.length>0)" @click="action('adjust',{kind,line_id:bankIds[0],gl_ids:glIds})">{{l('Post adjustment and match','ترحيل التسوية ومطابقتها')}}</button></template></div></template></section></template>
-<style scoped>.panes,.grid72,.balances{display:grid;gap:1rem}.panes{grid-template-columns:repeat(2,minmax(0,1fr))}.grid72,.balances{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.grid72>button{grid-column:1/-1;justify-self:start}.balances>div,.record{display:grid;gap:.35rem;padding:.65rem;border:1px solid var(--border,#465465);border-radius:.5rem}.record label{display:flex;align-items:center;gap:.5rem}.record input{width:auto}.panes article{min-width:0}.record button{justify-self:start}@media(max-width:900px){.panes{grid-template-columns:1fr}}</style>
+<style scoped>.panes,.grid72,.balances{display:grid;gap:1rem}.panes{grid-template-columns:repeat(2,minmax(0,1fr))}.grid72,.balances{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.grid72>button,.grid72>.actions{grid-column:1/-1;justify-self:start}.balances>div,.record{display:grid;gap:.35rem;padding:.65rem;border:1px solid var(--border,#465465);border-radius:.5rem}.record label{display:flex;align-items:center;gap:.5rem}.record input{width:auto}.panes article{min-width:0}.record button{justify-self:start}@media(max-width:900px){.panes{grid-template-columns:1fr}}</style>

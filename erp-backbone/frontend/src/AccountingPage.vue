@@ -318,7 +318,7 @@ import DateInput from './DateInput.vue'
   </template>
   <template v-if="tab === 'Accounting setup' && config">
     <nav class="section-tabs">
-      <button v-for="item in [{id:'accounts',label:'Chart of accounts'},{id:'periods',label:'Financial periods'},{id:'rules',label:'Posting rules'},{id:'cutover',label:'Cutover'},{id:'references',label:'Reference data'}]" :key="item.id" class="tab-link"
+      <button v-for="item in [{id:'accounts',label: t('Chart of accounts')},{id:'periods',label: t('Financial periods')},{id:'rules',label: t('Posting rules')},{id:'cutover',label: t('Cutover')},{id:'references',label: t('Reference data')}]" :key="item.id" class="tab-link"
         :aria-current="form === item.id ? 'page' : undefined" @click="showSetup(item.id)">{{ t(item.label) }}</button>
     </nav>
     <template v-if="form === 'accounts'">

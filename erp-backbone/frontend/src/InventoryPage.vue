@@ -65,9 +65,9 @@ const companySetup = computed(() => scoped('setup', null))
 const mode = ref('warehouse')
 const setupOptions = computed(() => [
   ...(companySetup.value ? [
-    {id: 'conversion', label: 'Unit conversion'},
+    {id: 'conversion', label: t('Unit conversion')},
   ] : []),
-  {id: 'warehouse', label: 'Warehouse'}, {id: 'location', label: 'Location'}, {id: 'site', label: 'Business day'},
+  {id: 'warehouse', label: t('Warehouse')}, {id: 'location', label: t('Location')}, {id: 'site', label: t('Business day')},
 ])
 const showUnitForm = ref(false)
 const showSetupForm = ref(false)
@@ -378,7 +378,7 @@ function saveSetup() {
     notify('saved', 'Inventory setup', 'Changes saved.')
   })
 }
-function deleteSetupRecord(kind: 'warehouse' | 'location' | 'unit', recordId: number, label: string) {
+function deleteSetupRecord(kind: 'warehouse' | 'location' | 'unit' | 'conversion' | 'site', recordId: number, label: string) {
   const isPermanent = workspace.company?.deletion_policy === 'permanent'
   const promptText = isPermanent
     ? `${t('Permanently delete')} "${label}"? ${t('This action cannot be undone.')}`
@@ -422,9 +422,9 @@ const openingLocations = computed(() => catalog.value?.locations.filter(row =>
   catalog.value?.warehouses.some(w => w.id === row.warehouse_id && w.active && w.site_id === openingSite.value)) ?? [])
 const visibleSetup = computed(() => catalog.value?.sites.filter(row => scoped('setup', row.id)) ?? [])
 const tabs = computed(() => [
-  {id: 'receipts', label: 'Goods receipts'}, {id: 'items', label: 'Inventory items'}, {id: 'balances', label: 'Stock balances'}, {id: 'movements', label: 'Stock movements'},
-  ...(scoped('opening') ? [{id: 'opening', label: 'Opening balance'}] : []),
-  ...(scoped('setup') ? [{id: 'setup', label: 'Inventory setup'}] : []),
+  {id: 'receipts', label: t('Goods receipts')}, {id: 'items', label: t('Inventory items')}, {id: 'balances', label: t('Stock balances')}, {id: 'movements', label: t('Stock movements')},
+  ...(scoped('opening') ? [{id: 'opening', label: t('Opening balance')}] : []),
+  ...(scoped('setup') ? [{id: 'setup', label: t('Inventory setup')}] : []),
 ])
 async function locationState(id: number, active: boolean) {
   if (busy.value) return
@@ -779,7 +779,7 @@ async function warehouseState(id:number, active:boolean){
               <tr v-for="unit in pagedUnits" :key="unit.id">
                 <td><bdi>{{ unit.code }}</bdi></td>
                 <td>{{ t(unit.name) }}</td>
-                <td><button type="button" class="secondary" :disabled="busy" @click="editUnit(unit)">{{ t('Edit') }}</button></td>
+                <td><div class="actions"><button type="button" class="secondary" :disabled="busy" @click="editUnit(unit)">{{ t('Edit') }}</button><button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('unit', unit.id, unit.code + ' - ' + unit.name)">{{ t('Delete') }}</button></div></td>
               </tr>
             </tbody>
           </table>
@@ -849,7 +849,7 @@ async function warehouseState(id:number, active:boolean){
                 <td>{{ name(catalog?.units, conv.unit_id) }}</td>
                 <td>{{ name(catalog?.units, conv.base_unit_id) }}</td>
                 <td><bdi>{{ conv.factor }}</bdi></td>
-                <td><button type="button" class="secondary" :disabled="busy" @click="editConversion(conv)">{{ t('Edit') }}</button></td>
+                <td><div class="actions"><button type="button" class="secondary" :disabled="busy" @click="editConversion(conv)">{{ t('Edit') }}</button><button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('conversion', conv.id, name(catalog?.units, conv.unit_id) + ' → ' + name(catalog?.units, conv.base_unit_id))">{{ t('Delete') }}</button></div></td>
               </tr>
             </tbody>
           </table>
@@ -1082,7 +1082,7 @@ async function warehouseState(id:number, active:boolean){
                 <td>{{ st.site_name }}</td>
                 <td><bdi>{{ st.timezone }}</bdi></td>
                 <td><bdi>{{ st.day_start }}</bdi></td>
-                <td><button type="button" class="secondary" :disabled="busy" @click="editSiteSetting(st)">{{ t('Edit') }}</button></td>
+                <td><div class="actions"><button type="button" class="secondary" :disabled="busy" @click="editSiteSetting(st)">{{ t('Edit') }}</button><button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('site', st.site_id, st.site_name)">{{ t('Delete') }}</button></div></td>
               </tr>
             </tbody>
           </table>

@@ -17,6 +17,8 @@ class Item(models.Model):
     default_price = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     base_unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
     active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     revision = models.PositiveIntegerField(default=1)
 
 
