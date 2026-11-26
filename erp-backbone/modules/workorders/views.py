@@ -102,8 +102,10 @@ def order(request, pk):
         row = get_order(request.user, pk, lock=True)
         require(request.user, "workorders.edit", row.site_id)
         check_revision(row, data)
+        from backbone.site_admin import require_active_site
         changes = fields_from(data)
         require(request.user, "workorders.edit", changes["site_id"])
+        require_active_site(changes["site_id"])
         if hasattr(row, "maintenance") and (row.maintenance.stage != "waiting" or changes["site_id"] != row.site_id
                 or data.get("asset_reference", row.asset_reference) != row.asset_reference):
             raise Problem("maintenance_asset_locked", 409)
@@ -122,8 +124,11 @@ def order(request, pk):
 def submit(request, pk):
     data = body(request)
     with transaction.atomic():
+        from backbone.site_admin import require_active_site
         row = get_order(request.user, pk, lock=True)
         require(request.user, "workorders.submit", row.site_id)
+        if row.site_id is not None:
+            require_active_site(row.site_id)
         check_revision(row, data)
         row.status = start_approval(request.user, row)
         row.submitted_at = timezone.now()

@@ -210,3 +210,51 @@ class MaintenanceTests(TransactionTestCase):
         self.assertEqual([row.status_code for row in generated], [201, 201])
         self.assertEqual(len({row.json()["id"] for row in generated}), 1)
         self.assertEqual(MaintenanceJob.objects.filter(plan_id=plan["id"]).count(), 1)
+
+    def test_audit_retire_with_open_job_deleted_part_and_inactive_location_guards(self):
+        self.activate()
+        pk = self.new_running_order("Guard check")
+
+        # Cannot retire or put out_of_service an asset with an open maintenance job
+        retire_res = self.client.patch(
+            f"/api/maintenance/assets/{self.asset.pk}",
+            {"state": "retired", "revision": 0},
+            content_type="application/json",
+        )
+        self.assertEqual(retire_res.status_code, 409)
+        self.assertEqual(retire_res.json()["error"], "asset_has_open_maintenance")
+
+        # Inactive location rejected when issuing spare parts
+        Location.objects.filter(pk=self.location.pk).update(active=False)
+        try:
+            loc_res = self.issue(pk, key="inactive-loc")
+            self.assertEqual(loc_res.status_code, 409)
+            self.assertEqual(loc_res.json()["error"], "maintenance_part_unavailable")
+        finally:
+            Location.objects.filter(pk=self.location.pk).update(active=True)
+
+        # Deleted item rejected in spare_parts plan and in issue
+        del_item = Item.objects.create(code="DEL-SEAL", name="Deleted Seal", base_unit=self.unit, active=True, is_deleted=True)
+        plan_res = self.post(
+            "/api/maintenance/plans",
+            {
+                "asset_id": self.asset.pk,
+                "title": "Bad plan",
+                "first_due": "2026-01-31",
+                "frequency": "months",
+                "interval": 1,
+                "checklist": ["Check"],
+                "spare_parts": [{"item_id": del_item.pk, "quantity": "1"}],
+            },
+            key="del-plan",
+        )
+        self.assertEqual(plan_res.status_code, 400)
+        self.assertEqual(plan_res.json()["error"], "invalid_item")
+
+        issue_del = self.post(
+            f"/api/maintenance/orders/{pk}/parts",
+            {"item_id": del_item.pk, "location_id": self.location.pk, "quantity": "1"},
+            key="del-issue",
+        )
+        self.assertEqual(issue_del.status_code, 409)
+        self.assertEqual(issue_del.json()["error"], "maintenance_part_unavailable")
