@@ -70,7 +70,7 @@ def employment_references(data, fields, current=None):
                     fields[parameter] = reference.pk
             continue
         key = identifier(data[parameter], field, optional=field == "grade")
-        rows = HRReference.objects.select_for_update().filter(kind=kind)
+        rows = HRReference.objects.select_for_update().filter(kind=kind, is_deleted=False)
         if current:
             rows = rows.filter(Q(active=True) | Q(pk=getattr(current, parameter)))
         else:
@@ -335,13 +335,18 @@ def decide_offboarding(request, pk):
         if row.revision != identifier(data.get("revision"), "revision") or row.state != "submitted":
             raise Problem("revision_conflict", 409)
         if action == "approve":
+            from backbone.site_admin import require_active_site
             from .attendance import midnight, site_timezone
+            from .models import WeeklyTimesheet
 
+            require_active_site(employee.site_id, lock=True)
             if employee.ended or employee.archived_at or not employee.joined <= row.last_day < date.max:
                 raise Problem("hr_invalid_dates", 409)
             boundary = midnight(row.last_day + timedelta(days=1), ZoneInfo(site_timezone(employee.site_id)))
             if AttendanceSession.objects.filter(employee=employee, started_at__gte=boundary).exists():
                 raise Problem("hr_offboarding_attendance_conflict", 409)
+            if WeeklyTimesheet.objects.filter(employee=employee, starts_at__gte=boundary).exclude(state="draft").exists():
+                raise Problem("attendance_week_locked", 409)
             employee.ended = row.last_day
             employee.revision += 1
             employee.save(update_fields=["ended", "revision"])

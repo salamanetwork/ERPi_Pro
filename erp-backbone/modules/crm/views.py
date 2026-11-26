@@ -152,11 +152,13 @@ def convert(request, pk):
     services.scoped(Lead, user, pk, "crm.manage")
 
     def commit():
+        lead_site = Lead.objects.filter(pk=pk).values_list("site_id", flat=True).first()
+        if lead_site is not None:
+            require_active_site(lead_site, lock=True)
         row = services.scoped(Lead, user, pk, "crm.manage", lock=True)
         if row.state != "qualified":
             raise Problem("crm_lead_not_qualified", 409)
         services.revision(row, data)
-        require_active_site(row.site_id, lock=True)
         stage = Stage.objects.select_for_update().get(code="qualified")
         record = Opportunity.objects.create(site_id=row.site_id, owner_id=row.owner_id, lead=row,
                                             stage=stage, **opportunity_values(data))
@@ -211,7 +213,7 @@ def opportunities(request):
 
 def customer_for(data):
     key = identifier(data.get("customer_id"), "customer_id")
-    row = Customer.objects.filter(pk=key, active=True).first()
+    row = Customer.objects.select_for_update().filter(pk=key, active=True).first()
     if row is None:
         raise Problem("invalid_customer_id", field="customer_id", reason="invalid_choice")
     return row
@@ -510,7 +512,13 @@ def activities(request):
     def commit():
         site = (lead or opportunity).site_id
         require_active_site(site, lock=True)
-        row = Activity.objects.create(site_id=site, lead=lead, opportunity=opportunity,
+        locked_lead = services.scoped(Lead, user, lead.pk, "crm.manage", lock=True) if lead else None
+        locked_opp = services.scoped(Opportunity, user, opportunity.pk, "crm.manage", lock=True) if opportunity else None
+        if locked_lead and locked_lead.state in ("converted", "disqualified"):
+            raise Problem("crm_lead_closed", 409)
+        if locked_opp and locked_opp.stage.kind != "open":
+            raise Problem("crm_closed_opportunity", 409)
+        row = Activity.objects.create(site_id=site, lead=locked_lead, opportunity=locked_opp,
                                       owner_id=services.owner_for(site, data.get("owner_id"), user.pk), **activity_values(data))
         audit(user, "crm.activity.create", row.number)
         return activity_data(row)

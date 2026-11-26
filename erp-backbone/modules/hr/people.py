@@ -282,7 +282,11 @@ def decide_leave(request, pk):
         if action == "approve" and row.paid and balance(row.employee, row.start) < leave_days(row.start, row.end):
             raise Problem("hr_insufficient_leave", 409)
         if action == "approve":
+            from backbone.site_admin import require_active_site
             from .attendance import ensure_leave_can_be_approved
+            require_active_site(row.site_id, lock=True)
+            if row.employee.archived_at or row.start < row.employee.joined or (row.employee.ended and row.end > row.employee.ended):
+                raise Problem("hr_invalid_dates", 409)
             ensure_leave_can_be_approved(row)
         row.state = "approved" if action == "approve" else "rejected"
         row.decision = string(data, "reason", 500, required=action == "reject")
