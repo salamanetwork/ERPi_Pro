@@ -157,6 +157,7 @@ def add_endpoint(request, pk):
     address=address_for(channel,string(data,"address",254))
     key=s.fingerprint(address)
     def create():
+        one(Site.objects.select_for_update().filter(active=True),row.site_id)
         locked=m.Contact.objects.select_for_update().get(pk=pk)
         if locked.forgotten_at or m.Suppression.objects.filter(site=row.site,channel=channel,endpoint_key=key,reason="forgotten").exists():
             raise Problem("marketing_forgotten",409)
@@ -177,6 +178,7 @@ def consent(request,pk):
             .values("channel","purpose","status","source","created_at")[:200])}
     data=body(request)
     def create():
+        one(Site.objects.select_for_update().filter(active=True),item.site_id)
         current=m.Contact.objects.select_for_update().get(pk=pk)
         if current.forgotten_at:
             raise Problem("marketing_forgotten",409)
@@ -399,6 +401,7 @@ def campaign_action(request,pk,action):
         raise Problem("marketing_provider_preflight_failed",409)
 
     def apply():
+        one(Site.objects.select_for_update().filter(active=True),initial.site_id)
         row=m.Campaign.objects.select_for_update().select_related("template_version","provider").select_for_update(of=("self",)).get(pk=pk)
         if action=="test-send":
             current=account
@@ -534,6 +537,7 @@ def dead_letters(request,pk=None):
             "reason":row.reason,"created_at":row.created_at})
     row=one(rows,pk)
     def requeue():
+        one(Site.objects.select_for_update().filter(active=True),row.delivery.site_id)
         delivery=m.Delivery.objects.select_for_update().get(pk=row.delivery_id)
         if delivery.state!="dead":
             raise Problem("marketing_invalid_state",409)

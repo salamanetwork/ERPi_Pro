@@ -8,6 +8,8 @@ from parties.models import Party
 from .models import Resource,Appointment
 
 def resource(data,scope):
+    from backbone.site_admin import require_active_site
+    require_active_site(scope['site_id'],lock=True)
     item=one(Resource.objects.select_for_update().filter(**scope),data['id']) if data.get('id') else Resource(**scope)
     if item.pk: revision(item,data)
     item.name=string(data,'name',180)
@@ -28,11 +30,17 @@ def resource(data,scope):
     return item,'resource.saved'
 
 def book(data,scope):
+    from backbone.site_admin import require_active_site
+    require_active_site(scope['site_id'],lock=True)
     if 'id' in data:
         item=one(Appointment.objects.select_for_update().filter(**scope),data['id'])
         revision(item,data)
         new=data.get('status')
         if new not in {'scheduled':('confirmed','cancelled'),'confirmed':('completed','cancelled','no_show')}.get(item.status,()):raise Problem('invalid_transition',409)
+        if new=='cancelled':
+            from billing_core.models import Invoice
+            if Invoice.objects.filter(appointment=item).exclude(status='void').exists():
+                raise Problem('appointment_invoiced',409)
         item.status=new
         item.save()
         return item,'appointment.'+new
