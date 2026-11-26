@@ -23,7 +23,7 @@ ZERO = Decimal(0)
 
 
 def location(key, field, site=None):
-    rows = Location.objects.filter(warehouse__active=True, warehouse__site__active=True).select_related("warehouse")
+    rows = Location.objects.filter(active=True, warehouse__active=True, warehouse__site__active=True).select_related("warehouse")
     if site is not None:
         rows = rows.filter(warehouse__site_id=site)
     value = rows.filter(pk=identifier(key, field)).first()
@@ -118,7 +118,7 @@ def apply_lines(row, data):
         with field_path(f"lines.{index}"):
             source = location(value.get("source_id"), "source_id", row.site_id)
             destination = location(value.get("destination_id"), "destination_id", row.destination_id)
-            item = Item.objects.filter(pk=identifier(value.get("item_id"), "item_id"), active=True).first()
+            item = Item.objects.filter(pk=identifier(value.get("item_id"), "item_id"), active=True, is_deleted=False).first()
             if source.pk == destination.pk or item is None:
                 raise Problem("supply_invalid_line")
             key = (item.pk, source.pk, destination.pk)
@@ -224,7 +224,9 @@ def dispatch(row, user, data, settings):
         if key in seen:
             raise Problem("supply_duplicate_line")
         seen.add(key)
-        line = find(row.lines.select_related("item", "source", "reservation"), key)
+        line = find(row.lines.select_for_update(of=("self",)).select_related("item", "source", "reservation"), key)
+        location(line.source_id, "source_id", row.site_id)
+        location(line.destination_id, "destination_id", row.destination_id)
         amount = quantity(value)
         if not hasattr(line, "reservation") or amount > line.reservation.quantity:
             raise Problem("supply_exceeds_reserved", 409)
@@ -266,7 +268,7 @@ def receive(row, user, data, settings, returned=False):
         if key in seen:
             raise Problem("supply_duplicate_line")
         seen.add(key)
-        line = find(shipment.lines.select_related("line__item", "line__source", "line__destination", "dispatch"),
+        line = find(shipment.lines.select_for_update().select_related("line__item", "line__source", "line__destination", "dispatch"),
                     key)
         qty = quantity(value)
         if qty > line.remaining - open_reported(line):
@@ -274,6 +276,7 @@ def receive(row, user, data, settings, returned=False):
         amount = allocate(line, qty)
         target, site, kind = ((line.line.source, row.site_id, "transfer_back") if returned else
                               (line.line.destination, row.destination_id, "transfer_in"))
+        location(target.pk, "source_id" if returned else "destination_id", site)
         record(user, settings[site], line.line.item, target, kind, qty, amount,
                trace(row, line, qty, amount, reason), original=line.dispatch)
     row.state = downstream_state(row)
@@ -281,7 +284,9 @@ def receive(row, user, data, settings, returned=False):
 
 
 def report(row, user, data):
-    line = find(ShipmentLine.objects.filter(shipment__transfer=row),
+    if row.state not in ("in_transit", "partial"):
+        raise Problem("supply_invalid_state", 409)
+    line = find(ShipmentLine.objects.select_for_update().filter(shipment__transfer=row),
                 identifier(data.get("shipment_line_id"), "shipment_line_id"))
     qty = quantity(data)
     kind = data.get("kind")
@@ -342,9 +347,9 @@ def action(request, pk, operation):
         require(user, "accounting.post", None)
 
     def commit():
+        settings = stock_settings(current)
         row = find(accessible(user).select_for_update(), pk)
         check_revision(row, data)
-        settings = stock_settings(row)
         note = ""
         if operation == "edit":
             if row.state != "draft":
@@ -374,11 +379,11 @@ def action(request, pk, operation):
 @endpoint("GET", module=MODULE)
 def catalog(request):
     require(request.user, "supply.view")
-    locations = Location.objects.filter(warehouse__active=True, warehouse__site__active=True).select_related("warehouse__site")
+    locations = Location.objects.filter(active=True, warehouse__active=True, warehouse__site__active=True).select_related("warehouse__site")
     allowed = scopes(request.user, "supply.view")
     if None not in allowed and not (allowed & scopes(request.user, "supply.prepare") or None in scopes(request.user, "supply.prepare")):
         locations = locations.filter(warehouse__site_id__in=allowed)
-    return {"items": list(Item.objects.filter(active=True).order_by("code").values("id", "code", "name")),
+    return {"items": list(Item.objects.filter(active=True, is_deleted=False).order_by("code").values("id", "code", "name")),
             "locations": [{"id":row.pk, "site_id":row.warehouse.site_id, "site_name":row.warehouse.site.name, "name":f"{row.warehouse.name} / {row.name}"}
                           for row in locations.order_by("warehouse__site_id", "warehouse__name", "code")]}
 
@@ -441,8 +446,8 @@ def sales_reservation(request, pk, operation):
     require(user, "supply.view", current.site_id)
 
     def commit():
+        locked_site(current.site_id)
         row = find(sales.select_for_update(), pk)
-        locked_site(row.site_id)
         if row.status != "confirmed":
             raise Problem("sales_order_not_confirmed", 409)
         live = Reservation.objects.filter(order=row)
