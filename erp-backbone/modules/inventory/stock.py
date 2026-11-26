@@ -51,10 +51,19 @@ def business_date(settings, moment):
 
 
 def record(user, settings, item, location, kind, quantity, value, facts, *, receipt=None, original=None, hold_owner=None, moving_average=False):
-    from .models import Warehouse
+    from .models import Location
 
-    if not Warehouse.objects.filter(pk=location.warehouse_id, active=True).exists():
-        raise Problem("invalid_warehouse", 409)
+    if getattr(item, "is_deleted", False):
+        raise Problem("invalid_item", 409)
+    if not Location.objects.filter(
+        pk=location.pk,
+        active=True,
+        is_deleted=False,
+        warehouse__active=True,
+        warehouse__is_deleted=False,
+        warehouse__site_id=settings.site_id,
+    ).exists():
+        raise Problem("invalid_location", 409)
     position, valuation = balance_rows(settings.site_id, item, location)
     if kind in ("maint_issue", "maint_return"):
         position = Position.objects.select_for_update().get(pk=position.pk)

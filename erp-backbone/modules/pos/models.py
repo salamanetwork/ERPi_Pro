@@ -110,6 +110,7 @@ class PosSaleLine(models.Model):
     item = models.ForeignKey("inventory.Item", on_delete=models.PROTECT)
     quantity = models.DecimalField(max_digits=18, decimal_places=4)
     unit_price = models.DecimalField(max_digits=18, decimal_places=2)
+    unit_cost = models.DecimalField(max_digits=18, decimal_places=4, default=Decimal("0.0000"))
     discount = models.DecimalField(max_digits=18, decimal_places=2, default=Decimal("0.00"))
     line_total = models.DecimalField(max_digits=18, decimal_places=2)
     tax_amount = models.DecimalField(max_digits=18, decimal_places=2, default=Decimal("0.00"))

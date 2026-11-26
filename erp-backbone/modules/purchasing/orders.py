@@ -85,7 +85,7 @@ def supplier(request, pk):
         from backbone.access import has_permission
         if not any(has_permission(request.user, key, None) for key in ("suppliers.view", "suppliers.manage")):
             raise Problem("forbidden", 403)
-        row = Supplier.objects.filter(pk=pk).first()
+        row = Supplier.objects.filter(pk=pk, is_deleted=False).first()
         if row is None:
             raise Problem("not_found", 404)
         return {"record": supplier_record(row), "currencies": CURRENCIES}
@@ -93,7 +93,7 @@ def supplier(request, pk):
     data = body(request)
     values = supplier_values(data)
     with transaction.atomic():
-        row = Supplier.objects.select_for_update().filter(pk=pk).first()
+        row = Supplier.objects.select_for_update().filter(pk=pk, is_deleted=False).first()
         if row is None:
             raise Problem("not_found", 404)
         check_revision(data, row)
@@ -110,7 +110,7 @@ def supplier(request, pk):
 
 def active_supplier(pk):
     supplier_id = identifier(pk, "supplier")
-    row = Supplier.objects.select_for_update().filter(pk=supplier_id, active=True).first()
+    row = Supplier.objects.select_for_update().filter(pk=supplier_id, active=True, is_deleted=False).first()
     if row is None:
         raise Problem("supplier_unavailable", 409)
     return row
@@ -202,7 +202,10 @@ def convert(request, pk):
 
 
 def locked_order(user, pk, permission, data, status):
+    from backbone.site_admin import require_active_site
+
     _, row = scoped_document(user, "po", pk, lock=True)
+    require_active_site(row.site_id, lock=True)
     require(user, permission, row.site_id)
     reject_archived("po", row)
     check_revision(data, row)
@@ -292,7 +295,6 @@ def issue(request, pk):
     data = body(request)
     with transaction.atomic():
         row = locked_order(user, pk, "purchasing.po.issue", data, PurchaseOrder.Status.DRAFT)
-        invoke_extension("project_purchase_new",row.pk)
         supplier = active_supplier(row.supplier_id)
         if row.total <= 0:
             raise Problem("invalid_total")
@@ -309,6 +311,7 @@ def issue(request, pk):
             "issued_by": user.get_username(), "issued_by_id": user.pk,
         }
         row.save(update_fields=["issued_by", "issued_at", "status", "revision", "snapshot"])
+        invoke_extension("project_purchase_new", row.pk)
         audit_order(user, "issue", row)
         return detail(row)
 

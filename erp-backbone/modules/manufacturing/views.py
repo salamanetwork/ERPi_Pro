@@ -7,6 +7,7 @@ from accounting.views import day_field
 from backbone.access import audit, has_permission, scopes, visible
 from backbone.http import Problem, body, endpoint, identifier, once, require, string
 from backbone.models import ModuleState, Site
+from backbone.site_admin import require_active_site
 from backbone.registry import enabled_modules
 from backbone.services.pagination import paginate, positive_filter
 from inventory.models import Item, Location, Unit
@@ -56,7 +57,7 @@ def catalog(request):
     sites = Site.objects.filter(active=True)
     if None not in allowed:
         sites = sites.filter(pk__in=allowed)
-    locations = Location.objects.filter(warehouse__site__in=sites, warehouse__active=True).select_related("warehouse")
+    locations = Location.objects.filter(active=True, is_deleted=False, warehouse__site__in=sites, warehouse__active=True, warehouse__is_deleted=False).select_related("warehouse")
     purchase_orders = []
     if "purchase_orders" in enabled_modules():
         planning_sites = scopes(user,"manufacturing.plan")
@@ -64,7 +65,7 @@ def catalog(request):
         purchase_orders = issued_orders_for_planning(selected)
     return {"sites":list(sites.order_by("name").values("id","name")),
             "purchase_orders":purchase_orders,
-            "items":list(Item.objects.filter(active=True).order_by("code").values("id","name","code","base_unit_id")),
+            "items":list(Item.objects.filter(active=True, is_deleted=False).order_by("code").values("id","name","code","base_unit_id")),
             "units":list(Unit.objects.order_by("code").values("id","code")),
             "locations":[{"id":row.pk,"site_id":row.warehouse.site_id,"name":f"{row.warehouse.name} / {row.name}"}
                          for row in locations.order_by("warehouse__site_id","warehouse__name","name")]}
@@ -82,6 +83,7 @@ def bom_list(request):
     scoped(user,"bom",site)
 
     def create():
+        require_active_site(site, lock=True)
         locked_site(site)
         product = item(data)
         row = Bill.objects.create(site_id=site, item=product, version=bills.next_version(site,product.pk),
@@ -102,6 +104,7 @@ def bom(request, pk):
     data = body(request)
 
     def commit():
+        require_active_site(row.site_id, lock=True)
         locked_site(row.site_id)
         current = get(rows.select_for_update(of=("self",)),pk)
         revision(current,data)
@@ -147,7 +150,7 @@ def order_data(row, detail=False, user=None):
                     batches=[{"id":batch.pk,"quantity":str(batch.quantity),"held":batch.movement_id is None,
                               "at":batch.received_at.isoformat(),"movement_id":batch.movement_id}
                              for batch in row.batches.all()],
-                    activities=[{"id":act.pk,"material":act.material.item.name,"action":act.action,"quantity":str(act.quantity),
+                    activities=[{"id":act.pk,"material":act.material.item.name if act.material else None,"action":act.action,"quantity":str(act.quantity),
                                  "value":str(act.value),"reason":act.reason,"movement_id":act.movement_id,
                                  "source_id":act.movement.location_id,
                                  "entry_id":act.movement.posting.entry_id}
@@ -163,6 +166,7 @@ def order_data(row, detail=False, user=None):
 
 def new_order(user, data, site):
     scoped(user,"prepare",site)
+    require_active_site(site, lock=True)
     locked_site(site)
     row = Order.objects.create(site_id=site,item=item(data),source=place(data,"source_id",site),
                                destination=place(data,"destination_id",site),due=day_field(data,"due"),quantity=qty(data))
@@ -204,6 +208,7 @@ def work(request, pk, operation=None):
         if operation=="release" and not ModuleState.objects.select_for_update().get(module_id=MODULE).enabled:
             raise Problem("module_disabled",404)
         locked = get(rows.select_for_update(of=("self",)),pk)
+        require_active_site(locked.site_id, lock=True)
         settings = locked_site(locked.site_id)
         revision(locked,data)
         reason = ""
@@ -267,6 +272,7 @@ def policies(request):
     if type(lead) is not int or not 0<=lead<=365:
         raise Problem("invalid_lead_days",field="lead_days")
     with transaction.atomic():
+        require_active_site(site, lock=True)
         locked_site(site)
         product = item(data)
         source = place(data,"source_id",site if method=="make" else None) if method!="buy" else None
@@ -327,6 +333,7 @@ def plans(request):
     scoped(user,"plan",site)
 
     def create():
+        require_active_site(site, lock=True)
         settings = locked_site(site)
         start,end = planning.horizon(data,business_date(settings,timezone.now()))
         requirements,dates,mappings = plan_inputs(data)
@@ -361,6 +368,7 @@ def convert(request, pk):
         destination_id = data.get("destination_id") or row.facts["destination_id"]
         source = place({"source_id":source_id},"source_id") if operation=="transfer" else None
         for location_site in sorted({site,source.warehouse.site_id} if source else {site}):
+            require_active_site(location_site, lock=True)
             settings = locked_site(location_site)
             if location_site==site:
                 today = business_date(settings,timezone.now())

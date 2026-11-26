@@ -3,33 +3,40 @@ from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
 
-from accounting.models import Account, Entry, Period
-from accounting.services import ledger_lock, period_for, posted_entry, write_lines
+from accounting.models import Account, Entry
+from accounting.services import ledger_lock, period_for, write_lines
 from backbone.http import Problem
-from inventory.models import Item, Location, Movement, Position, Warehouse
+from inventory.models import Item, Location, Movement, Position, Valuation
 from parties.models import Party
 from sales.models import Customer, Document as SalesDocument
 from .models import PosPayment, PosSale, PosSaleLine, PosShift, PosTerminal
 
 TWOPLACES = Decimal("0.01")
+FOURPLACES = Decimal("0.0001")
 
 
 def _q2(val):
     return Decimal(str(val or "0")).quantize(TWOPLACES, rounding=ROUND_HALF_UP)
 
 
+def _q4(val):
+    return Decimal(str(val or "0")).quantize(FOURPLACES, rounding=ROUND_HALF_UP)
+
+
 def _get_or_create_walkin_customer(site):
-    stamp = timezone.now().strftime("%Y%m%d%H%M%S%f")
-    code = f"WALKIN-{stamp[:18]}"
+    code = f"WALKIN-S{site.id}"[:24]
+    customer = Customer.objects.select_related("party").filter(code=code).first()
+    if customer is not None:
+        return customer.party, customer
     party = Party.objects.create(
         site=site,
         party_type="customer",
-        name_en=f"Walk-in Customer ({stamp[:14]})",
-        name_ar=f"عميل نقدي عابر ({stamp[:14]})",
+        name_en=f"Walk-in Customer ({site.name})",
+        name_ar=f"عميل نقدي عابر ({site.name})",
     )
     customer = Customer.objects.create(
         party=party,
-        code=code[:24],
+        code=code,
         name=party.name_en,
         terms=0,
     )
@@ -190,8 +197,6 @@ def close_shift(*, shift: PosShift, closing_balance, actor: str, notes: str = ""
                 description=f"POS Shift #{shift.id} Cash Over/Short Reconciliation",
                 kind="pos_shift_close",
             )
-            # variance > 0 => cash over (Dr Cash, Cr Over/Short)
-            # variance < 0 => cash short (Dr Over/Short, Cr Cash)
             write_lines(entry, [
                 (cash_acc, variance, shift.terminal.site_id, None),
                 (over_short_acc, -variance, shift.terminal.site_id, None),
@@ -237,24 +242,26 @@ def checkout_sale(
     now = timezone.now()
     actor_name = getattr(cashier, "username", str(cashier.pk))
 
-    # Build lines and validate stock with SELECT FOR UPDATE
-    prepared_lines = []
-    subtotal = Decimal("0.00")
-    line_discounts = Decimal("0.00")
-    tax_total = Decimal("0.00")
-    total_cogs = Decimal("0.00")
-
     location = terminal.location
     if location is None and terminal.warehouse_id:
         location = Location.objects.filter(warehouse_id=terminal.warehouse_id).order_by("id").first()
+
+    # Pass 1: Validate items, stock, and compute net line totals before cart discount allocation
+    prepared_lines = []
+    subtotal = Decimal("0.00")
+    line_discounts = Decimal("0.00")
+    net_lines_sum = Decimal("0.00")
 
     for raw in lines_data:
         item_id = raw.get("item_id")
         barcode = (raw.get("barcode") or "").strip()
         if item_id:
-            item = Item.objects.filter(pk=item_id, active=True).first()
+            item = Item.objects.filter(pk=item_id, active=True, is_deleted=False).first()
         elif barcode:
-            item = Item.objects.filter(barcode=barcode, active=True).first() or Item.objects.filter(code=barcode, active=True).first()
+            item = (
+                Item.objects.filter(barcode=barcode, active=True, is_deleted=False).first()
+                or Item.objects.filter(code=barcode, active=True, is_deleted=False).first()
+            )
         else:
             item = None
         if item is None:
@@ -266,17 +273,17 @@ def checkout_sale(
 
         unit_price = _q2(raw.get("unit_price") if raw.get("unit_price") is not None else item.default_price)
         l_disc = _q2(raw.get("discount", "0.00"))
+        if l_disc < Decimal("0.00"):
+            raise Problem("pos_invalid_discount", 400)
         gross_line = _q2(qty * unit_price)
         net_line = _q2(gross_line - l_disc)
         if net_line < Decimal("0.00"):
             raise Problem("pos_invalid_discount", 400)
 
         tax_rate = Decimal(str(raw.get("tax_rate") if raw.get("tax_rate") is not None else terminal.tax_rate))
-        tax_amt = _q2(net_line * tax_rate)
+        unit_cost = Decimal("0.0000")
 
-        # Lock inventory movements/position to prevent negative stock
         if location is not None:
-            list(Movement.objects.select_for_update(of=("self",)).filter(site=site, item=item, location=location))
             pos_row = Position.objects.select_for_update(of=("self",)).filter(site=site, item=item, location=location).first()
             available = pos_row.quantity if pos_row else Decimal("0")
             if available < qty:
@@ -284,9 +291,18 @@ def checkout_sale(
             pos_row.quantity = available - qty
             pos_row.save(update_fields=["quantity"])
 
-            unit_cost = _q2(raw.get("unit_cost", "0.00"))
+            val_row = Valuation.objects.select_for_update(of=("self",)).filter(site=site, item=item).first()
+            if raw.get("unit_cost") is not None:
+                unit_cost = _q4(raw.get("unit_cost"))
+            elif val_row and val_row.quantity > Decimal("0") and val_row.value > Decimal("0"):
+                unit_cost = _q4(val_row.value / val_row.quantity)
+
             line_cost = _q2(qty * unit_cost)
-            total_cogs += line_cost
+            if val_row:
+                val_row.quantity = max(Decimal("0"), val_row.quantity - qty)
+                val_row.value = max(Decimal("0.00"), _q2(val_row.value - line_cost))
+                val_row.save(update_fields=["quantity", "value"])
+
             Movement.objects.create(
                 site=site,
                 item=item,
@@ -300,28 +316,60 @@ def checkout_sale(
                 business_date=today,
                 facts={"terminal": terminal.code, "shift_id": shift.id},
             )
+        else:
+            if raw.get("unit_cost") is not None:
+                unit_cost = _q4(raw.get("unit_cost"))
+            line_cost = _q2(qty * unit_cost)
 
         subtotal += gross_line
         line_discounts += l_disc
-        tax_total += tax_amt
+        net_lines_sum += net_line
         prepared_lines.append({
             "item": item,
             "quantity": qty,
             "unit_price": unit_price,
+            "unit_cost": unit_cost,
+            "line_cost": line_cost,
             "discount": l_disc,
-            "line_total": net_line,
-            "tax_amount": tax_amt,
+            "net_line": net_line,
+            "tax_rate": tax_rate,
         })
 
     cart_discount = _q2(discount_amount)
+    if cart_discount < Decimal("0.00") or cart_discount > net_lines_sum:
+        raise Problem("pos_invalid_discount", 400)
+
+    # Pass 2: Proportionally allocate cart_discount across lines so VAT is computed on post-discount taxable base
+    tax_total = Decimal("0.00")
+    total_cogs = Decimal("0.00")
+    remaining_cart_disc = cart_discount
+
+    for idx, ln in enumerate(prepared_lines):
+        if cart_discount > Decimal("0.00") and net_lines_sum > Decimal("0.00"):
+            if idx == len(prepared_lines) - 1:
+                alloc_disc = remaining_cart_disc
+            else:
+                alloc_disc = _q2(cart_discount * (ln["net_line"] / net_lines_sum))
+                remaining_cart_disc = _q2(remaining_cart_disc - alloc_disc)
+        else:
+            alloc_disc = Decimal("0.00")
+
+        taxable_line = _q2(ln["net_line"] - alloc_disc)
+        tax_amt = _q2(taxable_line * ln["tax_rate"])
+        ln["discount"] = _q2(ln["discount"] + alloc_disc)
+        ln["line_total"] = taxable_line
+        ln["tax_amount"] = tax_amt
+        tax_total += tax_amt
+        total_cogs += ln["line_cost"]
+
     total_discount = _q2(line_discounts + cart_discount)
     grand_total = _q2(subtotal - total_discount + tax_total)
     if grand_total < Decimal("0.00"):
         raise Problem("pos_invalid_total", 400)
 
-    # Validate payments
+    # Validate payments & handle cash change safely so GL stays strictly balanced
     paid_total = Decimal("0.00")
-    cash_paid = Decimal("0.00")
+    cash_tendered = Decimal("0.00")
     card_paid = Decimal("0.00")
     manual_paid = Decimal("0.00")
     normalized_payments = []
@@ -334,7 +382,7 @@ def checkout_sale(
             raise Problem("pos_invalid_payment_amount", 400)
         paid_total += amt
         if method == PosPayment.METHOD_CASH:
-            cash_paid += amt
+            cash_tendered += amt
         elif method == PosPayment.METHOD_CARD:
             card_paid += amt
         else:
@@ -348,7 +396,20 @@ def checkout_sale(
     if paid_total < grand_total:
         raise Problem("pos_insufficient_payment", 409)
 
-    # Resolve customer Party & sales.Customer
+    overpayment = _q2(paid_total - grand_total)
+    if overpayment > Decimal("0.00"):
+        if cash_tendered < overpayment:
+            raise Problem("pos_overpayment_exceeds_cash", 400)
+        # Deduct change returned from the last cash payment so stored PosPayment equals net drawer cash
+        rem_change = overpayment
+        for p in reversed(normalized_payments):
+            if p["method"] == PosPayment.METHOD_CASH and rem_change > Decimal("0.00"):
+                deduct = min(p["amount"], rem_change)
+                p["amount"] = _q2(p["amount"] - deduct)
+                rem_change = _q2(rem_change - deduct)
+        normalized_payments = [p for p in normalized_payments if p["amount"] > Decimal("0.00")]
+    net_cash_paid = _q2(cash_tendered - overpayment)
+
     if customer_party is not None:
         sales_customer = Customer.objects.filter(party=customer_party).first()
         if sales_customer is None:
@@ -364,7 +425,6 @@ def checkout_sale(
     seq = PosSale.objects.filter(terminal=terminal, sale_date=today).count() + 1
     receipt_number = f"{terminal.code}-{today.strftime('%Y%m%d')}-{seq:04d}"
 
-    # Create sales.Document (POS_RECEIPT stored as kind='receipt' with pos snapshot)
     sales_doc = SalesDocument.objects.create(
         kind="receipt",
         site=site,
@@ -394,7 +454,6 @@ def checkout_sale(
         actor=actor_name,
     )
 
-    # Post GL Entry
     ledger, cash_acc, card_acc, rev_acc, tax_acc, cogs_acc, inv_acc, _ = _resolve_gl_accounts(terminal)
     period = period_for(ledger, today)
     gl_entry = Entry.objects.create(
@@ -409,8 +468,8 @@ def checkout_sale(
     )
     net_revenue = _q2(grand_total - tax_total)
     gl_lines = []
-    if cash_paid > Decimal("0.00"):
-        gl_lines.append((cash_acc, cash_paid, site.id, None))
+    if net_cash_paid > Decimal("0.00"):
+        gl_lines.append((cash_acc, net_cash_paid, site.id, None))
     if (card_paid + manual_paid) > Decimal("0.00"):
         gl_lines.append((card_acc, _q2(card_paid + manual_paid), site.id, None))
     if net_revenue > Decimal("0.00"):
@@ -420,7 +479,8 @@ def checkout_sale(
     if total_cogs > Decimal("0.00") and cogs_acc and inv_acc and cogs_acc.pk != inv_acc.pk:
         gl_lines.append((cogs_acc, total_cogs, site.id, None))
         gl_lines.append((inv_acc, -total_cogs, site.id, None))
-    write_lines(gl_entry, gl_lines)
+    if gl_lines:
+        write_lines(gl_entry, gl_lines)
 
     sale = PosSale.objects.create(
         terminal=terminal,
@@ -448,6 +508,7 @@ def checkout_sale(
             item=ln["item"],
             quantity=ln["quantity"],
             unit_price=ln["unit_price"],
+            unit_cost=ln["unit_cost"],
             discount=ln["discount"],
             line_total=ln["line_total"],
             tax_amount=ln["tax_amount"],
@@ -483,7 +544,6 @@ def void_or_refund_sale(*, sale: PosSale, actor_user, reason: str) -> PosSale:
     terminal = sale.terminal
     site = terminal.site
 
-    # Restore stock if terminal tracks location
     location = terminal.location
     if location is None and terminal.warehouse_id:
         location = Location.objects.filter(warehouse_id=terminal.warehouse_id).order_by("id").first()
@@ -494,13 +554,23 @@ def void_or_refund_sale(*, sale: PosSale, actor_user, reason: str) -> PosSale:
             )
             pos_row.quantity += ln.quantity
             pos_row.save(update_fields=["quantity"])
+
+            line_cost = _q2(ln.quantity * ln.unit_cost)
+            if line_cost > Decimal("0.00"):
+                val_row, _ = Valuation.objects.select_for_update(of=("self",)).get_or_create(
+                    site=site, item=ln.item, defaults={"quantity": Decimal("0"), "value": Decimal("0.00")}
+                )
+                val_row.quantity += ln.quantity
+                val_row.value = _q2(val_row.value + line_cost)
+                val_row.save(update_fields=["quantity", "value"])
+
             Movement.objects.create(
                 site=site,
                 item=ln.item,
                 location=location,
                 kind="pos_return",
                 quantity=ln.quantity,
-                value=Decimal("0.00"),
+                value=line_cost,
                 actor=actor_name,
                 actor_id=actor_user.pk,
                 occurred_at=now,
@@ -508,7 +578,6 @@ def void_or_refund_sale(*, sale: PosSale, actor_user, reason: str) -> PosSale:
                 facts={"receipt_number": sale.receipt_number, "reason": reason},
             )
 
-    # Reverse GL lines
     ledger, cash_acc, card_acc, rev_acc, tax_acc, _, _, _ = _resolve_gl_accounts(terminal)
     period = period_for(ledger, today)
     rev_entry = Entry.objects.create(
@@ -523,7 +592,8 @@ def void_or_refund_sale(*, sale: PosSale, actor_user, reason: str) -> PosSale:
     )
     if sale.gl_entry_id:
         orig_lines = list(sale.gl_entry.lines.select_related("account"))
-        write_lines(rev_entry, [(ln.account, -ln.amount, ln.site_id, ln.cost_center_id) for ln in orig_lines])
+        if orig_lines:
+            write_lines(rev_entry, [(ln.account, -ln.amount, ln.site_id, ln.cost_center_id) for ln in orig_lines])
     else:
         net_rev = _q2(sale.total - sale.tax)
         lines = [(rev_acc, net_rev, site.id, None), (cash_acc, -sale.total, site.id, None)]
@@ -533,14 +603,12 @@ def void_or_refund_sale(*, sale: PosSale, actor_user, reason: str) -> PosSale:
 
     is_shift_open = sale.shift.status == PosShift.STATUS_OPEN
     if is_shift_open:
-        # Void before shift close
         sale.payment_status = PosSale.STATUS_VOID
         if sale.sales_document_id:
             sale.sales_document.status = "void"
             sale.sales_document.reason = reason[:1000]
             sale.sales_document.save(update_fields=["status", "reason"])
     else:
-        # Refund after shift close -> create linked Credit Note in sales.Document
         sale.payment_status = PosSale.STATUS_REFUNDED
         if sale.sales_document_id:
             cn = SalesDocument.objects.create(

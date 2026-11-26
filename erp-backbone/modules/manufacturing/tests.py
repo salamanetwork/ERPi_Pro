@@ -257,8 +257,82 @@ class ManufacturingTests(SupplyFixture, TestCase):
         finally:
             customer_created.disconnect(receiver)
 
+    def test_audit_deleted_item_location_and_inactive_site_guards(self):
+        from backbone.models import Site
+        from inventory.models import Location
+
+        del_item = Item.objects.create(
+            code="DEL-PART", name="Deleted Part", base_unit=self.item.base_unit, active=True, is_deleted=True
+        )
+        res_bom = self.post(
+            "manufacturing/boms",
+            {
+                "site_id": self.source.pk,
+                "item_id": self.finished.pk,
+                "quantity": "1",
+                "effective": self.day,
+                "components": [{"item_id": del_item.pk, "quantity": "1"}],
+            },
+            "audit-del-item",
+        )
+        self.assertEqual(res_bom.status_code, 404)
+
+        # Inactive location rejected in BOM component source_id
+        Location.objects.filter(pk=self.last.pk).update(active=False)
+        try:
+            res_loc = self.post(
+                "manufacturing/boms",
+                {
+                    "site_id": self.source.pk,
+                    "item_id": self.finished.pk,
+                    "quantity": "1",
+                    "effective": self.day,
+                    "components": [{"item_id": self.component.pk, "quantity": "1", "source_id": self.last.pk}],
+                },
+                "audit-inactive-loc",
+            )
+            self.assertEqual(res_loc.status_code, 400)
+            self.assertEqual(res_loc.json()["error"], "invalid_source_id")
+        finally:
+            Location.objects.filter(pk=self.last.pk).update(active=True)
+
+        # Inactive site rejected on BOM and production order creation
+        Site.objects.filter(pk=self.source.pk).update(active=False)
+        try:
+            res_site_bom = self.post(
+                "manufacturing/boms",
+                {
+                    "site_id": self.source.pk,
+                    "item_id": self.finished.pk,
+                    "quantity": "1",
+                    "effective": self.day,
+                    "components": [{"item_id": self.component.pk, "quantity": "1"}],
+                },
+                "audit-inactive-site-bom",
+            )
+            self.assertIn(res_site_bom.status_code, (403, 409))
+
+            res_site_ord = self.post(
+                "manufacturing/orders",
+                {
+                    "site_id": self.source.pk,
+                    "item_id": self.finished.pk,
+                    "source_id": self.home.pk,
+                    "destination_id": self.out.pk,
+                    "quantity": "1",
+                    "due": self.day,
+                },
+                "audit-inactive-site-ord",
+            )
+            self.assertIn(res_site_ord.status_code, (403, 409))
+        finally:
+            Site.objects.filter(pk=self.source.pk).update(active=True)
+
 
 class ManufacturingConcurrencyTests(SupplyFixture, TransactionTestCase):
+    def setUp(self):
+        super().setUp()
+
     def test_two_production_orders_compete_for_same_available_stock(self):
         with connections["default"].schema_editor() as editor:
             for version in ("0002_default_ledger","0012_manufacturing_accounts"):

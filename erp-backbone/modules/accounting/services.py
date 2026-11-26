@@ -102,14 +102,17 @@ def effect(ledger, movement):
 def process(row, actor, override=None, note=""):
     if row.state != "pending":
         return row
-    if row.sale_id:
-        from sales.ledger import process_sales
-
-        return process_sales(row, actor, override, note)
-    movement = row.movement
-    ledger = row.ledger
     try:
         with transaction.atomic():
+            row = Posting.objects.select_for_update(of=("self",)).select_related("movement", "sale", "ledger").get(pk=row.pk)
+            if row.state != "pending":
+                return row
+            if row.sale_id:
+                from sales.ledger import process_sales
+
+                return process_sales(row, actor, override, note)
+            movement = row.movement
+            ledger = row.ledger
             if movement.facts.get("currency") != ledger.currency:
                 raise Problem("finance_currency_invalid", 409)
             day = override or movement.business_date
@@ -157,7 +160,7 @@ def observe(ledger, movement):
         return
     row = Posting.objects.create(ledger=ledger, movement=movement)
     if "accounting" in enabled_modules():
-        process(row, "system")
+        movement.posting = process(row, "system")
 
 
 def opening_snapshot(ledger, cutoff):

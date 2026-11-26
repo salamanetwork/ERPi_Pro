@@ -5,6 +5,7 @@ urlpatterns = [
     path('admin/catalog', views.admin_catalog),
     path('terminals/<int:pk>', views.terminal_update),
     path("api/pos/terminals", views.terminals),
+    path("api/pos/terminals/<int:pk>", views.terminal_update),
     path("api/pos/catalog", views.catalog),
     path("api/pos/shifts", views.shifts),
     path("api/pos/shifts/<int:pk>/close", views.shift_close),

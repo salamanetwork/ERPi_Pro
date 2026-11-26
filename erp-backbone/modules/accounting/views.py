@@ -8,7 +8,7 @@ from django.db.models import F, Q, Sum
 from django.utils import timezone
 
 from backbone.validation import field_path
-from backbone.access import audit
+from backbone.access import audit, scopes
 from backbone.http import Problem, body, endpoint, identifier, once, require, site, string
 from purchasing.money import decimal_value
 from .chart import KINDS
@@ -169,12 +169,17 @@ def periods(request):
     start = day_field(body(request), "start", error="invalid_period_start")
     if start.day != 1:
         raise Problem("invalid_period_start")
+    end = month_end(start)
     with transaction.atomic():
         ledger = ledger_lock()
-        row, created = Period.objects.get_or_create(ledger=ledger, start=start, defaults={"end": month_end(start)})
-        if created:
-            audit(request.user, "accounting.period.open", start.isoformat())
-        return {"id": row.pk}, 201 if created else 200
+        existing = Period.objects.filter(ledger=ledger, start=start).first()
+        if existing:
+            return {"id": existing.pk}, 200
+        if Period.objects.filter(ledger=ledger, start__lte=end, end__gte=start).exists():
+            raise Problem("finance_period_overlap", 409)
+        row = Period.objects.create(ledger=ledger, start=start, end=end)
+        audit(request.user, "accounting.period.open", start.isoformat())
+        return {"id": row.pk}, 201
 
 
 @endpoint("POST", module=MODULE)
@@ -351,7 +356,11 @@ def reverse_manual(request, pk):
 
     def create():
         ledger = ledger_lock()
-        original = find(Entry, ledger, pk, kind="manual", posted_at__isnull=False)
+        original = Entry.objects.select_for_update().filter(
+            ledger=ledger, pk=identifier(pk, "id"), kind="manual", posted_at__isnull=False
+        ).first()
+        if original is None:
+            raise Problem("not_found", 404)
         if day < original.date or Entry.objects.filter(reversal_of=original).exists():
             raise Problem("finance_invalid_reversal", 409)
         row = Entry.objects.create(ledger=ledger, kind="manual", date=day, description=reason,
@@ -408,12 +417,28 @@ def retry(request, pk):
         return posting_data(result)
 
 
+def _parse_optional_id(raw, err="invalid_filter"):
+    if not raw:
+        return None
+    if not raw.isascii() or not raw.isdecimal() or len(raw) > 18 or int(raw) < 1:
+        raise Problem(err)
+    return int(raw)
+
+
 @endpoint("GET", module=MODULE)
 def reports(request, kind):
     require_finance(request.user)
     ledger = Ledger.objects.get(pk=1)
+    allowed_sites = scopes(request.user, "accounting.view")
+    site_filter = _parse_optional_id(request.GET.get("site_id"))
+    if site_filter is not None and None not in allowed_sites and site_filter not in allowed_sites:
+        raise Problem("forbidden", 403)
     if kind == "grni":
         rows = Accrual.objects.filter(ledger=ledger).select_related("receipt_movement__receipt__order")
+        if None not in allowed_sites:
+            rows = rows.filter(receipt_movement__site_id__in=[s for s in allowed_sites if s is not None])
+        if site_filter is not None:
+            rows = rows.filter(receipt_movement__site_id=site_filter)
         invoiced = dict(InvoiceMatch.objects.filter(invoice__reversal_entry__isnull=True).values("accrual_id").annotate(total=Sum("amount"))
                         .values_list("accrual_id", "total"))
         return {"items": [{
@@ -430,6 +455,14 @@ def reports(request, kind):
     if end < start:
         raise Problem("invalid_report_range")
     rows = Line.objects.filter(entry__ledger=ledger, entry__posted_at__isnull=False, entry__date__lte=end)
+    if None not in allowed_sites:
+        scoped_ids = [s for s in allowed_sites if s is not None]
+        rows = rows.filter(Q(site_id__in=scoped_ids) | Q(site_id__isnull=True))
+    if site_filter is not None:
+        rows = rows.filter(site_id=site_filter)
+    center_filter = _parse_optional_id(request.GET.get("cost_center_id"))
+    if center_filter is not None:
+        rows = rows.filter(cost_center_id=center_filter)
     if kind == "ledger":
         account_id = request.GET.get("account_id")
         if not account_id or not account_id.isascii() or not account_id.isdecimal() or len(account_id) > 18:

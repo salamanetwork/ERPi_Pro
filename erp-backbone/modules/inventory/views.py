@@ -64,12 +64,12 @@ def draft_values(order, data):
             if not isinstance(entry, dict):
                 raise Problem("invalid_lines")
             line_id = identifier(entry.get("order_line_id"), "order_line")
-            location = resolve(Location, entry.get("location_id"), "location", warehouse=warehouse)
+            location = resolve(Location, entry.get("location_id"), "location", warehouse=warehouse, active=True, is_deleted=False)
             if line_id not in allowed or (line_id, location.pk) in pairs:
                 raise Problem("invalid_order_line")
             pairs.add((line_id, location.pk))
-            item = resolve(Item, entry.get("item_id"), "item", active=True)
-            unit = resolve(Unit, entry.get("unit_id"), "unit")
+            item = resolve(Item, entry.get("item_id"), "item", active=True, is_deleted=False)
+            unit = resolve(Unit, entry.get("unit_id"), "unit", is_deleted=False)
             quantity = decimal_value(entry.get("quantity"), 7, 3, "quantity")
             if quantity <= 0:
                 raise Problem("invalid_quantity", field="quantity", reason="min_value")
@@ -178,7 +178,7 @@ def receipt_movement(user, settings, row, line, source, order_line):
     # Round cumulative purchase quantities so split receipts reconcile to the issued line total.
     value = rounded(after * price) - rounded(before * price)
     base = quantity_in_base(quantity, order_line.factor)
-    location = Location.objects.get(pk=line["location_id"], warehouse=row.warehouse)
+    location = resolve(Location, line["location_id"], "location", warehouse=row.warehouse, active=True, is_deleted=False)
     movement = record(user, settings, order_line.item, location, "receipt", base, value, {
         "purchase_quantity": str(quantity), "purchase_unit_id": order_line.unit_id,
         "conversion_factor": str(order_line.factor), "po_id": row.order_id, "po_line_id": order_line.line_id,
@@ -210,12 +210,12 @@ def confirm(request, pk):
         ready(order)
         register_receipt(order.pk, f"grn:{row.pk}")
         settings = locked_site(row.site_id)
-        if not Warehouse.objects.filter(pk=row.warehouse_id, active=True).exists():
+        if not Warehouse.objects.filter(pk=row.warehouse_id, active=True, is_deleted=False).exists():
             raise Problem("invalid_warehouse", 409)
         sources = {line["id"]: line for line in order.snapshot["lines"]}
         confirmed = []
         for line in row.lines:
-            item = resolve(Item, line["item_id"], "item", active=True)
+            item = resolve(Item, line["item_id"], "item", active=True, is_deleted=False)
             binding = bind_line(order, line, item)
             confirmed.append(receipt_movement(user, settings, row, line, sources[binding.line_id], binding))
         row.lines, row.status, row.confirmed_at = confirmed, "confirmed", timezone.now()
@@ -270,7 +270,7 @@ def balances(request):
         from supply.models import Reservation
         reserved = Reservation.objects.filter(
             location_id=OuterRef("location_id"), item_id=OuterRef("item_id"), quantity__gt=0
-        ).values("location_id").annotate(total=Sum("quantity"))
+        ).values("location_id", "item_id").annotate(total=Sum("quantity"))
         positions = positions.annotate(
             reserved=Coalesce(Subquery(reserved.values("total"), output_field=dec_field), Value(Decimal("0.000"), output_field=dec_field), output_field=dec_field)
         )
@@ -310,10 +310,11 @@ def reverse(request, pk):
     def commit():
         order = PurchaseOrder.objects.select_for_update().get(pk=original.facts["po_id"])
         settings = locked_site(original.site_id)
+        locked_orig = Movement.objects.select_for_update().get(pk=original.pk, kind="receipt")
         binding = OrderLine.objects.get(order=order, line_id=original.facts["po_line_id"])
         factor = Decimal(original.facts["conversion_factor"])
         base = quantity_in_base(quantity, factor)
-        used = -(original.reversals.aggregate(total=Sum("quantity"))["total"] or Decimal(0))
+        used = -(locked_orig.reversals.aggregate(total=Sum("quantity"))["total"] or Decimal(0))
         if base + used > original.quantity or quantity > binding.received:
             raise Problem("inventory_return_exceeds_receipt", 409)
         original_cost = prorate(original.value, used + base, original.quantity) - prorate(original.value, used, original.quantity)
@@ -358,8 +359,8 @@ def opening(request):
             with field_path(f"lines.{index}"):
                 if not isinstance(line, dict):
                     raise Problem("invalid_opening_lines")
-                item = resolve(Item, line.get("item_id"), "item", active=True)
-                location = resolve(Location, line.get("location_id"), "location", warehouse__site_id=site_id, warehouse__active=True)
+                item = resolve(Item, line.get("item_id"), "item", active=True, is_deleted=False)
+                location = resolve(Location, line.get("location_id"), "location", active=True, is_deleted=False, warehouse__site_id=site_id, warehouse__active=True, warehouse__is_deleted=False)
                 quantity = decimal_value(line.get("quantity"), 9, 9, "quantity")
                 cost = decimal_value(line.get("unit_cost"), 9, 9, "unit_cost")
                 if quantity <= 0:

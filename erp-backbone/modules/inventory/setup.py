@@ -27,16 +27,18 @@ def coded(model, data, user, action, **scope):
     if not re.fullmatch(r"[A-Z0-9][A-Z0-9_-]*", code):
         raise Problem("invalid_code")
     extra_defaults = {}
+    raw_id = data.get("id")
+    has_deleted_field = any(f.name == "is_deleted" for f in model._meta.fields)
     if model is Item:
         barcode = (data.get("barcode") or "").strip()[:64]
-        if barcode and Item.objects.filter(barcode=barcode).exists():
+        if barcode and Item.objects.filter(barcode=barcode, is_deleted=False).exclude(pk=identifier(raw_id, "id") if raw_id is not None else None).exists():
             raise Problem("inventory_barcode_exists", 409)
         raw_price = data.get("default_price")
         price_val = decimal_value(raw_price, 12, 2, "default_price") if raw_price not in (None, "") else 0
         if price_val < 0:
             raise Problem("invalid_default_price")
         extra_defaults = {
-            "base_unit": resolve(Unit, data.get("base_unit_id"), "base_unit"),
+            "base_unit": resolve(Unit, data.get("base_unit_id"), "base_unit", is_deleted=False),
             "barcode": barcode,
             "default_price": price_val,
         }
@@ -46,9 +48,8 @@ def coded(model, data, user, action, **scope):
         if type(data.get("active")) is not bool:
             raise Problem("invalid_active")
         extra_defaults["active"] = data["active"]
-    raw_id = data.get("id")
     if raw_id is not None:
-        row = resolve(model, raw_id, "id")
+        row = resolve(model, raw_id, "id", **({"is_deleted": False} if has_deleted_field else {}))
         if model.objects.filter(code=code).exclude(pk=row.pk).exists():
             raise Problem("inventory_code_exists", 409)
         if has_active_field and extra_defaults.get("active") is False and getattr(row, "active", True):
@@ -222,7 +223,11 @@ def location_state(request, pk):
         require(request.user, "inventory.setup", row.warehouse.site_id)
         require(request.user, "inventory.view", row.warehouse.site_id)
         require_active_site(row.warehouse.site_id, lock=True)
-        row = Location.objects.select_for_update().get(pk=pk)
+        row = Location.objects.select_for_update(of=("self",)).select_related("warehouse").get(pk=pk)
+        if row.is_deleted or row.warehouse.is_deleted:
+            raise Problem("not_found", 404)
+        if active and not row.warehouse.active:
+            raise Problem("invalid_warehouse", 409)
         if not active and Position.objects.filter(location=row).exclude(quantity=0).exists():
             raise Problem("location_has_open_records", 409)
         row.active = active
@@ -342,10 +347,19 @@ def delete_setup(request, kind, pk):
             raise Problem("not_found", 404)
         return perform_record_deletion(row, user, "inventory.conversion.delete")
     if kind == "site":
-        from .models import SiteSettings
+        from .models import Movement, SiteSettings
         row = SiteSettings.objects.filter(site_id=pk).first()
         if row is None:
             raise Problem("not_found", 404)
         require(user, "inventory.setup", row.site_id)
-        return perform_record_deletion(row, user, "inventory.site_settings.delete")
+        return perform_record_deletion(
+            row,
+            user,
+            "inventory.site_settings.delete",
+            has_dependencies_fn=lambda s: (
+                s.opening_closed_at is not None
+                or Warehouse.objects.filter(site_id=s.site_id).exists()
+                or Movement.objects.filter(site_id=s.site_id).exists()
+            ),
+        )
     raise Problem("not_found", 404)

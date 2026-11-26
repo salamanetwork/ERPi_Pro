@@ -495,3 +495,89 @@ class PosModuleTestSuite(TestCase):
         )
         self.assertEqual(sale.payment_status, PosSale.STATUS_PAID)
         self.assertEqual(sale.payments.first().method, "manual")
+
+    def test_36_cart_discount_reduces_taxable_base(self):
+        self.terminal.tax_rate = Decimal("0.0500")
+        self.terminal.save()
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        # 2 * 50 = 100 subtotal, 20 cart discount => 80 taxable => 4.00 VAT => 84.00 total
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "2"}],
+            discount_amount="20.00",
+            payments_data=[{"method": "cash", "amount": "84.00"}],
+        )
+        self.assertEqual(sale.tax, Decimal("4.00"))
+        self.assertEqual(sale.total, Decimal("84.00"))
+        self.assertEqual(sum(ln.amount for ln in sale.gl_entry.lines.all()), Decimal("0.00"))
+
+    def test_37_cash_overpayment_returns_change_and_keeps_gl_balanced(self):
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("100.00"))
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "1"}],
+            payments_data=[{"method": "cash", "amount": "100.00"}],
+        )
+        self.assertEqual(sale.total, Decimal("50.00"))
+        self.assertEqual(sale.payments.first().amount, Decimal("50.00"))
+        self.assertEqual(sale.gl_entry.lines.get(account=self.cash_acc).amount, Decimal("50.00"))
+        self.assertEqual(sum(ln.amount for ln in sale.gl_entry.lines.all()), Decimal("0.00"))
+
+    def test_38_moving_average_valuation_drives_cogs_and_return_reversal(self):
+        from inventory.models import Valuation
+        Valuation.objects.create(site=self.site, item=self.item1, quantity=Decimal("10"), value=Decimal("300.00"))
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "2"}],
+            payments_data=[{"method": "cash", "amount": "100.00"}],
+        )
+        self.assertEqual(sale.gl_entry.lines.get(account=self.cogs_acc).amount, Decimal("60.00"))
+        self.assertEqual(Valuation.objects.get(site=self.site, item=self.item1).value, Decimal("240.00"))
+        void_or_refund_sale(sale=sale, actor_user=self.user, reason="Returned by customer")
+        self.assertEqual(Valuation.objects.get(site=self.site, item=self.item1).value, Decimal("300.00"))
+
+    def test_39_api_terminal_create_and_patch_explicit_gl_accounts(self):
+        res = self.client.post(
+            "/api/pos/terminals",
+            data=json.dumps({
+                "site_id": self.site.id,
+                "code": "POS-GL",
+                "name": "GL Mapped Terminal",
+                "cash_account_id": self.cash_acc.id,
+                "revenue_account_id": self.rev_acc.id,
+                "tax_account_id": self.tax_acc.id,
+                "cogs_account_id": self.cogs_acc.id,
+                "inventory_account_id": self.inv_acc.id,
+            }),
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        tid = res.json()["id"]
+        self.assertEqual(res.json()["revenue_account_id"], self.rev_acc.id)
+        self.assertEqual(res.json()["inventory_account_id"], self.inv_acc.id)
+
+        patch_res = self.client.patch(
+            f"/api/pos/terminals/{tid}",
+            data=json.dumps({"over_short_account_id": self.overshort_acc.id}),
+            content_type="application/json",
+        )
+        self.assertEqual(patch_res.status_code, 200)
+        self.assertEqual(patch_res.json()["over_short_account_id"], self.overshort_acc.id)
+
+    def test_40_multisite_isolation_blocks_unauthorized_site_terminals(self):
+        other_site = Site.objects.create(name="Abu Dhabi Branch")
+        PosTerminal.objects.create(site=other_site, code="AUH-01", name="AUH Counter", cash_account=self.cash_acc)
+        res = self.client.get("/api/pos/terminals")
+        self.assertEqual(res.status_code, 200)
+        codes = [t["code"] for t in res.json()["items"]]
+        self.assertEqual(codes, ["POS-01"])
+
+    def test_41_walkin_customer_reused_per_site(self):
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        s1 = checkout_sale(shift=shift, cashier=self.user, lines_data=[{"item_id": self.item1.id, "quantity": "1"}], payments_data=[{"method": "cash", "amount": "50.00"}])
+        s2 = checkout_sale(shift=shift, cashier=self.user, lines_data=[{"item_id": self.item1.id, "quantity": "1"}], payments_data=[{"method": "cash", "amount": "50.00"}])
+        self.assertEqual(s1.customer_id, s2.customer_id)

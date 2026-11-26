@@ -8,7 +8,7 @@ from django.utils.html import escape
 from django.views.decorators.cache import never_cache
 
 from accounting.models import Account
-from backbone.access import audit, has_permission, preload_scopes
+from backbone.access import audit, has_permission, preload_scopes, scopes
 from backbone.http import Problem, endpoint
 from backbone.models import Site
 from inventory.models import Item, Location, Position, Warehouse
@@ -30,6 +30,14 @@ def _require_perm(user, perm, site=None):
     site_id = site.pk if hasattr(site, "pk") else site
     if not has_permission(user, perm, site_id if site_id is not None else ...):
         raise Problem("forbidden", 403)
+
+
+def _permitted_site_ids(user, perm):
+    preload_scopes(user)
+    allowed = scopes(user, perm)
+    if None in allowed:
+        return None
+    return [sid for sid in allowed if sid is not None]
 
 
 def _serialize_terminal(t: PosTerminal):
@@ -120,26 +128,36 @@ def _serialize_sale(sale: PosSale):
 @endpoint("GET", "POST")
 def terminals(request):
     if request.method == "GET":
-        _require_perm(request.user, "pos.view")
-        qs = PosTerminal.objects.select_related("site").filter(is_active=True).order_by("code")
         site_id = request.GET.get("site_id")
         if site_id:
-            qs = qs.filter(site_id=site_id)
+            _require_perm(request.user, "pos.view", int(site_id))
+            qs = PosTerminal.objects.select_related("site").filter(is_active=True, site_id=site_id).order_by("code")
+        else:
+            allowed = _permitted_site_ids(request.user, "pos.view")
+            if allowed is not None and not allowed:
+                raise Problem("forbidden", 403)
+            qs = PosTerminal.objects.select_related("site").filter(is_active=True).order_by("code")
+            if allowed is not None:
+                qs = qs.filter(site_id__in=allowed)
         return {"items": [_serialize_terminal(t) for t in qs]}
 
-    _require_perm(request.user, "pos.admin")
     data = _body(request)
     site = get_object_or_404(Site, pk=data.get("site_id"))
-    cash_acc = get_object_or_404(Account, pk=data.get("cash_account_id"))
+    _require_perm(request.user, "pos.admin", site)
+    cash_acc = get_object_or_404(Account, pk=data.get("cash_account_id"), active=True)
     t = PosTerminal.objects.create(
         site=site,
         code=(data.get("code") or "").strip()[:32],
         name=(data.get("name") or "").strip()[:120],
         cash_account=cash_acc,
-        card_account_id=data.get("card_account_id"),
-        over_short_account_id=data.get("over_short_account_id"),
-        warehouse_id=data.get("warehouse_id"),
-        location_id=data.get("location_id"),
+        card_account_id=data.get("card_account_id") or None,
+        over_short_account_id=data.get("over_short_account_id") or None,
+        revenue_account_id=data.get("revenue_account_id") or None,
+        tax_account_id=data.get("tax_account_id") or None,
+        cogs_account_id=data.get("cogs_account_id") or None,
+        inventory_account_id=data.get("inventory_account_id") or None,
+        warehouse_id=data.get("warehouse_id") or None,
+        location_id=data.get("location_id") or None,
         tax_rate=Decimal(str(data.get("tax_rate", "0.0000"))),
         is_active=True,
     )
@@ -185,9 +203,13 @@ def catalog(request):
 @endpoint("GET", "POST")
 def shifts(request):
     if request.method == "GET":
-        _require_perm(request.user, "pos.view")
-        qs = PosShift.objects.select_related("terminal", "cashier").order_by("-opened_at")[:50]
-        return {"items": [_serialize_shift(s) for s in qs]}
+        allowed = _permitted_site_ids(request.user, "pos.view")
+        if allowed is not None and not allowed:
+            raise Problem("forbidden", 403)
+        qs = PosShift.objects.select_related("terminal", "cashier").order_by("-opened_at")
+        if allowed is not None:
+            qs = qs.filter(terminal__site_id__in=allowed)
+        return {"items": [_serialize_shift(s) for s in qs[:50]]}
 
     data = _body(request)
     terminal = get_object_or_404(PosTerminal, pk=data.get("terminal_id"))
@@ -272,12 +294,16 @@ table{{width:100%;border-collapse:collapse;margin-top:12px}}td,th{{border:1px so
 @endpoint("GET", "POST")
 def sales(request):
     if request.method == "GET":
-        _require_perm(request.user, "pos.view")
-        qs = PosSale.objects.select_related("terminal", "shift", "customer", "sales_document", "refund_document").order_by("-created_at")[:100]
+        allowed = _permitted_site_ids(request.user, "pos.view")
+        if allowed is not None and not allowed:
+            raise Problem("forbidden", 403)
+        qs = PosSale.objects.select_related("terminal", "shift", "customer", "sales_document", "refund_document").order_by("-created_at")
+        if allowed is not None:
+            qs = qs.filter(terminal__site_id__in=allowed)
         shift_id = request.GET.get("shift_id")
         if shift_id:
             qs = qs.filter(shift_id=shift_id)
-        return {"items": [_serialize_sale(s) for s in qs]}
+        return {"items": [_serialize_sale(s) for s in qs[:100]]}
 
     data = _body(request)
     shift = get_object_or_404(PosShift.objects.select_related("terminal", "terminal__site"), pk=data.get("shift_id"))
@@ -356,6 +382,7 @@ table{{width:100%;border-collapse:collapse;font-size:13px}}td,th{{border-bottom:
 @never_cache
 @endpoint("GET", "POST")
 def admin_catalog(request):
+    from django.db import transaction
     from inventory.models import Movement, Unit
     from django.utils import timezone
 
@@ -439,30 +466,31 @@ def admin_catalog(request):
         delta = Decimal(str(data.get("delta") or "0"))
         if delta == 0:
             raise Problem("invalid_quantity", 422)
-        pos_row, _ = Position.objects.get_or_create(
-            site=terminal.site,
-            item=it,
-            location_id=terminal.location_id,
-            defaults={"quantity": Decimal("0")},
-        )
-        new_qty = pos_row.quantity + delta
-        if new_qty < 0:
-            raise Problem("insufficient_stock", 409)
-        pos_row.quantity = new_qty
-        pos_row.save(update_fields=["quantity"])
-        Movement.objects.create(
-            site=terminal.site,
-            item=it,
-            location_id=terminal.location_id,
-            quantity=delta,
-            value=Decimal("0.00"),
-            kind="adjustment",
-            occurred_at=timezone.now(),
-            business_date=timezone.localdate(),
-            actor=request.user.get_username(),
-            actor_id=request.user.pk,
-            facts={"terminal": terminal.code, "source": "pos_catalog"},
-        )
+        with transaction.atomic():
+            pos_row, _ = Position.objects.select_for_update(of=("self",)).get_or_create(
+                site=terminal.site,
+                item=it,
+                location_id=terminal.location_id,
+                defaults={"quantity": Decimal("0")},
+            )
+            new_qty = pos_row.quantity + delta
+            if new_qty < 0:
+                raise Problem("insufficient_stock", 409)
+            pos_row.quantity = new_qty
+            pos_row.save(update_fields=["quantity"])
+            Movement.objects.create(
+                site=terminal.site,
+                item=it,
+                location_id=terminal.location_id,
+                quantity=delta,
+                value=Decimal("0.00"),
+                kind="adjustment",
+                occurred_at=timezone.now(),
+                business_date=timezone.localdate(),
+                actor=request.user.get_username(),
+                actor_id=request.user.pk,
+                facts={"terminal": terminal.code, "source": "pos_catalog"},
+            )
         audit(request.user, "pos.catalog.stock_adjust", f"{it.code}:{delta}")
         return {"item_id": it.id, "stock": str(pos_row.quantity)}
 
@@ -472,19 +500,21 @@ def admin_catalog(request):
 @never_cache
 @endpoint("PATCH")
 def terminal_update(request, pk: int):
-    _require_perm(request.user, "pos.admin")
     t = get_object_or_404(PosTerminal, pk=pk)
+    _require_perm(request.user, "pos.admin", t.site)
     data = _body(request)
     if "name" in data and str(data["name"]).strip():
         t.name = str(data["name"]).strip()[:120]
     if "tax_rate" in data and data["tax_rate"] not in (None, ""):
         t.tax_rate = Decimal(str(data["tax_rate"]))
-    if "warehouse_id" in data and data["warehouse_id"]:
-        t.warehouse_id = int(data["warehouse_id"])
-    if "location_id" in data and data["location_id"]:
-        t.location_id = int(data["location_id"])
+    if "cash_account_id" in data and data["cash_account_id"]:
+        t.cash_account = get_object_or_404(Account, pk=int(data["cash_account_id"]), active=True)
+    for fk_field in ("card_account_id", "over_short_account_id", "revenue_account_id", "tax_account_id", "cogs_account_id", "inventory_account_id", "warehouse_id", "location_id"):
+        if fk_field in data:
+            setattr(t, fk_field, int(data[fk_field]) if data[fk_field] else None)
     if "is_active" in data:
         t.is_active = bool(data["is_active"])
+    t.revision += 1
     t.save()
     audit(request.user, "pos.terminal.update", f"pos_terminal:{t.pk}")
     return _serialize_terminal(t)
