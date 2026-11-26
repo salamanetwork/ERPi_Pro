@@ -641,3 +641,10 @@ label.sop-step input[type=checkbox] {width:auto;flex:none;margin-block-start:0.2
 .ui-zoom-group .ui-zoom-btn, .ui-zoom-group .ui-zoom-readout { border: 0; border-radius: 0; min-height: 33px; padding: 4px 8px; font-size: 12.5px; line-height: 1; }
 .ui-zoom-group .ui-zoom-readout { min-width: 48px; font-variant-numeric: tabular-nums; border-inline: 1px solid var(--border); }
 .ui-zoom-group button:disabled { opacity: 0.45; }
+
+/* Global layout safeguards: prevent stretched buttons and mis-aligned inline checkboxes */
+.actions > label { display: inline-flex; align-items: center; gap: 8px; }
+.actions > label > select, .actions > label > input:not([type=checkbox]) { width: auto; min-inline-size: 130px; }
+.actions > label:has(> input[type=checkbox]) { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.actions > label > input[type=checkbox], label.check > input[type=checkbox] { width: auto; flex: none; margin: 0; }
+form > button[type=submit], form > button.primary, .record-form > button { justify-self: start; width: auto; }

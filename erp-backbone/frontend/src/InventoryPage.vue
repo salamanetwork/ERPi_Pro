@@ -9,12 +9,13 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { allows, api, createRequest, type Workspace } from './api'
 import { message, t } from './i18n'
+import { notify } from './useUnifiedNotice'
 import DocumentTools from './DocumentTools.vue'
 
 type Named = {id: number; name: string; code: string}
 type Catalog = {units: Named[]; items: (Named & {active: boolean; base_unit_id: number})[];
-  warehouses: (Named & {site_id: number; active:boolean})[]; locations: (Named & {warehouse_id: number})[];
-  sites: {id: number; name: string}[]; settings: {site_id: number; opening_closed_at: string | null}[];
+  warehouses: (Named & {site_id: number; active:boolean})[]; locations: (Named & {warehouse_id: number; active?: boolean})[];
+  sites: {id: number; name: string}[]; settings: {site_id: number; timezone: string; day_start: string; opening_closed_at: string | null}[];
   conversions: {id: number; item_id: number | null; unit_id: number; base_unit_id: number; factor: string}[]}
 type Line = {order_line_id: number; item_id?: number; unit_id?: number; location_id?: number; quantity: string;
   description?: string; movement_id?: number; base_quantity?: string; amount?: string}
@@ -64,11 +65,191 @@ const companySetup = computed(() => scoped('setup', null))
 const mode = ref('warehouse')
 const setupOptions = computed(() => [
   ...(companySetup.value ? [
-    {id: 'conversion', label: 'Unit conversion'},
+    {id: 'conversion', label: t('Unit conversion')},
   ] : []),
-  {id: 'warehouse', label: 'Warehouse'}, {id: 'location', label: 'Location'}, {id: 'site', label: 'Business day'},
+  {id: 'warehouse', label: t('Warehouse')}, {id: 'location', label: t('Location')}, {id: 'site', label: t('Business day')},
 ])
 const showUnitForm = ref(false)
+const showSetupForm = ref(false)
+const editingUnitId = ref<number | null>(null)
+const setupTab = ref<'warehouses' | 'units' | 'warehouse' | 'location' | 'conversion' | 'site'>('warehouses')
+const overviewSubTab = ref<'warehouses' | 'locations'>('warehouses')
+const locationStatus = ref<'all' | 'active' | 'inactive'>('all')
+const setupViewMode = ref<'list' | 'grid'>('list')
+const setupSearch = ref('')
+const setupStatus = ref<'all' | 'active' | 'inactive'>('all')
+const setupWarehouseFilter = ref<number | null>(null)
+const setupPage = ref(1)
+const setupSize = ref(25)
+
+function closeSetupForm(target = setupTab.value) {
+  setup.value = {}
+  showSetupForm.value = false
+  if (['warehouse', 'location', 'conversion', 'site'].includes(target)) {
+    mode.value = target
+  }
+}
+
+function openNewSetupForm(target: 'warehouse' | 'location' | 'conversion' | 'site') {
+  setupTab.value = target
+  mode.value = target
+  setup.value = {}
+  if (target === 'site') {
+    setup.value.timezone = 'Asia/Dubai'
+    setup.value.day_start = '00:00'
+  }
+  showSetupForm.value = true
+}
+
+function openSetupTab(target: 'warehouses' | 'units' | 'warehouse' | 'location' | 'conversion' | 'site') {
+  setupTab.value = target
+  setupSearch.value = ''
+  setupStatus.value = 'all'
+  locationStatus.value = 'all'
+  setupWarehouseFilter.value = null
+  setupPage.value = 1
+  showUnitForm.value = false
+  editingUnitId.value = null
+  closeSetupForm(target)
+}
+
+function editWarehouse(row: {id: number; code: string; name: string; site_id: number}) {
+  setupTab.value = 'warehouse'
+  mode.value = 'warehouse'
+  setup.value = { id: row.id, code: row.code, name: row.name, site_id: row.site_id }
+  showSetupForm.value = true
+}
+
+function editLocation(row: {id: number; code: string; name: string; warehouse_id: number}) {
+  setupTab.value = 'location'
+  mode.value = 'location'
+  setup.value = { id: row.id, code: row.code, name: row.name, warehouse_id: row.warehouse_id }
+  showSetupForm.value = true
+}
+
+function editUnit(row: {id: number; code: string; name: string}) {
+  setupTab.value = 'units'
+  editingUnitId.value = row.id
+  unitForm.value = { code: row.code, name: row.name }
+  showUnitForm.value = true
+}
+
+function editConversion(row: {id: number; item_id: number | null; unit_id: number; base_unit_id: number; factor: string}) {
+  setupTab.value = 'conversion'
+  mode.value = 'conversion'
+  setup.value = { id: row.id, item_id: row.item_id, unit_id: row.unit_id, base_unit_id: row.base_unit_id, factor: row.factor }
+  showSetupForm.value = true
+}
+
+function editSiteSetting(row: {site_id: number; timezone: string; day_start: string}) {
+  setupTab.value = 'site'
+  mode.value = 'site'
+  setup.value = { site_id: row.site_id, timezone: row.timezone || 'Asia/Dubai', day_start: (row.day_start || '00:00').slice(0, 5) }
+  showSetupForm.value = true
+}
+
+const allowedWarehouses = computed(() =>
+  (catalog.value?.warehouses || []).filter(w => scoped('setup', w.site_id))
+)
+
+const filteredWarehouses = computed(() => {
+  const q = setupSearch.value.trim().toLowerCase()
+  return allowedWarehouses.value.filter(w => {
+    if (setupStatus.value === 'active' && !w.active) return false
+    if (setupStatus.value === 'inactive' && w.active) return false
+    if (!q) return true
+    const sName = name(catalog.value?.sites as any, w.site_id)
+    return `${w.code || ''} ${w.name} ${sName}`.toLowerCase().includes(q)
+  })
+})
+const pagedWarehouses = computed(() => {
+  const start = (setupPage.value - 1) * setupSize.value
+  return filteredWarehouses.value.slice(start, start + setupSize.value)
+})
+
+const filteredLocations = computed(() => {
+  const q = setupSearch.value.trim().toLowerCase()
+  const whIds = new Set(allowedWarehouses.value.map(w => w.id))
+  return (catalog.value?.locations || []).filter(loc => {
+    if (!whIds.has(loc.warehouse_id)) return false
+    if (locationStatus.value === 'active' && loc.active === false) return false
+    if (locationStatus.value === 'inactive' && loc.active !== false) return false
+    if (setupWarehouseFilter.value && loc.warehouse_id !== setupWarehouseFilter.value) return false
+    if (!q) return true
+    const wName = name(catalog.value?.warehouses, loc.warehouse_id)
+    return `${loc.code || ''} ${loc.name} ${wName}`.toLowerCase().includes(q)
+  })
+})
+const pagedLocations = computed(() => {
+  const start = (setupPage.value - 1) * setupSize.value
+  return filteredLocations.value.slice(start, start + setupSize.value)
+})
+
+const filteredUnits = computed(() => {
+  const q = setupSearch.value.trim().toLowerCase()
+  return (catalog.value?.units || []).filter(u => {
+    if (!q) return true
+    return `${u.code} ${u.name} ${t(u.name)}`.toLowerCase().includes(q)
+  })
+})
+const pagedUnits = computed(() => {
+  const start = (setupPage.value - 1) * setupSize.value
+  return filteredUnits.value.slice(start, start + setupSize.value)
+})
+
+const filteredConversions = computed(() => {
+  const q = setupSearch.value.trim().toLowerCase()
+  return (catalog.value?.conversions || []).filter(c => {
+    if (!q) return true
+    const itemObj = (catalog.value?.items || []).find(i => i.id === c.item_id)
+    const itemLabel = itemObj ? `${itemObj.code} ${itemObj.name}` : t('General conversion')
+    const baseLabel = name(catalog.value?.units, c.base_unit_id)
+    const unitLabel = name(catalog.value?.units, c.unit_id)
+    return `${itemLabel} ${baseLabel} ${unitLabel} ${c.factor}`.toLowerCase().includes(q)
+  })
+})
+const pagedConversions = computed(() => {
+  const start = (setupPage.value - 1) * setupSize.value
+  return filteredConversions.value.slice(start, start + setupSize.value)
+})
+
+const filteredSiteSettings = computed(() => {
+  const q = setupSearch.value.trim().toLowerCase()
+  return visibleSetup.value.map(s => {
+    const st = (catalog.value?.settings || []).find(x => x.site_id === s.id)
+    return {
+      site_id: s.id,
+      site_name: s.name,
+      timezone: st?.timezone || 'Asia/Dubai',
+      day_start: (st?.day_start || '00:00').slice(0, 5),
+    }
+  }).filter(row => {
+    if (!q) return true
+    return `${row.site_name} ${row.timezone} ${row.day_start}`.toLowerCase().includes(q)
+  })
+})
+const pagedSiteSettings = computed(() => {
+  const start = (setupPage.value - 1) * setupSize.value
+  return filteredSiteSettings.value.slice(start, start + setupSize.value)
+})
+
+const siteChoices = computed(() =>
+  visibleSetup.value.map(s => ({ id: s.id, name: s.name }))
+)
+const activeWarehouseChoices = computed(() =>
+  allowedWarehouses.value.filter(w => w.active).map(w => ({ id: w.id, code: w.code, name: w.name }))
+)
+const warehouseFilterChoices = computed(() => [
+  { id: null, code: 'ALL', name: t('All') },
+  ...allowedWarehouses.value.map(w => ({ id: w.id, code: w.code, name: w.name })),
+])
+const unitChoices = computed(() =>
+  (catalog.value?.units || []).map(u => ({ id: u.id, code: u.code, name: t(u.name) }))
+)
+const itemChoicesWithGeneral = computed(() => [
+  { id: null, code: 'ALL', name: t('General conversion') },
+  ...(catalog.value?.items || []).map(i => ({ id: i.id, code: i.code, name: i.name })),
+])
 const unitForm = ref({code: '', name: ''})
 const setup = ref<Record<string, string | number | boolean | null | undefined>>({})
 const openingSite = ref<number>()
@@ -158,8 +339,10 @@ function save() {
     if (current.value) {
       apply(await api<Receipt>('/inventory/receipts/' + current.value.id, 'PATCH', {...payload, revision: current.value.revision}))
       notice.value = 'Changes saved.'
+      notify('saved', 'Goods receipts', 'Changes saved.')
     } else if (progress.value) {
       const row = await submit<Receipt>('/inventory/receipts', {...payload, order_id: progress.value.order_id})
+      notify('saved', 'Goods receipts', 'Changes saved.')
       await router.push('/inventory/receipts/' + row.id)
     }
   })
@@ -169,17 +352,19 @@ function confirmReceipt() {
     if (!current.value) return
     apply(await confirm<Receipt>('/inventory/receipts/' + current.value.id + '/confirm', {revision: current.value.revision}))
     notice.value = 'Receipt confirmed.'
+    notify('confirmation', 'Goods receipts', 'Receipt confirmed.')
   })
 }
 function saveUnit() {
   void run(async () => {
-    const row = await api<{id: number; code: string}>('/inventory/setup/unit', 'POST', unitForm.value)
-    catalog.value?.units.push({...row, name: unitForm.value.name.trim()})
-    catalog.value?.units.sort((a, b) => a.code.localeCompare(b.code))
-    if (mode.value === 'item' && !setup.value.base_unit_id) setup.value.base_unit_id = row.id
+    const payload = editingUnitId.value ? { id: editingUnitId.value, ...unitForm.value } : unitForm.value
+    await api<{id: number; code: string}>('/inventory/setup/unit', 'POST', payload)
+    await load()
     showUnitForm.value = false
+    editingUnitId.value = null
     unitForm.value = {code: '', name: ''}
-    notice.value = 'Unit of measure added.'
+    notice.value = 'Changes saved.'
+    notify('saved', 'Inventory setup', 'Changes saved.')
   })
 }
 function saveSetup() {
@@ -187,9 +372,23 @@ function saveSetup() {
     const payload = {...setup.value}
     if (mode.value === 'item-status') payload.active = payload.active ?? false
     await api('/inventory/setup/' + mode.value, 'POST', payload)
-    setup.value = {}
     await load()
+    closeSetupForm()
     notice.value = 'Changes saved.'
+    notify('saved', 'Inventory setup', 'Changes saved.')
+  })
+}
+function deleteSetupRecord(kind: 'warehouse' | 'location' | 'unit' | 'conversion' | 'site', recordId: number, label: string) {
+  const isPermanent = workspace.company?.deletion_policy === 'permanent'
+  const promptText = isPermanent
+    ? `${t('Permanently delete')} "${label}"? ${t('This action cannot be undone.')}`
+    : `${t('Delete')} "${label}"? ${t('The record will be archived according to system deletion policy.')}`
+  if (!window.confirm(promptText)) return
+  void run(async () => {
+    await api(`/inventory/setup/${kind}/${recordId}`, 'DELETE')
+    await load()
+    notice.value = 'Record deleted.'
+    notify('saved', 'Inventory setup', 'Record deleted.')
   })
 }
 function opening(close: boolean) {
@@ -197,7 +396,9 @@ function opening(close: boolean) {
     await postOpening('/inventory/opening', {site_id: openingSite.value, lines: openingLines.value, close})
     openingLines.value = []
     await load()
-    notice.value = close ? 'Opening balances closed.' : 'Opening balances saved.'
+    const msg = close ? 'Opening balances closed.' : 'Opening balances saved.'
+    notice.value = msg
+    notify(close ? 'confirmation' : 'saved', 'Opening balance', msg)
   })
 }
 function saveReverse() {
@@ -207,6 +408,7 @@ function saveReverse() {
     await reverse('/inventory/movements/' + key + '/reverse', payload)
     await load()
     notice.value = 'Stock movement recorded.'
+    notify('confirmation', 'Stock movements', 'Stock movement recorded.')
   })
 }
 function more() {
@@ -220,10 +422,28 @@ const openingLocations = computed(() => catalog.value?.locations.filter(row =>
   catalog.value?.warehouses.some(w => w.id === row.warehouse_id && w.active && w.site_id === openingSite.value)) ?? [])
 const visibleSetup = computed(() => catalog.value?.sites.filter(row => scoped('setup', row.id)) ?? [])
 const tabs = computed(() => [
-  {id: 'receipts', label: 'Goods receipts'}, {id: 'items', label: 'Inventory items'}, {id: 'balances', label: 'Stock balances'}, {id: 'movements', label: 'Stock movements'},
-  ...(scoped('opening') ? [{id: 'opening', label: 'Opening balance'}] : []),
-  ...(scoped('setup') ? [{id: 'setup', label: 'Inventory setup'}] : []),
+  {id: 'receipts', label: t('Goods receipts')}, {id: 'items', label: t('Inventory items')}, {id: 'balances', label: t('Stock balances')}, {id: 'movements', label: t('Stock movements')},
+  ...(scoped('opening') ? [{id: 'opening', label: t('Opening balance')}] : []),
+  ...(scoped('setup') ? [{id: 'setup', label: t('Inventory setup')}] : []),
 ])
+async function locationState(id: number, active: boolean) {
+  if (busy.value) return
+  busy.value = true
+  error.value = ''
+  try {
+    await api('/inventory/locations/' + id + '/state', 'PATCH', { active })
+    const item = catalog.value?.locations.find(row => row.id === id)
+    if (item) item.active = active
+    const msg = active ? 'Location reactivated.' : 'Location deactivated.'
+    notice.value = msg
+    notify('confirmation', 'Inventory setup', msg)
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Request failed.'
+    notify('fault', 'Inventory setup', error.value)
+  } finally {
+    busy.value = false
+  }
+}
 async function warehouseState(id:number, active:boolean){
   if(busy.value)return
   busy.value=true;error.value=''
@@ -231,6 +451,7 @@ async function warehouseState(id:number, active:boolean){
     await api('/inventory/warehouses/'+id+'/state','PATCH',{active})
     const item=catalog.value?.warehouses.find(row=>row.id===id)
     if(item)item.active=active
+    notify('saved', 'Inventory setup', 'Changes saved.')
   }catch(failure){error.value=message(failure)}finally{busy.value=false}
 }
 </script>
@@ -353,63 +574,521 @@ async function warehouseState(id:number, active:boolean){
       </template>
     </form>
     <template v-else-if="tab === 'setup' && scoped('setup')">
-      <div class="actions">
-        <span>{{ t('Units') }}</span><CsvExport :workspace="workspace" screen="unit" />
-        <span>{{ t('Warehouses') }}</span><CsvExport :workspace="workspace" screen="warehouse" />
-      </div>
-      <div class="actions approval-section">
-        <div v-for="row in catalog.warehouses.filter(w => scoped('setup', w.site_id))" :key="row.id" class="actions">
-          <span>{{row.name}} · {{t(row.active?'Active':'Inactive')}}</span>
-          <button type="button" class="secondary" :disabled="busy" @click="warehouseState(row.id,!row.active)">{{t(row.active?'Deactivate warehouse':'Reactivate warehouse')}}</button>
-        </div>
-        <span>{{ t('Locations') }}</span><CsvExport :workspace="workspace" screen="location" />
-      </div>
-      <section v-if="companySetup" class="panel record-form">
+      <nav class="section-tabs" style="margin-block-start: 6px;">
+        <button type="button" class="tab-link" :aria-current="setupTab === 'warehouses' ? 'page' : undefined" @click="openSetupTab('warehouses')">
+          {{ t('Warehouses') }} &amp; {{ t('Locations') }} ({{ filteredWarehouses.length }})
+        </button>
+        <button type="button" class="tab-link" :aria-current="setupTab === 'units' ? 'page' : undefined" @click="openSetupTab('units')">
+          {{ t('Units of measure') }} ({{ filteredUnits.length }})
+        </button>
+        <button type="button" class="tab-link" :aria-current="setupTab === 'conversion' ? 'page' : undefined" @click="openSetupTab('conversion')">
+          {{ t('Unit conversion') }} ({{ filteredConversions.length }})
+        </button>
+        <button type="button" class="tab-link" :aria-current="setupTab === 'warehouse' ? 'page' : undefined" @click="openSetupTab('warehouse')">
+          {{ t('Warehouse') }} ({{ filteredWarehouses.length }})
+        </button>
+        <button type="button" class="tab-link" :aria-current="setupTab === 'location' ? 'page' : undefined" @click="openSetupTab('location')">
+          {{ t('Location') }} ({{ filteredLocations.length }})
+        </button>
+        <button type="button" class="tab-link" :aria-current="setupTab === 'site' ? 'page' : undefined" @click="openSetupTab('site')">
+          {{ t('Business day') }} ({{ filteredSiteSettings.length }})
+        </button>
+      </nav>
+
+      <!-- TAB 1: Warehouses & Locations Overview -->
+      <template v-if="setupTab === 'warehouses'">
+        <nav class="section-tabs" style="margin-block-start: 10px; margin-block-end: 6px;">
+          <button type="button" class="tab-link" :aria-current="overviewSubTab === 'warehouses' ? 'page' : undefined" @click="overviewSubTab = 'warehouses'; setupSearch = ''; setupPage = 1">
+            {{ t('Warehouses') }} ({{ filteredWarehouses.length }})
+          </button>
+          <button type="button" class="tab-link" :aria-current="overviewSubTab === 'locations' ? 'page' : undefined" @click="overviewSubTab = 'locations'; setupSearch = ''; setupPage = 1">
+            {{ t('Locations') }} ({{ filteredLocations.length }})
+          </button>
+        </nav>
+
+        <section v-if="overviewSubTab === 'warehouses'" class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
+          <div class="page-heading">
+            <h2>{{ t('Warehouses') }} ({{ filteredWarehouses.length }})</h2>
+            <div class="actions">
+              <button type="button" class="secondary" :aria-pressed="setupViewMode === 'list'" @click="setupViewMode = 'list'">{{ t('List view') }}</button>
+              <button type="button" class="secondary" :aria-pressed="setupViewMode === 'grid'" @click="setupViewMode = 'grid'">{{ t('Grid view') }}</button>
+              <CsvExport :workspace="workspace" screen="warehouse" />
+            </div>
+          </div>
+          <div class="actions">
+            <label>{{ t('Status') }}
+              <select v-model="setupStatus" @change="setupPage = 1">
+                <option value="all">{{ t('All') }}</option>
+                <option value="active">{{ t('Active') }}</option>
+                <option value="inactive">{{ t('Inactive') }}</option>
+              </select>
+            </label>
+          </div>
+          <TableToolbar :page="setupPage" :size="setupSize" :count="filteredWarehouses.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+          <div v-if="setupViewMode === 'list'">
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ t('Code') }}</th>
+                  <th>{{ t('Name') }}</th>
+                  <th>{{ t('Site') }}</th>
+                  <th>{{ t('Status') }}</th>
+                  <th>{{ t('Actions') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in pagedWarehouses" :key="row.id">
+                  <td><bdi>{{ row.code || '#' + row.id }}</bdi></td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ name(catalog?.sites as any, row.site_id) }}</td>
+                  <td><span :class="['badge', row.active ? 'on' : '']">{{ t(row.active ? 'Active' : 'Inactive') }}</span></td>
+                  <td class="actions">
+                    <button type="button" class="secondary" :disabled="busy" @click="editWarehouse(row)">{{ t('Edit') }}</button>
+                    <button type="button" class="secondary" :disabled="busy" @click="warehouseState(row.id, !row.active)">
+                      {{ t(row.active ? 'Deactivate warehouse' : 'Reactivate warehouse') }}
+                    </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('warehouse', row.id, row.code + ' - ' + row.name)">{{ t('Delete') }}</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p v-if="!pagedWarehouses.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+          </div>
+          <div v-else class="card-grid" style="margin-block-end: 0;">
+            <div v-for="row in pagedWarehouses" :key="row.id" class="panel" style="padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+              <div>
+                <small class="muted"><bdi>{{ row.code || '#' + row.id }}</bdi> · {{ name(catalog?.sites as any, row.site_id) }}</small>
+                <div><strong>{{ row.name }}</strong></div>
+                <div style="margin-block-start: 4px;"><span :class="['badge', row.active ? 'on' : '']">{{ t(row.active ? 'Active' : 'Inactive') }}</span></div>
+              </div>
+              <div class="actions">
+                <button type="button" class="secondary" :disabled="busy" @click="editWarehouse(row)">{{ t('Edit') }}</button>
+                <button type="button" class="secondary" :disabled="busy" @click="warehouseState(row.id, !row.active)">
+                  {{ t(row.active ? 'Deactivate warehouse' : 'Reactivate warehouse') }}
+                </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('warehouse', row.id, row.code + ' - ' + row.name)">{{ t('Delete') }}</button>
+              </div>
+            </div>
+            <p v-if="!pagedWarehouses.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+          </div>
+        </section>
+
+        <section v-else class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
+          <div class="page-heading">
+            <h2>{{ t('Locations') }} ({{ filteredLocations.length }})</h2>
+            <div class="actions">
+              <button type="button" class="secondary" :aria-pressed="setupViewMode === 'list'" @click="setupViewMode = 'list'">{{ t('List view') }}</button>
+              <button type="button" class="secondary" :aria-pressed="setupViewMode === 'grid'" @click="setupViewMode = 'grid'">{{ t('Grid view') }}</button>
+              <CsvExport :workspace="workspace" screen="location" />
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; align-items: end; max-inline-size: 46rem;">
+            <label>{{ t('Status') }}
+              <select v-model="locationStatus" @change="setupPage = 1">
+                <option value="all">{{ t('All') }}</option>
+                <option value="active">{{ t('Active') }}</option>
+                <option value="inactive">{{ t('Inactive') }}</option>
+              </select>
+            </label>
+            <EntityAutocomplete
+              v-model="setupWarehouseFilter"
+              :label="t('Warehouse')"
+              :choices="warehouseFilterChoices"
+              :placeholder="t('Search by code or name')"
+              @select="setupPage = 1"
+            />
+          </div>
+          <TableToolbar :page="setupPage" :size="setupSize" :count="filteredLocations.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+          <div v-if="setupViewMode === 'list'">
+            <table>
+              <thead>
+                <tr>
+                  <th>{{ t('Code') }}</th>
+                  <th>{{ t('Name') }}</th>
+                  <th>{{ t('Warehouse') }}</th>
+                  <th>{{ t('Status') }}</th>
+                  <th>{{ t('Actions') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="loc in pagedLocations" :key="loc.id">
+                  <td><bdi>{{ loc.code || '#' + loc.id }}</bdi></td>
+                  <td>{{ loc.name }}</td>
+                  <td>{{ name(catalog?.warehouses, loc.warehouse_id) }}</td>
+                  <td><span :class="['badge', loc.active !== false ? 'on' : '']">{{ t(loc.active !== false ? 'Active' : 'Inactive') }}</span></td>
+                  <td class="actions">
+                    <button type="button" class="secondary" :disabled="busy" @click="editLocation(loc)">{{ t('Edit') }}</button>
+                    <button type="button" class="secondary" :disabled="busy" @click="locationState(loc.id, loc.active === false)">
+                      {{ t(loc.active !== false ? 'Deactivate location' : 'Reactivate location') }}
+                    </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('location', loc.id, loc.code + ' - ' + loc.name)">{{ t('Delete') }}</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p v-if="!pagedLocations.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+          </div>
+          <div v-else class="card-grid" style="margin-block-end: 0;">
+            <div v-for="loc in pagedLocations" :key="loc.id" class="panel" style="padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+              <div>
+                <small class="muted"><bdi>{{ loc.code || '#' + loc.id }}</bdi> · {{ name(catalog?.warehouses, loc.warehouse_id) }}</small>
+                <div><strong>{{ loc.name }}</strong></div>
+                <div style="margin-block-start: 4px;"><span :class="['badge', loc.active !== false ? 'on' : '']">{{ t(loc.active !== false ? 'Active' : 'Inactive') }}</span></div>
+              </div>
+              <div class="actions">
+                <button type="button" class="secondary" :disabled="busy" @click="editLocation(loc)">{{ t('Edit') }}</button>
+                <button type="button" class="secondary" :disabled="busy" @click="locationState(loc.id, loc.active === false)">
+                  {{ t(loc.active !== false ? 'Deactivate location' : 'Reactivate location') }}
+                </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('location', loc.id, loc.code + ' - ' + loc.name)">{{ t('Delete') }}</button>
+              </div>
+            </div>
+            <p v-if="!pagedLocations.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+          </div>
+        </section>
+      </template>
+
+      <!-- TAB 2: Units of Measure -->
+      <section v-else-if="setupTab === 'units' && companySetup" class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
         <div class="page-heading">
           <h2>{{ t('Units of measure') }}</h2>
-          <button v-if="!showUnitForm" type="button" class="secondary" @click="showUnitForm = true">{{ t('Add unit of measure') }}</button>
+          <div class="actions">
+            <CsvExport :workspace="workspace" screen="unit" />
+            <button v-if="!showUnitForm" type="button" class="primary" @click="editingUnitId = null; unitForm = {code: '', name: ''}; showUnitForm = true">+ {{ t('Add unit of measure') }}</button>
+          </div>
         </div>
-        <form v-validated-form v-if="showUnitForm" @submit.prevent="saveUnit">
+        <form v-validated-form v-if="showUnitForm" class="panel" style="padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; align-items: end;" @submit.prevent="saveUnit">
           <div class="field-wrap"><label>{{ t('Unit code') }}<input data-field="code" :placeholder="t('e.g., CODE-001')" v-model="unitForm.code" required maxlength="24"></label><FieldHint :label="t('Unit code')" required /></div>
           <div class="field-wrap"><label>{{ t('Unit name') }}<input data-field="name" :placeholder="t('e.g., John Doe')" v-model="unitForm.name" required maxlength="80"></label><FieldHint :label="t('Unit name')" required /></div>
           <div class="actions">
-            <button class="primary" :disabled="busy">{{ t('Save unit') }}</button>
-            <button type="button" class="secondary" :disabled="busy" @click="showUnitForm = false">{{ t('Cancel') }}</button>
+            <button class="primary" :disabled="busy">{{ t('Save') }}</button>
+            <button type="button" class="secondary" :disabled="busy" @click="showUnitForm = false; editingUnitId = null; unitForm = {code: '', name: ''}">{{ t('Cancel') }}</button>
           </div>
         </form>
-        <ul v-if="catalog.units.length">
-          <li v-for="unit in catalog.units" :key="unit.id"><bdi>{{ unit.code }}</bdi> · {{ t(unit.name) }}</li>
-        </ul>
-        <p v-else>{{ t('Add a unit of measure before creating an item.') }}</p>
+        <TableToolbar :page="setupPage" :size="setupSize" :count="filteredUnits.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+        <div v-if="pagedUnits.length">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('Unit code') }}</th>
+                <th>{{ t('Unit name') }}</th>
+                <th>{{ t('Actions') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="unit in pagedUnits" :key="unit.id">
+                <td><bdi>{{ unit.code }}</bdi></td>
+                <td>{{ t(unit.name) }}</td>
+                <td><div class="actions"><button type="button" class="secondary" :disabled="busy" @click="editUnit(unit)">{{ t('Edit') }}</button><button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('unit', unit.id, unit.code + ' - ' + unit.name)">{{ t('Delete') }}</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p v-else style="padding: 14px;">{{ t('No records found.') }}</p>
       </section>
-      <form v-validated-form class="panel record-form" @submit.prevent="saveSetup">
-        <h2>{{ t('Inventory setup') }}</h2>
-        <div class="field-wrap"><label>{{ t('Setup type') }}<select data-field="mode" v-model="mode">
-          <option v-for="option in setupOptions" :key="option.id" :value="option.id">{{ t(option.label) }}</option>
-        </select></label><FieldHint :label="t('Setup type')" /></div>
-        <template v-if="['item', 'warehouse', 'location'].includes(mode)">
-          <div class="field-wrap"><label>{{ t('Code') }}<input data-field="code" :placeholder="t('e.g., CODE-001')" v-model="setup.code" required maxlength="32"></label><FieldHint :label="t('Code')" required /></div>
-          <div class="field-wrap"><label>{{ t('Name') }}<input data-field="name" :placeholder="t('e.g., John Doe')" v-model="setup.name" required maxlength="120"></label><FieldHint :label="t('Name')" required /></div>
-        </template>
-        <div class="field-wrap" v-if="mode === 'warehouse' || mode === 'site'"><label>{{ t('Site') }}<select data-field="site_id" v-model="setup.site_id" required>
-          <option v-for="row in visibleSetup" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><FieldHint :label="t('Site')" required /></div>
-        <div class="field-wrap" v-if="mode === 'location'"><label>{{ t('Warehouse') }}<select data-field="warehouse_id" v-model="setup.warehouse_id" required>
-          <option v-for="row in catalog.warehouses.filter(w => w.active && scoped('setup', w.site_id))" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><FieldHint :label="t('Warehouse')" required /></div>
-        <div class="field-wrap" v-if="mode === 'conversion'"><label>{{ t('Item') }}<select data-field="item_id" v-model="setup.item_id">
-          <option v-if="mode === 'conversion'" :value="null">{{ t('General conversion') }}</option>
-          <option v-for="row in catalog.items" :key="row.id" :value="row.id">{{ row.code }} · {{ row.name }}</option></select></label><FieldHint :label="t('Item')" /></div>
-        <div class="field-wrap" v-if="mode === 'conversion' && !setup.item_id"><label>{{ t('Base unit') }}<select data-field="base_unit_id" v-model="setup.base_unit_id" required>
-          <option v-for="row in catalog.units" :key="row.id" :value="row.id">{{ row.code }} · {{ t(row.name) }}</option></select></label><FieldHint :label="t('Base unit')" required /></div>
-        <template v-if="mode === 'conversion'">
-          <div class="field-wrap"><label>{{ t('From unit') }}<select data-field="unit_id" v-model="setup.unit_id" required><option v-for="row in catalog.units" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><FieldHint :label="t('From unit')" required /></div>
-          <div class="field-wrap"><label>{{ t('Conversion factor') }}<input data-field="factor" :placeholder="t('e.g., 125.50')" v-model="setup.factor" required inputmode="decimal"></label><FieldHint :label="t('Conversion factor')" required /></div>
-        </template>
-        <template v-if="mode === 'site'">
-          <div class="field-wrap"><label>{{ t('Time zone') }}<input data-field="timezone" v-model="setup.timezone" placeholder="Asia/Dubai" required></label><FieldHint :label="t('Time zone')" required /></div>
-          <div class="field-wrap"><label>{{ t('Business day starts at') }}<input data-field="day_start" v-model="setup.day_start" type="time" required></label><FieldHint :label="t('Business day starts at')" required /></div>
-        </template>
-        <button class="primary" :disabled="busy">{{ t('Save') }}</button>
-      </form>
+
+      <!-- TAB 3: Unit Conversion -->
+      <section v-else-if="setupTab === 'conversion'" class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
+        <div class="page-heading">
+          <h2>{{ t('Unit conversion') }} ({{ filteredConversions.length }})</h2>
+          <div class="actions">
+            <button v-if="!showSetupForm" type="button" class="primary" @click="openNewSetupForm('conversion')">+ {{ t('Unit conversion') }}</button>
+          </div>
+        </div>
+        <form v-validated-form v-if="showSetupForm" class="panel" style="padding: 16px; display: grid; gap: 16px;" @submit.prevent="saveSetup">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+            <EntityAutocomplete
+              v-model="setup.item_id"
+              :label="t('Item')"
+              :choices="itemChoicesWithGeneral"
+              :placeholder="t('Search by code or name')"
+              data-field="item_id"
+            />
+            <EntityAutocomplete
+              v-if="!setup.item_id"
+              v-model="setup.base_unit_id"
+              :label="t('Base unit')"
+              :choices="unitChoices"
+              :placeholder="t('Search by code or name')"
+              data-field="base_unit_id"
+              required
+            />
+            <EntityAutocomplete
+              v-model="setup.unit_id"
+              :label="t('From unit')"
+              :choices="unitChoices"
+              :placeholder="t('Search by code or name')"
+              data-field="unit_id"
+              required
+            />
+            <div class="field-wrap">
+              <label>{{ t('Conversion factor') }}<input data-field="factor" :placeholder="t('e.g., 125.50')" v-model="setup.factor" required inputmode="decimal"></label>
+              <FieldHint :label="t('Conversion factor')" required />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="primary" :disabled="busy">{{ t('Save') }}</button>
+            <button type="button" class="secondary" :disabled="busy" @click="closeSetupForm('conversion')">{{ t('Cancel') }}</button>
+          </div>
+        </form>
+        <TableToolbar :page="setupPage" :size="setupSize" :count="filteredConversions.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+        <div v-if="pagedConversions.length">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('Item') }}</th>
+                <th>{{ t('From unit') }}</th>
+                <th>{{ t('Base unit') }}</th>
+                <th>{{ t('Conversion factor') }}</th>
+                <th>{{ t('Actions') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="conv in pagedConversions" :key="conv.id">
+                <td>{{ conv.item_id ? name(catalog?.items, conv.item_id) : t('General conversion') }}</td>
+                <td>{{ name(catalog?.units, conv.unit_id) }}</td>
+                <td>{{ name(catalog?.units, conv.base_unit_id) }}</td>
+                <td><bdi>{{ conv.factor }}</bdi></td>
+                <td><div class="actions"><button type="button" class="secondary" :disabled="busy" @click="editConversion(conv)">{{ t('Edit') }}</button><button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('conversion', conv.id, name(catalog?.units, conv.unit_id) + ' → ' + name(catalog?.units, conv.base_unit_id))">{{ t('Delete') }}</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p v-else style="padding: 14px;">{{ t('No records found.') }}</p>
+      </section>
+
+      <!-- TAB 4: Warehouse -->
+      <section v-else-if="setupTab === 'warehouse'" class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
+        <div class="page-heading">
+          <h2>{{ t('Warehouses') }} ({{ filteredWarehouses.length }})</h2>
+          <div class="actions">
+            <button type="button" class="secondary" :aria-pressed="setupViewMode === 'list'" @click="setupViewMode = 'list'">{{ t('List view') }}</button>
+            <button type="button" class="secondary" :aria-pressed="setupViewMode === 'grid'" @click="setupViewMode = 'grid'">{{ t('Grid view') }}</button>
+            <button v-if="!showSetupForm" type="button" class="primary" @click="openNewSetupForm('warehouse')">+ {{ t('Warehouse') }}</button>
+          </div>
+        </div>
+        <form v-validated-form v-if="showSetupForm" class="panel" style="padding: 16px; display: grid; gap: 16px;" @submit.prevent="saveSetup">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+            <div class="field-wrap"><label>{{ t('Code') }}<input data-field="code" :placeholder="t('e.g., CODE-001')" v-model="setup.code" required maxlength="32"></label><FieldHint :label="t('Code')" required /></div>
+            <div class="field-wrap"><label>{{ t('Name') }}<input data-field="name" :placeholder="t('e.g., John Doe')" v-model="setup.name" required maxlength="120"></label><FieldHint :label="t('Name')" required /></div>
+            <EntityAutocomplete
+              v-model="setup.site_id"
+              :label="t('Site')"
+              :choices="siteChoices"
+              :placeholder="t('Search by code or name')"
+              data-field="site_id"
+              required
+            />
+          </div>
+          <div class="actions">
+            <button class="primary" :disabled="busy">{{ t('Save') }}</button>
+            <button type="button" class="secondary" :disabled="busy" @click="closeSetupForm('warehouse')">{{ t('Cancel') }}</button>
+          </div>
+        </form>
+        <div class="actions">
+          <label>{{ t('Status') }}
+            <select v-model="setupStatus" @change="setupPage = 1">
+              <option value="all">{{ t('All') }}</option>
+              <option value="active">{{ t('Active') }}</option>
+              <option value="inactive">{{ t('Inactive') }}</option>
+            </select>
+          </label>
+        </div>
+        <TableToolbar :page="setupPage" :size="setupSize" :count="filteredWarehouses.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+        <div v-if="setupViewMode === 'list'">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('Code') }}</th>
+                <th>{{ t('Name') }}</th>
+                <th>{{ t('Site') }}</th>
+                <th>{{ t('Status') }}</th>
+                <th>{{ t('Actions') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in pagedWarehouses" :key="row.id">
+                <td><bdi>{{ row.code || '#' + row.id }}</bdi></td>
+                <td>{{ row.name }}</td>
+                <td>{{ name(catalog?.sites as any, row.site_id) }}</td>
+                <td><span :class="['badge', row.active ? 'on' : '']">{{ t(row.active ? 'Active' : 'Inactive') }}</span></td>
+                <td class="actions">
+                  <button type="button" class="secondary" :disabled="busy" @click="editWarehouse(row)">{{ t('Edit') }}</button>
+                  <button type="button" class="secondary" :disabled="busy" @click="warehouseState(row.id, !row.active)">
+                    {{ t(row.active ? 'Deactivate warehouse' : 'Reactivate warehouse') }}
+                  </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('warehouse', row.id, row.code + ' - ' + row.name)">{{ t('Delete') }}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-if="!pagedWarehouses.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+        </div>
+        <div v-else class="card-grid" style="margin-block-end: 0;">
+          <div v-for="row in pagedWarehouses" :key="row.id" class="panel" style="padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div>
+              <small class="muted"><bdi>{{ row.code || '#' + row.id }}</bdi> · {{ name(catalog?.sites as any, row.site_id) }}</small>
+              <div><strong>{{ row.name }}</strong></div>
+              <div style="margin-block-start: 4px;"><span :class="['badge', row.active ? 'on' : '']">{{ t(row.active ? 'Active' : 'Inactive') }}</span></div>
+            </div>
+            <div class="actions">
+              <button type="button" class="secondary" :disabled="busy" @click="editWarehouse(row)">{{ t('Edit') }}</button>
+              <button type="button" class="secondary" :disabled="busy" @click="warehouseState(row.id, !row.active)">
+                {{ t(row.active ? 'Deactivate warehouse' : 'Reactivate warehouse') }}
+              </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('warehouse', row.id, row.code + ' - ' + row.name)">{{ t('Delete') }}</button>
+            </div>
+          </div>
+          <p v-if="!pagedWarehouses.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+        </div>
+      </section>
+
+      <!-- TAB 5: Location -->
+      <section v-else-if="setupTab === 'location'" class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
+        <div class="page-heading">
+          <h2>{{ t('Locations') }} ({{ filteredLocations.length }})</h2>
+          <div class="actions">
+            <button type="button" class="secondary" :aria-pressed="setupViewMode === 'list'" @click="setupViewMode = 'list'">{{ t('List view') }}</button>
+            <button type="button" class="secondary" :aria-pressed="setupViewMode === 'grid'" @click="setupViewMode = 'grid'">{{ t('Grid view') }}</button>
+            <button v-if="!showSetupForm" type="button" class="primary" @click="openNewSetupForm('location')">+ {{ t('Location') }}</button>
+          </div>
+        </div>
+        <form v-validated-form v-if="showSetupForm" class="panel" style="padding: 16px; display: grid; gap: 16px;" @submit.prevent="saveSetup">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+            <div class="field-wrap"><label>{{ t('Code') }}<input data-field="code" :placeholder="t('e.g., CODE-001')" v-model="setup.code" required maxlength="32"></label><FieldHint :label="t('Code')" required /></div>
+            <div class="field-wrap"><label>{{ t('Name') }}<input data-field="name" :placeholder="t('e.g., John Doe')" v-model="setup.name" required maxlength="120"></label><FieldHint :label="t('Name')" required /></div>
+            <EntityAutocomplete
+              v-model="setup.warehouse_id"
+              :label="t('Warehouse')"
+              :choices="activeWarehouseChoices"
+              :placeholder="t('Search by code or name')"
+              data-field="warehouse_id"
+              required
+            />
+          </div>
+          <label class="checkbox-inline" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" v-model="setup.active" :true-value="true" :false-value="false">
+            <span>{{ t('Active') }}</span>
+          </label>
+          <div class="actions">
+            <button class="primary" :disabled="busy">{{ t('Save') }}</button>
+            <button type="button" class="secondary" :disabled="busy" @click="closeSetupForm('location')">{{ t('Cancel') }}</button>
+          </div>
+        </form>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; align-items: end; max-inline-size: 46rem;">
+          <label>{{ t('Status') }}
+            <select v-model="locationStatus" @change="setupPage = 1">
+              <option value="all">{{ t('All') }}</option>
+              <option value="active">{{ t('Active') }}</option>
+              <option value="inactive">{{ t('Inactive') }}</option>
+            </select>
+          </label>
+          <EntityAutocomplete
+            v-model="setupWarehouseFilter"
+            :label="t('Warehouse')"
+            :choices="warehouseFilterChoices"
+            :placeholder="t('Search by code or name')"
+            @select="setupPage = 1"
+          />
+        </div>
+        <TableToolbar :page="setupPage" :size="setupSize" :count="filteredLocations.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+        <div v-if="setupViewMode === 'list'">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('Code') }}</th>
+                <th>{{ t('Name') }}</th>
+                <th>{{ t('Warehouse') }}</th>
+                <th>{{ t('Status') }}</th>
+                <th>{{ t('Actions') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="loc in pagedLocations" :key="loc.id">
+                <td><bdi>{{ loc.code || '#' + loc.id }}</bdi></td>
+                <td>{{ loc.name }}</td>
+                <td>{{ name(catalog?.warehouses, loc.warehouse_id) }}</td>
+                <td><span :class="['badge', loc.active !== false ? 'on' : '']">{{ t(loc.active !== false ? 'Active' : 'Inactive') }}</span></td>
+                <td class="actions">
+                  <button type="button" class="secondary" :disabled="busy" @click="editLocation(loc)">{{ t('Edit') }}</button>
+                  <button type="button" class="secondary" :disabled="busy" @click="locationState(loc.id, loc.active === false)">
+                    {{ t(loc.active !== false ? 'Deactivate location' : 'Reactivate location') }}
+                  </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('location', loc.id, loc.code + ' - ' + loc.name)">{{ t('Delete') }}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-if="!pagedLocations.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+        </div>
+        <div v-else class="card-grid" style="margin-block-end: 0;">
+          <div v-for="loc in pagedLocations" :key="loc.id" class="panel" style="padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div>
+              <small class="muted"><bdi>{{ loc.code || '#' + loc.id }}</bdi> · {{ name(catalog?.warehouses, loc.warehouse_id) }}</small>
+              <div><strong>{{ loc.name }}</strong></div>
+              <div style="margin-block-start: 4px;"><span :class="['badge', loc.active !== false ? 'on' : '']">{{ t(loc.active !== false ? 'Active' : 'Inactive') }}</span></div>
+            </div>
+            <div class="actions">
+              <button type="button" class="secondary" :disabled="busy" @click="editLocation(loc)">{{ t('Edit') }}</button>
+              <button type="button" class="secondary" :disabled="busy" @click="locationState(loc.id, loc.active === false)">
+                {{ t(loc.active !== false ? 'Deactivate location' : 'Reactivate location') }}
+              </button>
+                  <button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('location', loc.id, loc.code + ' - ' + loc.name)">{{ t('Delete') }}</button>
+            </div>
+          </div>
+          <p v-if="!pagedLocations.length" style="padding: 14px;">{{ t('No records found.') }}</p>
+        </div>
+      </section>
+
+      <!-- TAB 6: Business Day -->
+      <section v-else-if="setupTab === 'site'" class="panel table-panel" style="padding: 18px; display: grid; gap: 14px;">
+        <div class="page-heading">
+          <h2>{{ t('Business day') }} ({{ filteredSiteSettings.length }})</h2>
+          <div class="actions">
+            <button v-if="!showSetupForm" type="button" class="primary" @click="openNewSetupForm('site')">+ {{ t('Business day') }}</button>
+          </div>
+        </div>
+        <form v-validated-form v-if="showSetupForm" class="panel" style="padding: 16px; display: grid; gap: 16px;" @submit.prevent="saveSetup">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+            <EntityAutocomplete
+              v-model="setup.site_id"
+              :label="t('Site')"
+              :choices="siteChoices"
+              :placeholder="t('Search by code or name')"
+              data-field="site_id"
+              required
+            />
+            <div class="field-wrap"><label>{{ t('Time zone') }}<input data-field="timezone" v-model="setup.timezone" placeholder="Asia/Dubai" required></label><FieldHint :label="t('Time zone')" required /></div>
+            <div class="field-wrap"><label>{{ t('Business day starts at') }}<input data-field="day_start" v-model="setup.day_start" type="time" required></label><FieldHint :label="t('Business day starts at')" required /></div>
+          </div>
+          <div class="actions">
+            <button class="primary" :disabled="busy">{{ t('Save') }}</button>
+            <button type="button" class="secondary" :disabled="busy" @click="closeSetupForm('site')">{{ t('Cancel') }}</button>
+          </div>
+        </form>
+        <TableToolbar :page="setupPage" :size="setupSize" :count="filteredSiteSettings.length" :query="setupSearch" @search="setupSearch = $event; setupPage = 1" @page="setupPage = $event" @size="setupSize = $event; setupPage = 1" />
+        <div v-if="pagedSiteSettings.length">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('Site') }}</th>
+                <th>{{ t('Time zone') }}</th>
+                <th>{{ t('Business day starts at') }}</th>
+                <th>{{ t('Actions') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="st in pagedSiteSettings" :key="st.site_id">
+                <td>{{ st.site_name }}</td>
+                <td><bdi>{{ st.timezone }}</bdi></td>
+                <td><bdi>{{ st.day_start }}</bdi></td>
+                <td><div class="actions"><button type="button" class="secondary" :disabled="busy" @click="editSiteSetting(st)">{{ t('Edit') }}</button><button type="button" class="secondary" :disabled="busy" @click="deleteSetupRecord('site', st.site_id, st.site_name)">{{ t('Delete') }}</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p v-else style="padding: 14px;">{{ t('No records found.') }}</p>
+      </section>
     </template>
   </template>
 </template>

@@ -1,3 +1,13 @@
+import json as _json
+from pathlib import Path as _Path
+
+def _load_locale_registry():
+    manifest_path = _Path(__file__).resolve().parent.parent / "locales.json"
+    if manifest_path.exists():
+        data = _json.loads(manifest_path.read_text(encoding="utf-8"))
+        return {item["code"]: item for item in data.get("locales", [])}
+    return {"en": {"code": "en", "dir": "ltr"}, "ar": {"code": "ar", "dir": "rtl"}}
+
 from .extensions import module_can_disable
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -94,6 +104,8 @@ def workspace(request):
     return {
         "username": user.get_username(), "admin": user.is_superuser, "platform_version": RELEASE_VERSION, "mode": settings.ERP_APP_MODE,
         "language": profile.language, "theme": profile.theme,
+        "system_notice_mode": NavigationSettings.objects.filter(pk=1).values_list("system_notice_mode", flat=True).first() or "popup",
+        "notice_mode_override": profile.notice_mode_override or "system",
         "display_name": display_name(user, profile), "module_view": profile.module_view,
         "picture_url": picture_url(user.pk), "company": branding(), "hidden_screens": navigation.visibility(user),
         "modules": modules_for(user), "sites": list(sites.values("id", "name", "active")), "permissions": permissions,
@@ -117,19 +129,24 @@ def user_profile(request):
     profile, _ = Profile.objects.get_or_create(user=user)
     if request.method == "PATCH":
         data = body(request)
+        allowed_keys = {"first_name", "middle_name", "last_name", "notice_mode_override"}
+        if not set(data).issubset(allowed_keys) or not {"first_name", "middle_name", "last_name"}.issubset(set(data)):
+            raise Problem("invalid_profile")
         fields = {key: string(data, key, 150, required=False)
                   for key in ("first_name", "middle_name", "last_name")}
-        if set(data) != fields.keys():
+        override = string(data, "notice_mode_override", 10, required=False) or profile.notice_mode_override or "system"
+        if override not in {"system", "popup", "toast"}:
             raise Problem("invalid_profile")
         with transaction.atomic():
             user.first_name = fields["first_name"]
             user.last_name = fields["last_name"]
             user.save(update_fields=["first_name", "last_name"])
             profile.middle_name = fields["middle_name"]
+            profile.notice_mode_override = override
             from django.db.models import F
             profile.iam_display_name = ""
             profile.iam_revision = F("iam_revision") + 1
-            profile.save(update_fields=["middle_name", "iam_display_name", "iam_revision"])
+            profile.save(update_fields=["middle_name", "notice_mode_override", "iam_display_name", "iam_revision"])
             audit(user, "profile.update", user.pk)
 
     number = employee_id = None
@@ -142,7 +159,8 @@ def user_profile(request):
             number, employee_id = employee["number"], employee["id"]
     return {"username": user.get_username(), "first_name": user.first_name, "middle_name": profile.middle_name,
             "last_name": user.last_name, "display_name": display_name(user, profile), "employee_number": number,
-            "employee_id": employee_id, "picture_url": picture_url(user.pk)}
+            "employee_id": employee_id, "picture_url": picture_url(user.pk),
+            "notice_mode_override": profile.notice_mode_override or "system"}
 
 
 @never_cache
@@ -172,12 +190,33 @@ def module_view(request):
 @endpoint("PATCH")
 def preferences(request):
     data = body(request)
-    language = string(data, "language", 2)
-    theme = string(data, "theme", 8)
-    if language not in {"en", "ar"} or theme not in {"light", "dark", "system"}:
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    language = string(data, "language", 2, required=False) or profile.language
+    theme = string(data, "theme", 8, required=False) or profile.theme
+    if language not in _load_locale_registry() or theme not in {"light", "dark", "system"}:
         raise Problem("invalid_preferences")
-    Profile.objects.update_or_create(user=request.user, defaults={"language": language, "theme": theme})
-    return {"language": language, "theme": theme}
+    defaults = {"language": language, "theme": theme}
+    if "notice_mode_override" in data:
+        override = string(data, "notice_mode_override", 10, required=False) or "system"
+        if override not in {"system", "popup", "toast"}:
+            raise Problem("invalid_preferences")
+        defaults["notice_mode_override"] = override
+    Profile.objects.update_or_create(user=request.user, defaults=defaults)
+    sys_mode = NavigationSettings.objects.filter(pk=1).values_list("system_notice_mode", flat=True).first() or "popup"
+    if "system_notice_mode" in data:
+        if not request.user.is_superuser:
+            raise Problem("forbidden", 403)
+        req_sys = string(data, "system_notice_mode", 10, required=False) or "popup"
+        if req_sys not in {"popup", "toast"}:
+            raise Problem("invalid_preferences")
+        NavigationSettings.objects.update_or_create(pk=1, defaults={"system_notice_mode": req_sys})
+        sys_mode = req_sys
+    return {
+        "language": language,
+        "theme": theme,
+        "system_notice_mode": sys_mode,
+        "notice_mode_override": defaults.get("notice_mode_override", profile.notice_mode_override or "system"),
+    }
 
 
 @endpoint("GET",admin=True)

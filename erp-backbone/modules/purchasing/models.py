@@ -66,6 +66,8 @@ class Supplier(models.Model):
     contact = models.CharField(max_length=240, blank=True)
     tax_id = models.CharField(max_length=60, blank=True)
     active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     revision = models.PositiveIntegerField(default=1)
 
 

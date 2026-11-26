@@ -10,7 +10,7 @@ import App from './App.vue'
 import { workspaceExtensions } from './extensions'
 import FieldHint from './FieldHint.vue'
 import EntityAutocomplete from './EntityAutocomplete.vue'
-import { validatedForm } from './formValidation'
+import { validatedForm, installGlobalFormValidation } from './formValidation'
 
 const screen = defineComponent({ render: () => null })
 const router = createRouter({
@@ -39,7 +39,7 @@ const router = createRouter({
     ['/inventory/:section(receipts|balances|movements|opening|setup)?', 'inventory'],
     ['/inventory/receipts/:id(\\d+)', 'receipt'], ['/inventory/receive/:id(\\d+)', 'receive'],
     ['/purchase-templates', 'purchaseTemplates'], ['/document-settings', 'documentSettings'], ['/data-import', 'dataImport'], ['/inbox', 'inbox'], ['/search', 'search'], ['/notifications', 'notifications'],
-    ['/work-orders/:id(\\d+)', 'order'], ['/admin/integrations','gateway'], ['/admin/security-health','securityHealth'], ['/admin/access-control', 'access'], ['/admin/users/:id(\\d+)?', 'adminUsers'], ['/approval-templates', 'approvalTemplates'], ['/audit', 'audit'], ['/settings', 'settings'], ['/settings/company', 'companyProfile'], ['/delegations', 'delegations'],
+    ['/work-orders/:id(\\d+)', 'order'], ['/admin/integrations','gateway'], ['/admin/security-health','securityHealth'], ['/admin/access-control', 'access'], ['/admin/users/:id(\\d+)?', 'adminUsers'], ['/approval-templates', 'approvalTemplates'], ['/audit', 'audit'], ['/settings', 'settings'], ['/settings/company', 'companyProfile'], ['/settings/trash', 'trashRestore'], ['/delegations', 'delegations'],
     ...workspaceExtensions.map(extension => [extension.route, extension.id]),
     ['/:pathMatch(.*)*', 'notFound'],
   ].map<RouteRecordRaw>(([path, name]) => ({ path, name, component: screen })).concat([

@@ -118,12 +118,12 @@ def normalize_logo(file):
 
 
 def branding():
-    row = CompanyProfile.objects.values("name", "logo_type", "revision").filter(pk=1).first()
+    row = CompanyProfile.objects.values("name", "logo_type", "deletion_policy", "revision").filter(pk=1).first()
     if row is None:
-        return {"name": "", "logo_url": None, "revision": 0}
+        return {"name": "", "logo_url": None, "deletion_policy": "soft", "revision": 0}
     version = row["revision"]
     return {"name": row["name"], "logo_url": f"/api/company-profile/logo?v={version}" if row["logo_type"] else None,
-            "revision": version}
+            "deletion_policy": row.get("deletion_policy") or "soft", "revision": version}
 
 
 @never_cache
@@ -134,8 +134,11 @@ def company_profile(request):
     name = string(request.POST, "name", 120, required=False)
     revision = request.POST.get("revision", "")
     remove = request.POST.get("remove_logo", "0")
+    deletion_policy = request.POST.get("deletion_policy")
     upload = request.FILES.get("logo")
     if not re.fullmatch(r"[0-9]{1,10}", revision) or remove not in {"0", "1"} or (upload and remove == "1"):
+        raise Problem("invalid_company_profile")
+    if deletion_policy is not None and deletion_policy not in {"soft", "permanent"}:
         raise Problem("invalid_company_profile")
     logo = normalize_logo(upload) if upload else None
     with transaction.atomic():
@@ -143,12 +146,14 @@ def company_profile(request):
         if int(revision) != row.revision:
             raise Problem("revision_conflict", 409)
         row.name = name
+        if deletion_policy in {"soft", "permanent"}:
+            row.deletion_policy = deletion_policy
         if logo:
             row.logo, row.logo_type = logo
         elif remove == "1":
             row.logo, row.logo_type = b"", ""
         row.revision += 1
-        row.save(update_fields=["name", "logo", "logo_type", "revision"])
+        row.save(update_fields=["name", "logo", "logo_type", "deletion_policy", "revision"])
         audit(request.user, "company_profile.update", row.pk)
         return branding()
 
@@ -164,3 +169,38 @@ def company_logo(request):
     response["X-Content-Type-Options"] = "nosniff"
     response["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; sandbox"
     return response
+
+
+@never_cache
+@endpoint("GET", admin=True)
+def trash_list(request):
+    from .deletion import DELETION_REGISTRY, list_deleted_records
+    kind = request.GET.get("kind") or None
+    return {
+        "records": list_deleted_records(kind),
+        "kinds": list(DELETION_REGISTRY.keys()),
+    }
+
+
+@never_cache
+@endpoint("POST", admin=True)
+def trash_restore(request, kind, pk):
+    from .deletion import restore_deleted_record
+    return restore_deleted_record(kind, int(pk), request.user)
+
+
+@never_cache
+@endpoint("POST", admin=True)
+def trash_purge(request, kind, pk):
+    from .deletion import purge_deleted_record
+    return purge_deleted_record(kind, int(pk), request.user)
+
+
+@never_cache
+@endpoint("POST", admin=True)
+def trash_purge_all(request):
+    from .deletion import purge_all_deleted_records
+    payload = body(request) if request.body else {}
+    kind = payload.get("kind") or None
+    items = payload.get("items") if isinstance(payload.get("items"), list) else None
+    return purge_all_deleted_records(request.user, kind_filter=kind, items=items)

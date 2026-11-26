@@ -182,17 +182,21 @@ function page(offset:number) {
     <p v-if="notice" class="alert success" role="status">{{ notice }}</p>
 
     <template v-if="section==='transfers'">
-      <div v-if="!entry" class="actions">
-        <RouterLink v-if="sourceOptions.length" to="/supply/transfers/new" class="primary">{{ t('New transfer') }}</RouterLink>
+      <div v-if="!entry" class="actions" style="margin-block-end: 14px;">
+        <RouterLink v-if="sourceOptions.length" to="/supply/transfers/new" class="button primary">{{ t('New transfer') }}</RouterLink>
+        <label>{{ t('Site') }}<select :value="route.query.site || ''" @change="changeFilter('site',($event.target as HTMLSelectElement).value)">
+          <option value="">{{ t('All') }}</option><option v-for="site in props.workspace.sites.filter(s => s.active)" :key="site.id" :value="site.id">{{ site.name }}</option>
+        </select></label>
         <label>{{ t('Status') }}<select :value="route.query.state || ''" @change="changeFilter('state',($event.target as HTMLSelectElement).value)">
           <option value="">{{ t('All') }}</option><option v-for="key in ['draft','confirmed','in_transit','partial','received','cancelled']" :key="key" :value="key">{{ status(key) }}</option>
         </select></label>
-        <label><input type="checkbox" :checked="route.query.discrepancy==='pending'" @change="changeFilter('discrepancy',($event.target as HTMLInputElement).checked?'pending':'')">{{ t('Pending discrepancies') }}</label>
+        <label class="check"><input type="checkbox" :checked="route.query.discrepancy==='pending'" @change="changeFilter('discrepancy',($event.target as HTMLInputElement).checked?'pending':'')"><span>{{ t('Pending discrepancies') }}</span></label>
       </div>
       <section v-if="!entry && transfers" class="panel table-panel">
+        <TableToolbar :page="currentPage" :query="String(route.query.q||'')" @search="changeFilter('q',$event)" :count="transfers.count" :size="Number(route.query.page_size)||25" @page="router.replace({query:{...route.query,page:String($event)}})" @size="router.replace({query:{...route.query,page_size:String($event),page:'1'}})" />
         <table><thead><tr><th>{{ t('Record number') }}</th><th>{{ t('Source site') }}</th><th>{{ t('Destination site') }}</th><th>{{ t('Status') }}</th></tr></thead>
           <tbody><tr v-for="row in transfers.results" :key="row.id"><td><RouterLink :to="'/supply/transfers/'+row.id">{{ row.number }}</RouterLink></td><td>{{ siteName(row.site_id) }}</td><td>{{ siteName(row.destination_id) }}</td><td>{{ status(row.state) }}</td></tr></tbody></table>
-        <p v-if="!transfers.count">{{ t('No records found.') }}</p>
+        <p v-if="!transfers.count" style="padding: 14px;">{{ t('No records found.') }}</p>
       </section>
       <RouterLink v-if="entry" to="/supply/transfers">{{ t('Stock transfers') }}</RouterLink>
       <form v-if="draftOpen" v-validated-form class="panel record-form" @submit.prevent="saveDraft">
@@ -316,7 +320,7 @@ function page(offset:number) {
         <ul><li v-for="(row,index) in transit.items" :key="index"><RouterLink :to="'/supply/transfers/'+row.transfer_id">{{ row.shipment }}</RouterLink> · {{ row.item }} · {{ row.quantity }} · {{ row.value }} AED</li></ul>
       </section>
     </template>
-    <TableToolbar v-if="!entry && section!=='transit' && pageInfo" :page="currentPage" :count="pageInfo.count" :size="Number(route.query.page_size)||25" @page="router.replace({query:{...route.query,page:String($event)}})" @size="router.replace({query:{...route.query,page_size:String($event),page:'1'}})"/>
+    <TableToolbar v-if="!entry && section!=='transit' && section!=='transfers' && pageInfo" :page="currentPage" :query="String(route.query.q||'')" @search="changeFilter('q',$event)" :count="pageInfo.count" :size="Number(route.query.page_size)||25" @page="router.replace({query:{...route.query,page:String($event)}})" @size="router.replace({query:{...route.query,page_size:String($event),page:'1'}})"/>
   </section>
 </template>
 

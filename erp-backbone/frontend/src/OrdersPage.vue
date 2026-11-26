@@ -10,6 +10,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { allows, api, ApiError, createRequest, type Asset, type Scope, type Workspace, type WorkOrder } from './api'
 import { message, t } from './i18n'
+import { notify } from './useUnifiedNotice'
 
 const { workspace } = defineProps<{ workspace: Workspace }>()
 const router = useRouter()
@@ -132,7 +133,10 @@ async function save(submit = false) {
   try {
     if (creating.value) {
       const order = await create<WorkOrder>('/work-orders', payload())
-      if (sequence === requestSequence) await router.push('/work-orders/' + order.id)
+      if (sequence === requestSequence) {
+        notify('saved', 'Work Order Created', 'New work order has been created.', { suffix: `WO-${order.id}` })
+        await router.push('/work-orders/' + order.id)
+      }
     } else if (record.value) {
       let saved = record.value
       const fields = payload()
@@ -146,7 +150,11 @@ async function save(submit = false) {
         saved = await api<WorkOrder>('/work-orders/' + saved.id + '/submit', 'POST', { revision: saved.revision })
         if (sequence === requestSequence) apply(saved)
       }
-      if (sequence === requestSequence) notice.value = 'Changes saved.'
+      if (sequence === requestSequence) {
+        notice.value = 'Changes saved.'
+        if (submit) notify('confirmation', 'Work Order Submitted', 'Work order has been submitted for review.', { suffix: `WO-${saved.id}` })
+        else notify('saved', 'Changes Saved', 'Your updates have been saved successfully.', { suffix: `WO-${saved.id}` })
+      }
     }
   } catch (reason) {
     if (sequence === requestSequence) {
@@ -169,6 +177,8 @@ async function review(action: 'approve' | 'return') {
       apply(order)
       reason.value = ''
       notice.value = 'Review saved.'
+      if (action === 'approve') notify('confirmation', 'Work Order Approved', 'Work order review decision has been recorded.', { suffix: `WO-${order.id}` })
+      else notify('warning', 'Work Order Returned', 'Work order has been returned for revision.', { suffix: `WO-${order.id}` })
     }
   } catch (failure) {
     if (sequence === requestSequence) {

@@ -1,3 +1,4 @@
+import {t} from './i18n'
 import { workspaceExtensions } from './extensions'
 import { allows, type Workspace } from './api'
 
@@ -22,76 +23,76 @@ function extensionScreens(group:string): Screen[] {
 }
 
 export const groups: Group[] = [
-  { id: 'general', label: 'General', screens: [
-    { id: 'workspace', label: 'Workspace', path: '/' },
-    { id: 'reports', label: 'Reports and dashboards', path: '/reports' },
+  { id: 'general', label: t('General'), screens: [
+    { id: 'workspace', label: t('Workspace'), path: '/' },
+    { id: 'reports', label: t('Reports and dashboards'), path: '/reports' },
     ...extensionScreens('general'),
   ] },
-  { id: 'procurement', label: 'Procurement', screens: [
-    { id: 'purchase_requests', label: 'Purchase requisitions', path: '/purchase-requests', aliases: ['/purchase-templates'], module: 'purchasing', permissions: ['purchasing.view'] },
-    { id: 'purchase_orders', label: 'Purchase orders', path: '/purchase-orders', module: 'purchase_orders', permissions: ['purchasing.view'] },
-    { id: 'suppliers', label: 'Suppliers', path: '/suppliers', module: 'suppliers', permissions: ['suppliers.view', 'suppliers.manage'], global: true },
-    { id: 'supplier_invoices', label: 'Supplier invoices', path: '/payables/invoices', aliases: ['/payables'], module: 'supplier_invoices', permissions: ['ap.view'] },
+  { id: 'procurement', label: t('Procurement'), screens: [
+    { id: 'purchase_requests', label: t('Purchase requisitions'), path: '/purchase-requests', aliases: ['/purchase-templates'], module: 'purchasing', permissions: ['purchasing.view'] },
+    { id: 'purchase_orders', label: t('Purchase orders'), path: '/purchase-orders', module: 'purchase_orders', permissions: ['purchasing.view'] },
+    { id: 'suppliers', label: t('Suppliers'), path: '/suppliers', module: 'suppliers', permissions: ['suppliers.view', 'suppliers.manage'], global: true },
+    { id: 'supplier_invoices', label: t('Supplier invoices'), path: '/payables/invoices', aliases: ['/payables'], module: 'supplier_invoices', permissions: ['ap.view'] },
   ] },
-  { id: 'inventory', label: 'Inventory', screens: [
-    { id: 'inventory_items', label: 'Inventory items', path: '/inventory/items', aliases: ['/inventory'], module: 'inventory', permissions: ['inventory.view'] },
-    { id: 'goods_receipts', label: 'Goods receipts', path: '/inventory/receipts', aliases: ['/inventory/receive'], module: 'inventory', permissions: ['inventory.view'] },
+  { id: 'inventory', label: t('Inventory'), screens: [
+    { id: 'inventory_items', label: t('Inventory items'), path: '/inventory/items', aliases: ['/inventory'], module: 'inventory', permissions: ['inventory.view'] },
+    { id: 'goods_receipts', label: t('Goods receipts'), path: '/inventory/receipts', aliases: ['/inventory/receive'], module: 'inventory', permissions: ['inventory.view'] },
     ...extensionScreens('inventory'),
-    { id: 'stock_balances', label: 'Stock balances', path: '/inventory/balances', module: 'inventory', permissions: ['inventory.view'] },
-    { id: 'supply', label: 'Supply Chain', path: '/supply', module: 'supply', permissions: ['supply.view'] },
-    { id: 'stock_movements', label: 'Stock movements', path: '/inventory/movements', module: 'inventory', permissions: ['inventory.view'] },
-    { id: 'inventory_setup', label: 'Inventory setup', path: '/inventory/setup', module: 'inventory', permissions: ['inventory.setup'] },
-    { id: 'opening_balances', label: 'Opening balance', path: '/inventory/opening', module: 'inventory', permissions: ['inventory.opening'] },
+    { id: 'stock_balances', label: t('Stock balances'), path: '/inventory/balances', module: 'inventory', permissions: ['inventory.view'] },
+    { id: 'supply', label: t('Supply Chain'), path: '/supply', module: 'supply', permissions: ['supply.view'] },
+    { id: 'stock_movements', label: t('Stock movements'), path: '/inventory/movements', module: 'inventory', permissions: ['inventory.view'] },
+    { id: 'inventory_setup', label: t('Inventory setup'), path: '/inventory/setup', module: 'inventory', permissions: ['inventory.setup'] },
+    { id: 'opening_balances', label: t('Opening balance'), path: '/inventory/opening', module: 'inventory', permissions: ['inventory.opening'] },
   ] },
-  { id: 'maintenance', label: 'Assets & Maintenance', screens: [
-    { id: 'assets_list', label: 'Assets', path: '/assets', module: 'assets', permissions: ['assets.view'] },
-    { id: 'work_orders', label: 'Work orders', path: '/work-orders', aliases: ['/approval-templates'], module: 'workorders', permissions: ['workorders.view'] },
-    { id: 'maintenance', label: 'Maintenance', path: '/maintenance', module: 'workorders', permissions: ['maintenance.view'] },
-    { id: 'preventive_maintenance', label: 'Preventive maintenance', path: '/maintenance?tab=plans', module: 'workorders', permissions: ['maintenance.view'] },
+  { id: 'maintenance', label: t('Assets & Maintenance'), screens: [
+    { id: 'assets_list', label: t('Assets'), path: '/assets', module: 'assets', permissions: ['assets.view'] },
+    { id: 'work_orders', label: t('Work orders'), path: '/work-orders', aliases: ['/approval-templates'], module: 'workorders', permissions: ['workorders.view'] },
+    { id: 'maintenance', label: t('Maintenance'), path: '/maintenance', module: 'workorders', permissions: ['maintenance.view'] },
+    { id: 'preventive_maintenance', label: t('Preventive maintenance'), path: '/maintenance?tab=plans', module: 'workorders', permissions: ['maintenance.view'] },
   ] },
-  { id: 'finance', label: 'Finance', screens: [
+  { id: 'finance', label: t('Finance'), screens: [
     ...extensionScreens('finance'),
-    { id: 'general_accounting', label: 'Accounting', path: '/accounting', module: 'accounting', permissions: ['accounting.view'], global: true },
-    { id: 'cost_centers_budgets', label: 'Cost centers and budgets', path: '/budgeting/report', aliases: ['/budgeting'], module: 'accounting', permissions: ['budget.view'] },
+    { id: 'general_accounting', label: t('Accounting'), path: '/accounting', module: 'accounting', permissions: ['accounting.view'], global: true },
+    { id: 'cost_centers_budgets', label: t('Cost centers and budgets'), path: '/budgeting/report', aliases: ['/budgeting'], module: 'accounting', permissions: ['budget.view'] },
   ] },
-  { id: 'sales', label: 'Sales', screens: [
+  { id: 'sales', label: t('Sales'), screens: [
     ...extensionScreens('sales'),
     { id: 'crm', label: 'CRM', path: '/crm', module: 'crm', permissions: ['crm.view'] },
-    { id: 'customers', label: 'Customers', path: '/sales/customers', module: 'customers', permissions: ['sales.view'] },
-    { id: 'sales_documents', label: 'Sales documents', path: '/sales', aliases: ['/sales/quotations'], module: 'sales', permissions: ['sales.view'] },
-    { id: 'ar_aging', label: 'AR aging', path: '/sales/aging', module: 'sales', permissions: ['sales.view'] },
+    { id: 'customers', label: t('Customers'), path: '/sales/customers', module: 'customers', permissions: ['sales.view'] },
+    { id: 'sales_documents', label: t('Sales documents'), path: '/sales', aliases: ['/sales/quotations'], module: 'sales', permissions: ['sales.view'] },
+    { id: 'ar_aging', label: t('AR aging'), path: '/sales/aging', module: 'sales', permissions: ['sales.view'] },
   ] },
-  { id: 'hr', label: 'Human Resources', screens: [
-    { id: 'employees', label: 'Employees', path: '/hr/employees', aliases: ['/hr'], module: 'hr', permissions: ['hr.view', 'hr.manage', 'hr.self', 'payroll.prepare', 'hr.identity.view_full', 'hr.offboarding.request', 'hr.offboarding.approve'] },
-    { id: 'hr_setup', label: 'HR Setup', path: '/hr/setup/departments', aliases: ['/hr/setup'], module: 'hr', permissions: ['hr.manage'] },
-    { id: 'offboarding', label: 'Offboarding', path: '/hr/offboarding', module: 'hr', permissions: ['hr.offboarding.request', 'hr.offboarding.approve'] },
-    { id: 'leave_requests', label: 'Leave requests', path: '/hr/leaves', module: 'hr', permissions: ['hr.view', 'hr.self', 'hr.leave.request', 'hr.leave.approve', 'hr.manage'] },
-    { id: 'time_attendance', label: 'Time & Attendance', path: '/hr/attendance', module: 'hr', permissions: ['attendance.record', 'attendance.approve', 'attendance.setup', 'attendance.correct', 'attendance.reopen'] },
+  { id: 'hr', label: t('Human Resources'), screens: [
+    { id: 'employees', label: t('Employees'), path: '/hr/employees', aliases: ['/hr'], module: 'hr', permissions: ['hr.view', 'hr.manage', 'hr.self', 'payroll.prepare', 'hr.identity.view_full', 'hr.offboarding.request', 'hr.offboarding.approve'] },
+    { id: 'hr_setup', label: t('HR Setup'), path: '/hr/setup/departments', aliases: ['/hr/setup'], module: 'hr', permissions: ['hr.manage'] },
+    { id: 'offboarding', label: t('Offboarding'), path: '/hr/offboarding', module: 'hr', permissions: ['hr.offboarding.request', 'hr.offboarding.approve'] },
+    { id: 'leave_requests', label: t('Leave requests'), path: '/hr/leaves', module: 'hr', permissions: ['hr.view', 'hr.self', 'hr.leave.request', 'hr.leave.approve', 'hr.manage'] },
+    { id: 'time_attendance', label: t('Time & Attendance'), path: '/hr/attendance', module: 'hr', permissions: ['attendance.record', 'attendance.approve', 'attendance.setup', 'attendance.correct', 'attendance.reopen'] },
   ] },
-  { id: 'payroll', label: 'Payroll', screens: [
-    { id: 'payroll_runs', label: 'Payroll runs', path: '/payroll/runs', aliases: ['/hr/payroll', '/payroll'], module: 'payroll', permissions: ['payroll.prepare', 'payroll.approve', 'payroll.post', 'payroll.pay', 'payroll.summary'] },
-    { id: 'payslips', label: 'Payslips', path: '/payroll/payslips', aliases: ['/hr/payslips'], module: 'payroll', permissions: ['payroll.payslip', 'payroll.payslip.self'] },
+  { id: 'payroll', label: t('Payroll'), screens: [
+    { id: 'payroll_runs', label: t('Payroll runs'), path: '/payroll/runs', aliases: ['/hr/payroll', '/payroll'], module: 'payroll', permissions: ['payroll.prepare', 'payroll.approve', 'payroll.post', 'payroll.pay', 'payroll.summary'] },
+    { id: 'payslips', label: t('Payslips'), path: '/payroll/payslips', aliases: ['/hr/payslips'], module: 'payroll', permissions: ['payroll.payslip', 'payroll.payslip.self'] },
   ] },
-  { id: 'admin', label: 'Admin & Settings', screens: [
-    { id: 'module_manager', label: 'Module Manager', path: '/modules', admin: true },
-    { id: 'integrations', label: 'Integrations & Webhooks', path: '/admin/integrations', admin: true },
-    { id: 'security-health', label: 'Security Health', path: '/admin/security-health', admin: true },
-    { id: 'users', label: 'Users', path: '/admin/users', admin: true },
-    { id: 'access_control', label: 'Access control', path: '/admin/access-control', aliases: ['/access'], admin: true },
-    { id: 'sites', label: 'Sites', path: '/admin/sites', admin: true },
-    { id: 'module_visibility', label: 'Module visibility', path: '/module-visibility', admin: true },
-    { id: 'audit_trail', label: 'Audit trail', path: '/audit', permissions: ['platform.audit'], global: true },
-    { id: 'document_settings', label: 'Document settings', path: '/document-settings', admin: true },
-    { id: 'data_import', label: 'Data import', path: '/data-import', admin: true },
-    { id: 'delegations', label: 'Delegations', path: '/delegations' },
-    { id: 'settings', label: 'Settings', path: '/settings' },
+  { id: 'admin', label: t('Admin & Settings'), screens: [
+    { id: 'module_manager', label: t('Module Manager'), path: '/modules', admin: true },
+    { id: 'integrations', label: t('Integrations & Webhooks'), path: '/admin/integrations', admin: true },
+    { id: 'security-health', label: t('Security Health'), path: '/admin/security-health', admin: true },
+    { id: 'users', label: t('Users'), path: '/admin/users', admin: true },
+    { id: 'access_control', label: t('Access control'), path: '/admin/access-control', aliases: ['/access'], admin: true },
+    { id: 'sites', label: t('Sites'), path: '/admin/sites', admin: true },
+    { id: 'module_visibility', label: t('Module visibility'), path: '/module-visibility', admin: true },
+    { id: 'audit_trail', label: t('Audit trail'), path: '/audit', permissions: ['platform.audit'], global: true },
+    { id: 'document_settings', label: t('Document settings'), path: '/document-settings', admin: true },
+    { id: 'data_import', label: t('Data import'), path: '/data-import', admin: true },
+    { id: 'delegations', label: t('Delegations'), path: '/delegations' },
+    { id: 'settings', label: t('Settings'), path: '/settings' },
   ] },
 ]
 
 export const platformScreens: Screen[] = [
-  { id: 'inbox', label: 'Inbox', path: '/inbox' },
-  { id: 'notifications', label: 'Notifications', path: '/notifications' },
-  { id: 'profile', label: 'User profile', path: '/profile' },
+  { id: 'inbox', label: t('Inbox'), path: '/inbox' },
+  { id: 'notifications', label: t('Notifications'), path: '/notifications' },
+  { id: 'profile', label: t('User profile'), path: '/profile' },
 ]
 
 export const screens = [...platformScreens, ...groups.flatMap(group => group.screens)]

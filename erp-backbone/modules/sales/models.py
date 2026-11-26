@@ -20,6 +20,8 @@ class Customer(models.Model):
     tax_id = models.CharField(max_length=60, blank=True)
     terms = models.PositiveSmallIntegerField(default=30)
     active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     revision = models.PositiveIntegerField(default=1)
 
 

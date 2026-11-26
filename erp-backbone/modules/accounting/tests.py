@@ -154,3 +154,23 @@ class AccountingTests(PurchaseOrderFixture, TransactionTestCase):
         self.assertEqual(repeated.json(), created.json())
         periods = self.client.get("/api/accounting/setup").json()["periods"]
         self.assertEqual(next(p["end"] for p in periods if p["id"] == created.json()["id"]), "2028-02-29")
+
+    def test_audit_period_overlap_and_report_site_filter(self):
+        from accounting.models import Period, Ledger
+        from backbone.models import Site
+        ledger = Ledger.objects.get(pk=1)
+        Period.objects.create(ledger=ledger, start=date(2029, 3, 1), end=date(2029, 3, 15))
+        res = self.post("/api/accounting/periods", {"start": "2029-03-01"})
+        self.assertEqual(res.status_code, 200)
+        # Overlapping custom period
+        Period.objects.create(ledger=ledger, start=date(2029, 4, 10), end=date(2029, 5, 10))
+        res_overlap = self.post("/api/accounting/periods", {"start": "2029-05-01"})
+        self.assertEqual(res_overlap.status_code, 409)
+        self.assertEqual(res_overlap.json()["error"], "finance_period_overlap")
+
+        # Trial balance site filter
+        self.approve()
+        other_site = Site.objects.create(name="Secondary Branch")
+        trial = self.client.get(f"/api/accounting/reports/trial?start={self.cut.isoformat()}&end={self.cut.isoformat()}&site_id={other_site.id}")
+        self.assertEqual(trial.status_code, 200)
+        self.assertEqual(trial.json()["items"], [])

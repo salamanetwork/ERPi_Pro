@@ -1,5 +1,6 @@
 import type { Directive } from 'vue'
 import { t } from './i18n'
+import { notify } from './useUnifiedNotice'
 import validationMessages from './validationMessages.json'
 
 type Input = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLButtonElement
@@ -98,12 +99,24 @@ function banner(form: HTMLFormElement, state: FormState, hasUnmapped = false) {
   state.banner?.remove()
   state.banner = undefined
   if (!state.errors.size && !hasUnmapped) return
+  const summaryKey = hasUnmapped ? 'Failed to save. Review the form values.' : 'Failed to save. Check the highlighted fields.'
   const node = document.createElement('p')
   node.className = 'alert validation-summary'
   node.setAttribute('role', 'alert')
-  node.textContent = t(hasUnmapped ? 'Failed to save. Review the form values.' : 'Failed to save. Check the highlighted fields.')
+  node.textContent = t(summaryKey)
   form.prepend(node)
   state.banner = node
+  const details = Array.from(state.errors.values())
+    .map(err => err.message.textContent?.trim())
+    .filter(Boolean)
+    .slice(0, 3)
+    .join(' · ')
+  notify('error', 'Validation Error', summaryKey, {
+    rawCode: 'validation_error',
+    hintKey: 'Check highlighted fields and ensure all required values are valid.',
+    suffix: details || undefined,
+    dedup: true,
+  })
 }
 
 function reveal(el: Input) {
@@ -149,8 +162,12 @@ function signature(el: Input) {
   return el instanceof HTMLInputElement && ['radio', 'checkbox'].includes(el.type) ? String(el.checked) : el.value
 }
 
-export const validatedForm: Directive<HTMLFormElement> = {
-  mounted(form) {
+const mountedForms = new WeakSet<HTMLFormElement>()
+
+export function bindValidatedForm(form: HTMLFormElement) {
+  if (mountedForms.has(form)) return
+  mountedForms.add(form)
+  {
     const state: FormState = { errors: new Map(), attempt: 0 }
     form.noValidate = true
     function modified(event: Event) {
@@ -218,5 +235,33 @@ export const validatedForm: Directive<HTMLFormElement> = {
       // keeps this particular form and attempt until the response arrives.
       window.setTimeout(() => { if (currentRequest === captured) currentRequest = undefined }, 0)
     }, {capture: true})
+  }
+}
+
+export const validatedForm: Directive<HTMLFormElement> = {
+  mounted(form) {
+    bindValidatedForm(form)
   },
+}
+
+export function installGlobalFormValidation() {
+  if (typeof document === 'undefined') return
+  const scan = (root: ParentNode) => {
+    if (root instanceof HTMLFormElement) bindValidatedForm(root)
+    root.querySelectorAll?.('form').forEach(f => bindValidatedForm(f as HTMLFormElement))
+  }
+  scan(document)
+  const observer = new MutationObserver(mutations => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node instanceof HTMLElement) scan(node)
+      }
+    }
+  })
+  observer.observe(document.documentElement, { childList: true, subtree: true })
+  document.addEventListener('submit', event => {
+    if (event.target instanceof HTMLFormElement && !mountedForms.has(event.target)) {
+      bindValidatedForm(event.target)
+    }
+  }, { capture: true })
 }

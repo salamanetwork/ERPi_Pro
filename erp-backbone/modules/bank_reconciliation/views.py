@@ -197,6 +197,10 @@ def transition(request,pk,action):
     else:
         data=body(request)
     def change():
+        from backbone.site_admin import require_active_site
+        if action=="adjust":
+            engine.ledger_lock()
+        require_active_site(existing.profile.site_id,lock=True)
         s=get_statement(user,pk,True)
         if s.status=="reconciled" or type(data.get("revision"))!=int or s.revision!=data["revision"]:
             raise Problem("revision_conflict",409)

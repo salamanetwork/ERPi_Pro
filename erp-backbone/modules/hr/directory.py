@@ -52,7 +52,7 @@ def employee_rows(user, params):
 
 def reference_choices():
     choices = {key: [] for key in REFERENCES}
-    for row in HRReference.objects.filter(active=True, kind__in=REFERENCES).order_by("name", "pk"):
+    for row in HRReference.objects.filter(active=True, is_deleted=False, kind__in=REFERENCES).order_by("name", "pk"):
         choices[row.kind].append(reference_data(row))
     return choices
 
@@ -70,7 +70,7 @@ def employment_references(data, fields, current=None):
                     fields[parameter] = reference.pk
             continue
         key = identifier(data[parameter], field, optional=field == "grade")
-        rows = HRReference.objects.select_for_update().filter(kind=kind)
+        rows = HRReference.objects.select_for_update().filter(kind=kind, is_deleted=False)
         if current:
             rows = rows.filter(Q(active=True) | Q(pk=getattr(current, parameter)))
         else:
@@ -171,7 +171,7 @@ def preview_reference_code(request, kind):
 def references(request, kind):
     if kind not in REFERENCES:
         raise Problem("not_found", 404)
-    rows = HRReference.objects.filter(kind=kind).order_by("code")
+    rows = HRReference.objects.filter(kind=kind, is_deleted=False).order_by("code")
     if request.method == "GET":
         require(request.user, "hr.manage")
         return paginate(request, directory_rows(rows, request.GET), reference_data)
@@ -214,10 +214,21 @@ def references(request, kind):
 
 
 @never_cache
-@endpoint("GET", "PATCH", module="hr")
+@endpoint("GET", "PATCH", "DELETE", module="hr")
 def reference(request, kind, pk):
-    require(request.user, "hr.manage", None if request.method == "PATCH" else ...)
-    rows = HRReference.objects.filter(kind=kind)
+    require(request.user, "hr.manage", None if request.method in ("PATCH", "DELETE") else ...)
+    rows = HRReference.objects.filter(kind=kind, is_deleted=False)
+    if request.method == "DELETE":
+        from backbone.deletion import perform_record_deletion
+        row = one(rows, pk)
+        return perform_record_deletion(
+            row,
+            request.user,
+            f"hr.reference.{kind}.delete",
+            has_dependencies_fn=lambda ref: Employee.objects.filter(
+                Q(department_ref=ref) | Q(title_ref=ref) | Q(grade_ref=ref)
+            ).exists(),
+        )
     if request.method == "GET":
         return reference_data(one(rows, pk))
     data = body(request)
@@ -324,13 +335,18 @@ def decide_offboarding(request, pk):
         if row.revision != identifier(data.get("revision"), "revision") or row.state != "submitted":
             raise Problem("revision_conflict", 409)
         if action == "approve":
+            from backbone.site_admin import require_active_site
             from .attendance import midnight, site_timezone
+            from .models import WeeklyTimesheet
 
+            require_active_site(employee.site_id, lock=True)
             if employee.ended or employee.archived_at or not employee.joined <= row.last_day < date.max:
                 raise Problem("hr_invalid_dates", 409)
             boundary = midnight(row.last_day + timedelta(days=1), ZoneInfo(site_timezone(employee.site_id)))
             if AttendanceSession.objects.filter(employee=employee, started_at__gte=boundary).exists():
                 raise Problem("hr_offboarding_attendance_conflict", 409)
+            if WeeklyTimesheet.objects.filter(employee=employee, starts_at__gte=boundary).exclude(state="draft").exists():
+                raise Problem("attendance_week_locked", 409)
             employee.ended = row.last_day
             employee.revision += 1
             employee.save(update_fields=["ended", "revision"])

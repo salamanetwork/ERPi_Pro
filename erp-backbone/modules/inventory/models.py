@@ -6,13 +6,19 @@ from django.db import models
 class Unit(models.Model):
     code = models.CharField(max_length=24, unique=True)
     name = models.CharField(max_length=80)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
 
 class Item(models.Model):
     code = models.CharField(max_length=32, unique=True)
+    barcode = models.CharField(max_length=64, null=True, blank=True, db_index=True)
     name = models.CharField(max_length=120)
+    default_price = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     base_unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
     active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     revision = models.PositiveIntegerField(default=1)
 
 
@@ -33,6 +39,8 @@ class Conversion(models.Model):
 
 class Warehouse(models.Model):
     active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     site = models.ForeignKey("backbone.Site", on_delete=models.PROTECT)
     code = models.CharField(max_length=32)
     name = models.CharField(max_length=120)
@@ -42,6 +50,9 @@ class Warehouse(models.Model):
 
 
 class Location(models.Model):
+    active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.PROTECT)
     code = models.CharField(max_length=32)
     name = models.CharField(max_length=120)

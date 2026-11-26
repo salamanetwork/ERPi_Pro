@@ -50,7 +50,7 @@ class BrandingTests(TestCase):
         self.assertEqual(self.reader.get(replaced["logo_url"])["Content-Type"], "image/jpeg")
         self.assertEqual(self.reader.get(record["logo_url"]).status_code, 404)
         cleared = self.save(2, name="", remove_logo="1").json()
-        self.assertEqual(cleared, {"revision": 3, "name": "", "logo_url": None})
+        self.assertEqual(cleared, {"revision": 3, "name": "", "logo_url": None, "deletion_policy": "soft"})
 
     def test_svg_logo_is_parsed_and_untrusted_content_is_rejected(self):
         good = b'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16">
@@ -81,3 +81,61 @@ class BrandingTests(TestCase):
         self.assertEqual(self.save(1, logo=too_big).status_code, 413)
         self.assertEqual(CompanyProfile.objects.get(pk=1).name, "شركة اختبار")
         self.assertEqual(CompanyProfile.objects.get(pk=1).revision, 1)
+
+
+class DeletionPolicyAndInventorySetupTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_superuser("admin_del")
+        device = Authenticator.objects.create(user=self.user, encrypted_key="test-session-only")
+        self.client.force_login(self.user)
+        session = self.client.session
+        session[VERIFIED] = stamp(device)
+        session.save()
+
+    def test_company_profile_deletion_policy_persistence(self):
+        res = self.client.get("/api/company-profile")
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data.get("deletion_policy"), "soft")
+
+        upd = self.client.post(
+            "/api/company-profile",
+            {"name": "ERPi Pro", "deletion_policy": "permanent", "revision": str(data["revision"])},
+        )
+        self.assertEqual(upd.status_code, 200)
+        self.assertEqual(upd.json().get("deletion_policy"), "permanent")
+
+    def test_inventory_setup_soft_and_permanent_delete(self):
+        from backbone.models import CompanyProfile, ModuleState, Site
+        ModuleState.objects.update_or_create(module_id="inventory", defaults={"enabled": True})
+        from inventory.models import Location, Unit, Warehouse
+
+        site = Site.objects.create(name="Test Site")
+        wh1 = Warehouse.objects.create(site=site, code="WH-SOFT", name="Soft WH")
+        wh2 = Warehouse.objects.create(site=site, code="WH-PERM", name="Perm WH")
+        loc = Location.objects.create(warehouse=wh2, code="LOC-1", name="Loc 1")
+        unit = Unit.objects.create(code="U-DEL", name="Box")
+
+        # Soft delete mode (default)
+        CompanyProfile.objects.update_or_create(pk=1, defaults={"name": "ERPi", "deletion_policy": "soft"})
+        r1 = self.client.delete(f"/api/inventory/setup/warehouse/{wh1.id}")
+        self.assertEqual(r1.status_code, 200)
+        wh1.refresh_from_db()
+        self.assertTrue(wh1.is_deleted)
+        self.assertFalse(wh1.active)
+        self.assertIsNotNone(wh1.deleted_at)
+
+        # Protected delete when warehouse has active location
+        CompanyProfile.objects.filter(pk=1).update(deletion_policy="permanent")
+        r_blocked = self.client.delete(f"/api/inventory/setup/warehouse/{wh2.id}")
+        self.assertEqual(r_blocked.status_code, 409)
+
+        # Permanent delete location, then warehouse, then unit
+        self.assertEqual(self.client.delete(f"/api/inventory/setup/location/{loc.id}").status_code, 200)
+        self.assertFalse(Location.objects.filter(pk=loc.id).exists())
+
+        self.assertEqual(self.client.delete(f"/api/inventory/setup/warehouse/{wh2.id}").status_code, 200)
+        self.assertFalse(Warehouse.objects.filter(pk=wh2.id).exists())
+
+        self.assertEqual(self.client.delete(f"/api/inventory/setup/unit/{unit.id}").status_code, 200)
+        self.assertFalse(Unit.objects.filter(pk=unit.id).exists())

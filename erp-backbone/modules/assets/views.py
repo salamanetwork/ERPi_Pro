@@ -94,6 +94,8 @@ def detail(request, pk):
     with transaction.atomic():
         row = asset_for(user, pk, lock=True)
         require(user, "assets.edit", row.site_id)
+        if row.site_id is not None:
+            require_active_site(row.site_id)
         check_revision(row, data)
         row.name = string(data, "name", 120)
         if "financial" in data:
@@ -131,28 +133,29 @@ def transfer(request, pk):
     require(user, "assets.view", destination)
 
     def create():
-        site_ids = {destination, current.site_id} - {None}
-        list(Site.objects.select_for_update().filter(pk__in=site_ids).order_by("pk"))
-        row = asset_for(user, pk, lock=True)
-        check_revision(row, data)
-        if row.site_id not in (*site_ids, None):
-            raise Problem("revision_conflict", 409)
-        require(user, "assets.transfer", row.site_id)
-        require_active_site(destination)
-        if destination == row.site_id or day > timezone.localdate() or row.transfers.filter(transferred_on__gt=day).exists():
-            raise Problem("invalid_asset_transfer", 409)
-        if MaintenanceJob.objects.filter(asset=row).exclude(stage__in=("closed", "cancelled")).exists():
-            raise Problem("asset_has_open_maintenance", 409)
-        from .models import AssetProfile
+        with transaction.atomic():
+            site_ids = {destination, current.site_id} - {None}
+            list(Site.objects.select_for_update().filter(pk__in=site_ids).order_by("pk"))
+            row = asset_for(user, pk, lock=True)
+            check_revision(row, data)
+            if row.site_id not in (*site_ids, None):
+                raise Problem("revision_conflict", 409)
+            require(user, "assets.transfer", row.site_id)
+            require_active_site(destination)
+            if destination == row.site_id or day > timezone.localdate() or row.transfers.filter(transferred_on__gt=day).exists():
+                raise Problem("invalid_asset_transfer", 409)
+            if MaintenanceJob.objects.filter(asset=row).exclude(stage__in=("closed", "cancelled")).exists():
+                raise Problem("asset_has_open_maintenance", 409)
+            from .models import AssetProfile
 
-        if AssetProfile.objects.filter(asset=row, parent__isnull=False).exists() or row.maintenance_children.exists():
-            raise Problem("asset_transfer_hierarchy", 409)
-        movement = AssetTransfer.objects.create(asset=row, source_site_id=row.site_id,
-            destination_site_id=destination, transferred_on=day, reason=reason, actor=user)
-        row.site_id = destination
-        row.revision += 1
-        row.save(update_fields=["site", "revision"])
-        audit(user, "asset.transfer", f"#{row.pk} / {movement.source_site_id} → {destination} / {day} / {reason}")
-        return {"id": row.pk, "transfer_id": movement.pk, "site_id": destination, "revision": row.revision}
+            if AssetProfile.objects.select_for_update().filter(asset=row, parent__isnull=False).exists() or row.maintenance_children.select_for_update().exists():
+                raise Problem("asset_transfer_hierarchy", 409)
+            movement = AssetTransfer.objects.create(asset=row, source_site_id=row.site_id,
+                destination_site_id=destination, transferred_on=day, reason=reason, actor=user)
+            row.site_id = destination
+            row.revision += 1
+            row.save(update_fields=["site", "revision"])
+            audit(user, "asset.transfer", f"#{row.pk} / {movement.source_site_id} → {destination} / {day} / {reason}")
+            return {"id": row.pk, "transfer_id": movement.pk, "site_id": destination, "revision": row.revision}
 
     return once(request, "asset.transfer", {"asset": pk, **data}, create)

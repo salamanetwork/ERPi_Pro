@@ -107,6 +107,8 @@ def write_claim(user,data,row=None):
     site=identifier(data.get("site_id"),"site_id")
     require(user,"expenses.view",site)
     require(user,"expenses.create",site)
+    from backbone.site_admin import require_active_site
+    require_active_site(site,lock=True)
     employee=Employee.objects.filter(pk=identifier(data.get("employee_id"),"employee_id"),site_id=site,site__active=True,archived_at=None,ended=None).first()
     if not employee or employee.user_id!=user.pk and not has_permission(user,"expenses.delegate",site):
         raise Problem("forbidden",403)
@@ -199,9 +201,14 @@ def journal(row,user,data,payout=None):
 def transition(request,pk,action):
     if action not in PERMISSIONS:raise Problem("not_found",404)
     user=request.user
-    authorize(user,get_claim(user,pk),PERMISSIONS[action])
+    initial=get_claim(user,pk)
+    authorize(user,initial,PERMISSIONS[action])
     data=body(request)
     def change():
+        from backbone.site_admin import require_active_site
+        if action in ("post","reimburse"):
+            ledger_lock()
+        require_active_site(initial.site_id,lock=True)
         row=get_claim(user,pk,True)
         authorize(user,row,PERMISSIONS[action])
         version(row,data)
@@ -238,12 +245,15 @@ def receipt(request,pk,line):
     except ValidationError:raise Problem("invalid_file",field="file")
     rev=request.POST.get("revision","")
     def attach():
+        from backbone.site_admin import require_active_site
+        require_active_site(row.site_id,lock=True)
         locked=get_claim(request.user,pk,True)
         authorize(request.user,locked,"create")
         version(locked,{"revision":int(rev) if rev.isascii() and rev.isdigit() and len(rev)<10 else None})
-        if locked.status!="draft" or item.receipt_id:raise Problem("invalid_transition",409)
-        item.receipt=store_internal_receipt(validated)
-        item.save(update_fields=["receipt"])
+        locked_item=locked.lines.select_for_update().filter(pk=line).first()
+        if not locked_item or locked.status!="draft" or locked_item.receipt_id:raise Problem("invalid_transition",409)
+        locked_item.receipt=store_internal_receipt(validated)
+        locked_item.save(update_fields=["receipt"])
         locked.revision+=1
         locked.save(update_fields=["revision"])
         changed(request.user,locked,"receipt")

@@ -186,6 +186,7 @@ def mutate(request,pk,operation):
         require(user,"helpdesk.dispatch",initial.site_id)
 
     def apply():
+        require_active_site(initial.site_id,lock=True)
         row=one(scoped(user,True),pk)
         check_revision(row,data)
         if operation=="edit":
@@ -266,6 +267,7 @@ def comments(request,pk):
         raise Problem("forbidden",403)
 
     def add():
+        require_active_site(row.site_id,lock=True)
         locked=one(scoped(user,True),pk)
         if locked.status in ("resolved","closed"):
             raise Problem("helpdesk_invalid_state",409)
@@ -351,6 +353,7 @@ def category_detail(request,pk):
     data=body(request)
 
     def edit():
+        require_active_site(row.site_id,lock=True)
         item=one(visible(Category.objects.select_for_update(),user,"helpdesk.configure"),pk)
         check_revision(item,data)
         item.name_ar=string(data,"name_ar",80)

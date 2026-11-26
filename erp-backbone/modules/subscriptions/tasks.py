@@ -19,6 +19,9 @@ def outstanding(c):
 @transaction.atomic
 def process(pk,expected_revision=None):
     if not {'subscriptions','billing_core','parties','accounting'}<=enabled_modules():return
+    from backbone.models import Site
+    site_id=Contract.objects.values_list('site_id',flat=True).get(pk=pk)
+    Site.objects.select_for_update().get(pk=site_id)
     c=Contract.objects.select_for_update().get(pk=pk)
     if not c.site.active or not c.party.active or (c.space_id and not c.space.active):return
     if expected_revision is not None and c.revision!=expected_revision:return

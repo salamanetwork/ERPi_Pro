@@ -127,6 +127,10 @@ urlpatterns = [
     path("api/profile", views.user_profile),
     path("api/company-profile", company_profile.company_profile),
     path("api/company-profile/logo", company_profile.company_logo),
+    path("api/trash", company_profile.trash_list),
+    path("api/trash/<slug:kind>/<int:pk>/restore", company_profile.trash_restore),
+    path("api/trash/<slug:kind>/<int:pk>/purge", company_profile.trash_purge),
+    path("api/trash/purge-all", company_profile.trash_purge_all),
     path("api/profile/picture", profile_picture.picture),
     path("api/navigation/settings", views.navigation_settings),
     path("api/preferences/module-view", views.module_view),
@@ -193,10 +197,12 @@ urlpatterns = [
     path("api/print-templates/<slug:kind>/<slug:language>/preview", printing.preview),
     path("api/print-templates/<slug:kind>/<slug:language>", printing.print_template),
     path("api/inventory/warehouses/<int:pk>/state", inventory_setup.warehouse_state),
+    path("api/inventory/locations/<int:pk>/state", inventory_setup.location_state),
     path("api/inventory/items", inventory_setup.items),
     path("api/inventory/items/<int:pk>", inventory_setup.item),
     path("api/inventory/catalog", inventory_setup.catalog),
     path("api/inventory/setup/<slug:kind>", inventory_setup.configure),
+    path("api/inventory/setup/<slug:kind>/<int:pk>", inventory_setup.delete_setup),
     path("api/inventory/orders/<int:pk>", inventory.progress),
     path("api/inventory/receipts", inventory.receipts),
     path("api/inventory/receipts/<int:pk>", inventory.receipt),
@@ -257,7 +263,7 @@ urlpatterns = [
     path("print/<slug:kind>/<int:pk>", printing.print_document),
     # Business endpoints and document printing resolve before the SPA fallback.
     re_path(
-        r"^(?:(?:assets|work-orders|purchase-requests|purchase-orders|suppliers|sales|inventory|accounting|payables|maintenance|reports|budgeting|hr|payroll|crm|supply" + "".join(f"|{prefix}" for prefix in spa_prefixes()) + r")(?:/.*)?"
+        r"^(?:(?:assets|work-orders|purchase-requests|purchase-orders|suppliers|sales|pos|inventory|accounting|payables|maintenance|reports|budgeting|hr|payroll|crm|supply" + "".join(f"|{prefix}" for prefix in spa_prefixes()) + r")(?:/.*)?"
         r"|modules|approval-templates|access|sites|module-visibility|audit|settings(?:/company)?|profile|delegations|purchase-templates|document-settings|inbox|search|notifications|data-import)?/?$",
         views.shell,
     ),

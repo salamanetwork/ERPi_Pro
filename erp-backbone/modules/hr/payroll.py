@@ -146,7 +146,7 @@ def inputs(request, pk):
                 run.save(update_fields=["digest"])
                 audit(user, "payroll.input.remove", pk)
                 return result
-            employee = one(Employee.objects.filter(site_id=run.site_id), identifier(data.get("employee_id"), "employee"))
+            employee = one(Employee.objects.filter(site_id=run.site_id, archived_at__isnull=True), identifier(data.get("employee_id"), "employee"))
             kind = data.get("kind")
             amount = decimal_value(data.get("amount"), 14, 2, "amount")
             if kind not in EARNINGS + DEDUCTIONS + ("review",) or (kind == "review" and amount != ZERO) or (kind != "review" and amount <= ZERO):
@@ -294,11 +294,13 @@ def advance(request, pk):
         elif action == "post":
             row.entry, row.state = payroll_entry(row,user,data), "posted"
         elif action == "pay":
+            from backbone.site_admin import require_active_site
+            require_active_site(row.site_id, lock=True)
+            ledger, period, day = ledger_day(data,row)
             reference = string(data,"reference",100).upper()
             amount = decimal_value(data.get("amount"), 18,2,"amount")
             if amount <= ZERO or amount > Decimal(aggregates(row)["outstanding"]):
                 raise Problem("payroll_payment_exceeds",409)
-            ledger, period, day = ledger_day(data,row)
             if day < row.entry.date:
                 raise Problem("finance_before_original",409)
             if Payment.objects.filter(reference=reference).exists():

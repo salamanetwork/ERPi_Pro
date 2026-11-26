@@ -1,4 +1,4 @@
-import { locale, t } from './i18n'
+import { isRtl, locale, localizedPick, localizedText, t } from './i18n'
 import content from './help.json'
 
 type Topic = { title: string; purpose: string; fields: string; next: string }
@@ -9,17 +9,17 @@ const modules=Object.fromEntries(Object.values(import.meta.glob<{id:string;name:
 export function helpTopic(route: string, section: string) {
   const declared=modules[route]
   if(declared&&!topics[route]){
-    const ar=locale.value==='ar',title=declared.name[locale.value]
+    const ar=isRtl.value,title=localizedText(declared.name, locale.value)
     return {title,purpose:ar?'ابحث في سجلات '+title+' وأدرها ضمن نطاق صلاحياتك.':'Find and manage '+title+' records within your assigned scope.',
             fields:ar?'اختر النطاق وأدخل اسم السجل. تشير النجمة إلى الحقول المطلوبة.':'Choose the scope and enter the record name. Required fields have an asterisk.',
             next:ar?'احفظ ثم ابحث عن السجل في الجدول.':'Save the record and find it in the directory.'}
   }
-  return (topics[route + '/' + section] ?? topics[route] ?? topics.notFound!)[locale.value]
+  return localizedPick(topics[route + '/' + section] ?? topics[route] ?? topics.notFound!, locale.value)!
 }
 
 export function fieldHelp(label: string) {
   const key = Object.keys(fields).find(key => t(key) === label || key === label)
-  return key ? fields[key]![locale.value] : t('Enter or select the value indicated by this field.')
+  return key ? localizedText(fields[key], locale.value) : t('Enter or select the value indicated by this field.')
 }
 
 

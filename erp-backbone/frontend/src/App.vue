@@ -3,7 +3,8 @@ import { workspaceExtensions } from './extensions'
 import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api, ApiError, allows, type CompanyBrand, type Module, type ModuleView, type Workspace } from './api'
-import { locale, message, t } from './i18n'
+import { SUPPORTED_LOCALES, currentLocaleMeta, getLocaleDir, isRtl, locale, localizedText, message, t } from './i18n'
+import { setSystemNoticeMode, syncNoticeUser, systemNoticeMode } from './notificationPreferences'
 import WorkspacePage from './WorkspacePage.vue'
 import ProfilePage from './ProfilePage.vue'
 import SidebarNavigation from './SidebarNavigation.vue'
@@ -14,6 +15,7 @@ import SecurityHealth from './SecurityHealth.vue'
 import AppFooter from './AppFooter.vue'
 import PanelResizer from './PanelResizer.vue'
 import CompanyProfilePage from './CompanyProfilePage.vue'
+import TrashRestorePage from './TrashRestorePage.vue'
 import NavigationSettings from './NavigationSettings.vue'
 import { visibleScreen } from './navigation'
 import SitesPage from './SitesPage.vue'
@@ -42,6 +44,8 @@ import AccountingPage from './AccountingPage.vue'
 import InventoryPage from './InventoryPage.vue'
 import SearchPage from './SearchPage.vue'
 import CommandPalette from './CommandPalette.vue'
+import UnifiedNoticeHost from './UnifiedNoticeHost.vue'
+import { notify } from './useUnifiedNotice'
 import HrPage from './HrPage.vue'
 import AttendancePage from './AttendancePage.vue'
 import NotificationsPage from './NotificationsPage.vue'
@@ -98,7 +102,7 @@ function setUiZoom(next: number) {
 }
 const uiZoomLabel = computed(() => {
   const pct = Math.round(uiZoom.value * 100)
-  return locale.value === 'ar'
+  return isRtl.value
     ? pct.toLocaleString('ar-EG') + '٪'
     : pct + '%'
 })
@@ -301,7 +305,7 @@ onBeforeUnmount(() => {
 
 watch([locale, systemDark, () => workspace.value?.theme], ([language, dark, theme]) => {
   document.documentElement.lang = language
-  document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr'
+  document.documentElement.dir = getLocaleDir(language)
   document.documentElement.dataset.theme = theme === 'dark' || (!theme || theme === 'system') && dark ? 'dark' : 'light'
 }, { immediate: true })
 
@@ -329,7 +333,7 @@ async function load() {
     challenge.value = session.mfa
     if (session.user) {
       workspace.value = await api<Workspace>('/workspace')
-      locale.value = workspace.value.language
+      locale.value = workspace.value.language; syncNoticeUser(workspace.value.username)
     }
   } catch (reason) { error.value = message(reason) }
   finally { pending.value = false }
@@ -430,7 +434,7 @@ function toggle(module: Module) {
     : modules.filter(row => !row.enabled && module.required_dependencies.includes(row.id))
   if (restricted.length) {
     error.value = t(module.enabled ? 'Required by enabled modules' : 'Enable these dependencies first')
-      + ' · ' + restricted.map(row => row.name[locale.value]).join(', ')
+      + ' · ' + restricted.map(row => localizedText(row.name, locale.value)).join(', ')
     return
   }
   void run(async () => {
@@ -467,10 +471,13 @@ function updateNavigation(hidden: string[]) {
 }
 function savePreferences() {
   if (!workspace.value) return
-  const { language, theme } = workspace.value
+  const { language, theme, admin: isAdmin } = workspace.value
   void run(async () => {
-    await api('/preferences', 'PATCH', { language, theme })
+    const payload: Record<string, unknown> = { language, theme }
+    if (isAdmin) payload.system_notice_mode = systemNoticeMode.value
+    await api('/preferences', 'PATCH', payload)
     notice.value = 'Changes saved.'
+    notify('saved', 'Preferences Saved', 'Changes saved.')
   })
 }
 </script>
@@ -636,15 +643,20 @@ function savePreferences() {
         <NotificationsPage v-else-if="page === 'notifications'" @unread="updateUnread" />
         <DocumentSettingsPage v-else-if="page === 'documentSettings' && workspace.admin" :workspace="workspace" />
         <CompanyProfilePage v-else-if="page === 'companyProfile' && workspace.admin" @saved="updateCompany" />
+        <TrashRestorePage v-else-if="page === 'trashRestore' && workspace.admin" />
         <template v-else-if="page === 'settings'">
           <div class="page-heading">
             <h1>{{ t('Settings') }}</h1>
-            <RouterLink v-if="workspace.admin" to="/settings/company" class="button secondary">{{ t('Company Profile') }}</RouterLink>
+            <div v-if="workspace.admin" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <RouterLink to="/settings/company" class="button secondary">{{ t('Company Profile') }}</RouterLink>
+              <RouterLink to="/settings/trash" class="button secondary">{{ t('Trash & Restore') }}</RouterLink>
+            </div>
           </div>
           <form v-validated-form class="panel settings-form" @submit.prevent="savePreferences">
-            <div class="field-wrap"><label>{{ t('Language') }}<select data-field="language" v-model="workspace.language" @change="locale = workspace.language"><option value="en">English</option><option value="ar">العربية</option></select></label><FieldHint :label="t('Language')" /></div>
+            <div class="field-wrap"><label>{{ t('Language') }}<select data-field="language" v-model="workspace.language" @change="locale = workspace.language"><option v-for="lang in SUPPORTED_LOCALES" :key="lang.code" :value="lang.code">{{ lang.name }}</option></select></label><FieldHint :label="t('Language')" /></div>
             <div class="field-wrap"><label>{{ t('Theme') }}<select data-field="theme" v-model="workspace.theme"><option value="system">{{ t('System') }}</option><option value="light">{{ t('Light') }}</option><option value="dark">{{ t('Dark') }}</option></select></label><FieldHint :label="t('Theme')" /></div>
-            <div class="field-wrap"><label>{{ t('Interface zoom') }}<select data-field="uiZoom" :value="uiZoom" @change="setUiZoom(Number(($event.target as HTMLSelectElement).value))"><option v-for="lvl in UI_ZOOM_LEVELS" :key="lvl" :value="lvl">{{ locale === 'ar' ? Math.round(lvl * 100).toLocaleString('ar-EG') + '٪' : Math.round(lvl * 100) + '%' }}</option></select></label><FieldHint :label="t('Interface zoom')" /></div>
+            <div class="field-wrap"><label>{{ t('Interface zoom') }}<select data-field="uiZoom" :value="uiZoom" @change="setUiZoom(Number(($event.target as HTMLSelectElement).value))"><option v-for="lvl in UI_ZOOM_LEVELS" :key="lvl" :value="lvl">{{ isRtl ? Math.round(lvl * 100).toLocaleString(currentLocaleMeta.numberLocale) + '٪' : Math.round(lvl * 100) + '%' }}</option></select></label><FieldHint :label="t('Interface zoom')" /></div>
+            <div v-if="workspace.admin" class="field-wrap"><label>{{ t('System default notification display') }}<select data-field="systemNoticeMode" :value="systemNoticeMode" @change="setSystemNoticeMode(($event.target as HTMLSelectElement).value as 'popup' | 'toast')"><option value="popup">{{ t('Pop-up modal dialog') }}</option><option value="toast">{{ t('Toast notification') }}</option></select></label><FieldHint :label="t('System default notification display')" /></div>
             <button class="primary" :disabled="busy">{{ t('Save') }}</button>
           </form>
           <p class="muted">{{ t('Version') }} <bdi>{{ workspace.platform_version }}</bdi></p>
@@ -667,5 +679,6 @@ function savePreferences() {
     </div>
     <AppFooter :version="workspace.platform_version" :mode="workspace.mode" :inert="mobileOverlay || undefined" />
     <CommandPalette :open="commandPaletteOpen" @close="commandPaletteOpen = false" />
+    <UnifiedNoticeHost />
   </div>
 </template>

@@ -4,7 +4,7 @@ import { api } from './api'
 import { message, t } from './i18n'
 import { groups, platformScreens } from './navigation'
 
-const sections = [{id:'platform',label:'Workspace',screens:platformScreens}, ...groups]
+const sections = [{id:'platform',label: t('Workspace'),screens:platformScreens}, ...groups]
 const props = defineProps<{ hidden: string[] }>()
 const emit = defineEmits<{ saved: [hidden: string[]] }>()
 const busy = ref(false)

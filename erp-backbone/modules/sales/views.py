@@ -45,7 +45,7 @@ def customers(request):
     user = request.user
     require(user, "sales.view")
     if request.method == "GET":
-        rows = Customer.objects.order_by("code")
+        rows = Customer.objects.filter(is_deleted=False).order_by("code")
         if "page" in request.GET:
             return paginate(request, directory_rows(rows, request.GET), customer_data)
         return {"items": [customer_data(row) for row in rows]}
@@ -61,7 +61,7 @@ def customers(request):
             if not created:
                 raise Problem("sales_customer_code_exists", 409)
         else:
-            row = Customer.objects.select_for_update().filter(pk=identifier(data["id"], "customer")).first()
+            row = Customer.objects.select_for_update().filter(pk=identifier(data["id"], "customer"), is_deleted=False).first()
             if row is None:
                 raise Problem("not_found", 404)
             if row.code != code or row.revision != data.get("revision"):
@@ -148,7 +148,7 @@ def quote_lines(data):
     result = []
     for index, line in enumerate(entries(data), 1):
         with field_path(f"lines.{index - 1}"):
-            item = Item.objects.filter(pk=identifier(line.get("item_id"), "item"), active=True).select_related("base_unit").first()
+            item = Item.objects.filter(pk=identifier(line.get("item_id"), "item"), active=True, is_deleted=False).select_related("base_unit").first()
             if item is None:
                 raise Problem("invalid_item")
             qty = quantity(line)
@@ -231,7 +231,7 @@ def quote(user, data):
     from backbone.site_admin import require_active_site
 
     require_active_site(site_id, lock=True)
-    customer = Customer.objects.filter(pk=identifier(data.get("customer_id"), "customer"), active=True).first()
+    customer = Customer.objects.filter(pk=identifier(data.get("customer_id"), "customer"), active=True, is_deleted=False).first()
     if not customer:
         raise Problem("invalid_customer")
     day, expires = dated(data), day_field(data, "expires")
@@ -260,7 +260,9 @@ def delivery(user, order, data):
         if qty > Decimal(row["remaining"]):
             raise Problem("sales_delivery_excess", 409)
         location = Location.objects.filter(pk=identifier(line.get("location_id"), "location"),
-                                           warehouse__site_id=order.site_id, warehouse__active=True).first()
+                                           active=True, is_deleted=False,
+                                           warehouse__site_id=order.site_id, warehouse__active=True,
+                                           warehouse__is_deleted=False).first()
         if location is None:
             raise Problem("invalid_location")
         prior = Decimal(row["delivered"])
@@ -312,10 +314,25 @@ def invoice(user, shipped, data):
 def receipt(user, first, data):
     day = dated(data, first)
     ledger = active_ledger(day)
-    lines, seen, sources = [], set(), []
-    for index, line in enumerate(entries(data)):
+    raw_lines = entries(data)
+    requested_ids = []
+    for index, line in enumerate(raw_lines):
         with field_path(f"lines.{index}"):
-            row = scoped(user, line.get("invoice_id"), "invoice")
+            inv_id = identifier(line.get("invoice_id"), "invoice")
+            if inv_id in requested_ids:
+                raise Problem("sales_invalid_allocation", 409)
+            requested_ids.append(inv_id)
+    locked_invoices = {
+        inv.pk: inv
+        for inv in visible(Document.objects.filter(kind="invoice", pk__in=requested_ids).order_by("pk").select_for_update(), user, "sales.view")
+    }
+    lines, seen, sources = [], set(), []
+    for index, line in enumerate(raw_lines):
+        with field_path(f"lines.{index}"):
+            inv_id = requested_ids[index]
+            row = locked_invoices.get(inv_id)
+            if row is None:
+                raise Problem("not_found", 404)
             value = decimal_value(line.get("amount"), 15, 2, "amount")
             if (row.pk in seen or row.customer_id != first.customer_id or row.site_id != first.site_id or
                     row.date > day or value <= 0 or value > invoice_balance(row)):
@@ -447,7 +464,7 @@ def documents(request):
 
             require_active_site(current.site_id, lock=True)
             if (current.status != "accepted" or current.expires < max(timezone.localdate(), dated(data, current))
-                    or current.children.filter(kind="order").exists() or not current.customer.active):
+                    or current.children.filter(kind="order").exists() or not current.customer.active or current.customer.is_deleted):
                 raise Problem("sales_quote_unavailable", 409)
             row = create(user, "order", current.site_id, current.customer, dated(data, current), current.lines,
                          source=current, status="draft", snapshot={"customer": customer_data(current.customer)})
@@ -466,7 +483,9 @@ def document(request, pk):
         return summary(scoped(user, pk), True)
     data = body(request)
     with transaction.atomic():
+        from backbone.site_admin import require_active_site
         row = scoped(user, pk, lock=True)
+        require_active_site(row.site_id, lock=True)
         require(user, "sales." + KIND_PERMISSION[row.kind], row.site_id)
         if identifier(data.get("revision"), "revision") != row.revision:
             raise Problem("revision_conflict", 409)
@@ -502,7 +521,7 @@ def document(request, pk):
             if row.kind == "quote" and action == "send":
                 row.snapshot = {"customer": customer_data(row.customer)}
             if row.kind == "order" and action == "confirm":
-                if not row.customer.active:
+                if not row.customer.active or row.customer.is_deleted:
                     raise Problem("invalid_customer")
                 row.snapshot = {**row.snapshot, "customer": customer_data(row.customer)}
             row.status = state
@@ -551,17 +570,26 @@ def catalog(request):
     require(request.user, "sales.view")
     from inventory.models import Unit, Warehouse
 
-    warehouses = visible(Warehouse.objects.filter(active=True).order_by("code"), request.user, "sales.view")
-    return {"items": list(Item.objects.filter(active=True).order_by("code").values()),
+    warehouses = visible(Warehouse.objects.filter(active=True, is_deleted=False).order_by("code"), request.user, "sales.view")
+    return {"items": list(Item.objects.filter(active=True, is_deleted=False).order_by("code").values()),
             "units": list(Unit.objects.order_by("code").values("id", "code")),
             "warehouses": list(warehouses.values("id", "site_id", "name")),
-            "locations": list(Location.objects.filter(warehouse__in=warehouses).order_by("code").values())}
+            "locations": list(Location.objects.filter(warehouse__in=warehouses, active=True, is_deleted=False).order_by("code").values())}
 
 
-@endpoint("GET", module="customers")
+@endpoint("GET", "DELETE", module="customers")
 def customer(request, pk):
     require(request.user, "sales.view")
-    row = Customer.objects.filter(pk=pk).first()
+    row = Customer.objects.filter(pk=pk, is_deleted=False).first()
     if row is None:
         raise Problem("not_found", 404)
+    if request.method == "DELETE":
+        from backbone.deletion import perform_record_deletion
+        require(request.user, "sales.customer", None)
+        return perform_record_deletion(
+            row,
+            request.user,
+            "sales.customer.delete",
+            has_dependencies_fn=lambda c: Document.objects.filter(customer=c).exists(),
+        )
     return customer_data(row)

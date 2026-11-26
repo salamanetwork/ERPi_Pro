@@ -19,11 +19,14 @@ def get(rows, pk):
 
 
 def item(data, field="item_id"):
-    return get(Item.objects.filter(active=True).select_related("base_unit"), identifier(data.get(field), field))
+    return get(Item.objects.filter(active=True, is_deleted=False).select_related("base_unit"), identifier(data.get(field), field))
 
 
 def place(data, field, site=None):
-    locations = Location.objects.filter(warehouse__active=True, warehouse__site__active=True).select_related("warehouse")
+    locations = Location.objects.filter(
+        active=True, is_deleted=False,
+        warehouse__active=True, warehouse__is_deleted=False, warehouse__site__active=True,
+    ).select_related("warehouse")
     if site is not None:
         locations = locations.filter(warehouse__site_id=site)
     return get(locations, identifier(data.get(field), field))
@@ -31,8 +34,11 @@ def place(data, field, site=None):
 
 def material_location(data, site):
     key = identifier(data.get("source_id"), "source_id")
-    row = Location.objects.filter(pk=key, warehouse__site_id=site, warehouse__active=True,
-                                  warehouse__site__active=True).first()
+    row = Location.objects.filter(
+        pk=key, active=True, is_deleted=False,
+        warehouse__site_id=site, warehouse__active=True,
+        warehouse__is_deleted=False, warehouse__site__active=True,
+    ).first()
     if row is None:
         raise Problem("invalid_source_id", field="source_id", reason="invalid_choice")
     return row

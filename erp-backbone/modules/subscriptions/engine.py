@@ -48,7 +48,13 @@ def change_plan(contract, version, day):
 
 @transaction.atomic
 def bill(pk, expected, actor=None):
+    from backbone.models import Site
+    site_id=Contract.objects.values_list('site_id',flat=True).get(pk=pk)
+    if not Site.objects.select_for_update().filter(pk=site_id,active=True).exists():
+        raise Problem('inactive_site',409)
     c=Contract.objects.select_for_update().get(pk=pk)
+    if not c.party.active:
+        raise Problem('inactive_party',409)
     from accounting.models import Ledger
     if not Ledger.objects.filter(pk=1,activated_at__isnull=False,currency=c.version.currency).exists():
         raise Problem('inactive_billing_currency',409)

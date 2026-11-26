@@ -64,7 +64,7 @@ def parts_plan(data):
         if key in parts or qty <= 0:
             raise Problem("invalid_quantity")
         parts[key] = {"item_id": key, "quantity": str(qty)}
-    if Item.objects.filter(pk__in=parts, active=True).count() != len(parts):
+    if Item.objects.filter(pk__in=parts, active=True, is_deleted=False).count() != len(parts):
         raise Problem("invalid_item")
     return list(parts.values())
 
@@ -91,6 +91,8 @@ def asset_details(request, pk):
             state = data.get("state")
             if state not in ("active", "out_of_service", "retired"):
                 raise Problem("invalid_asset_state")
+            if state != "active" and MaintenanceJob.objects.filter(asset=asset).exclude(stage__in=("closed", "cancelled")).exists():
+                raise Problem("asset_has_open_maintenance", 409)
             parent = identifier(data.get("parent_id"), "parent", optional=True)
             if parent is not None and asset_access(user, parent).site_id != asset.site_id:
                 raise Problem("asset_unavailable", 409)
@@ -98,7 +100,7 @@ def asset_details(request, pk):
             while ancestor:
                 if ancestor == asset.pk:
                     raise Problem("maintenance_parent_cycle", 409)
-                ancestor = AssetProfile.objects.filter(asset_id=ancestor).values_list("parent_id", flat=True).first()
+                ancestor = AssetProfile.objects.select_for_update().filter(asset_id=ancestor).values_list("parent_id", flat=True).first()
             profile.parent_id, profile.state = parent, state
             profile.equipment_type = string(data, "equipment_type", 100, required=False)
             profile.functional_location = string(data, "functional_location", 120, required=False)
@@ -408,7 +410,7 @@ def parts(request, pk):
         original_id = identifier(data.get("original_id"), "movement", optional=True)
         original, value = None, ZERO
         if original_id:
-            original = movements(pk).filter(pk=original_id, kind="maint_issue").first()
+            original = movements(pk).select_for_update().filter(pk=original_id, kind="maint_issue").first()
             if not original:
                 raise Problem("not_found", 404)
             returned = original.reversals.aggregate(qty=Sum("quantity"), value=Sum("value"))
@@ -421,8 +423,8 @@ def parts(request, pk):
             if job.stage != "in_progress":
                 raise Problem("maintenance_transition_conflict", 409)
             kind = "maint_issue"
-            item = Item.objects.filter(pk=identifier(data.get("item_id"), "item"), active=True).first()
-            location = Location.objects.filter(pk=identifier(data.get("location_id"), "location"),
+            item = Item.objects.filter(pk=identifier(data.get("item_id"), "item"), active=True, is_deleted=False).first()
+            location = Location.objects.filter(pk=identifier(data.get("location_id"), "location"), active=True,
                                                warehouse__site_id=order.site_id, warehouse__active=True).first()
             if not item or not location:
                 raise Problem("maintenance_part_unavailable", 409)

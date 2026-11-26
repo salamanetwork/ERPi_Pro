@@ -16,7 +16,7 @@ watch(() => p.url, async () => {
   if (!p.url) return
   try {
     const sep = p.url.includes('?') ? '&' : '?'
-    const r = await api<{ results: Record<string, any>[] }>(`${p.url}${sep}page_size=200`)
+    const r = await api<{ results: Record<string, any>[] }>(`${p.url}${sep}page_size=100`)
     if (key === ticket) {
       items.value = (r.results ?? []).map(x => ({
         id: x.id,

@@ -27,7 +27,10 @@ def authorized_sources(project,user):
 
 
 def link(user,pk,data):
-    project = get_project(user,pk)
+    from backbone.site_admin import require_active_site
+    initial = get_project(user,pk)
+    require_active_site(initial.site_id, lock=True)
+    project = get_project(user,pk,lock=True)
     member(project,user,"manage")
     typ = data.get("type")
     source = identifier(data.get("source_id"),"source_id")
@@ -64,8 +67,6 @@ def link(user,pk,data):
         model,fields = ExpenseLink,{"line":line}
     else:
         raise Problem("invalid_type")
-    project = get_project(user,pk,lock=True)
-    member(project,user,"manage")
     if project.state not in ("draft","active"):
         raise Problem("project_inactive",409)
     task = Task.objects.filter(pk=identifier(data.get("task_id"),"task_id"),project=project,milestone=False).first()

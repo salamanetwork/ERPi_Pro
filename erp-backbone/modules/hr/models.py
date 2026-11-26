@@ -10,6 +10,8 @@ class HRReference(models.Model):
     name = models.CharField(max_length=120)
     active = models.BooleanField(default=True)
     revision = models.PositiveIntegerField(default=1)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["kind", "code"], name="hr_reference_kind_code")]

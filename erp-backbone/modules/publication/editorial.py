@@ -25,7 +25,8 @@ def staff(*methods):
 
 def space_for(request,pk,permission):
     rows=scoped(request.user,"publication."+permission)
-    if request.method!="GET": rows=rows.select_for_update()
+    if request.method!="GET":
+        rows=rows.filter(active=True,internal_site__active=True).select_for_update(of=("self",))
     space=rows.filter(pk=pk).first()
     if not space: raise Problem("forbidden",403)
     return space

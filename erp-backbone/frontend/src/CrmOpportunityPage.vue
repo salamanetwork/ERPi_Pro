@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { allows, api, createRequest, type Workspace } from './api'
-import { locale, message, t } from './i18n'
+import { locale, localizedText, message, t } from './i18n'
 import { blankCustomer, type Customer, type CustomerRequest, type History, type Opportunity, type Owner, type Page, type Stage } from './crm'
 import CrmCustomerForm from './CrmCustomerForm.vue'
 import CrmQuotationForm from './CrmQuotationForm.vue'
@@ -206,7 +206,7 @@ function historyPage(page:number){void run(()=>loadHistory(page))}
     <section v-if="history" class="panel record-form crm-panel">
       <h3>{{ t('Stage history') }}</h3>
       <ol class="crm-history"><li v-for="row in history.results" :key="row.id">
-        <strong>{{ row.previous[locale] || '—' }} → {{ row.stage[locale] }}</strong>
+        <strong>{{ localizedText(row.previous, locale) || '—' }} → {{ localizedText(row.stage, locale) }}</strong>
         <small>{{ row.actor }} · {{ new Date(row.created_at).toLocaleString(locale) }}</small>
         <p v-if="row.reason">{{ row.reason }}</p>
       </li></ol>

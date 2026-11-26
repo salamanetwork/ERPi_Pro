@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { api } from './api'
-import { locale, message } from './i18n'
+import {isRtl, locale, localizedText, message, t} from './i18n'
 
 type Step = { id: string; text_en: string; text_ar: string; screenshots?: Record<string, string> }
 type Guide = {
@@ -214,28 +214,28 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 <template>
   <section class="panel stack" style="height:100%;overflow:auto">
     <header class="actions">
-      <h2>{{ l('Training & procedures', 'التدريب وإجراءات العمل') }}</h2>
-      <button class="secondary help-close-icon" :aria-label="l('Close help', 'إغلاق المساعدة')" @click="emit('close')">×</button>
+      <h2>{{ t('Training & procedures') }}</h2>
+      <button class="secondary help-close-icon" :aria-label="t('Close help')" @click="emit('close')">×</button>
     </header>
 
-    <label>{{ l('Search guides', 'البحث في الأدلة') }}<input type="search" v-model="q"></label>
+    <label>{{ t('Search guides') }}<input type="search" v-model="q"></label>
     <label>
-      {{ l('Module filter', 'تصفية حسب الموديول') }}
+      {{ t('Module filter') }}
       <select v-model="filter">
-        <option value="">{{ l('All modules', 'كل الموديولات') }}</option>
-        <option v-for="[k, n] in modules" :key="k" :value="k">{{ n[locale] }}</option>
+        <option value="">{{ t('All modules') }}</option>
+        <option v-for="[k, n] in modules" :key="k" :value="k">{{ localizedText(n, locale) }}</option>
       </select>
     </label>
 
     <p v-if="error">{{ error }}</p>
-    <p v-if="!found.length">{{ l('No matching guides', 'لا توجد أدلة مطابقة') }}</p>
+    <p v-if="!found.length">{{ t('No matching guides') }}</p>
 
     <details v-for="g in found" :key="g.module + g.id" class="panel">
       <summary>{{ l(g.title_en, g.title_ar) }}</summary>
       <p>{{ l(g.prerequisites_en || '', g.prerequisites_ar || '') }}</p>
-      <p>{{ l('Interactive progress checklist — check off steps as you follow them.', 'قائمة متابعة تفاعلية — ضع علامة على كل خطوة تنفذها.') }}</p>
-      <p aria-live="polite">{{ fmtNum(g.steps.filter(s => checked(g, s)).length) }} / {{ fmtNum(g.steps.length) }} {{ l('completed', 'مكتملة') }}</p>
-      <button @click="update(g)">{{ l('Reset this guide', 'مسح تقدم هذا الدليل') }}</button>
+      <p>{{ t('Interactive progress checklist — check off steps as you follow them.') }}</p>
+      <p aria-live="polite">{{ fmtNum(g.steps.filter(s => checked(g, s)).length) }} / {{ fmtNum(g.steps.length) }} {{ t('completed') }}</p>
+      <button @click="update(g)">{{ t('Reset this guide') }}</button>
       <ol>
         <li v-for="s in g.steps" :key="s.id">
           <label class="sop-step">
@@ -246,15 +246,15 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
             v-if="s.screenshots?.[locale]"
             type="button"
             class="sop-thumb"
-            :aria-label="l('Zoom screenshot', 'تكبير لقطة الشاشة')"
+            :aria-label="t('Zoom screenshot')"
             @click="openLightbox(`${g.module}/${g.id}/${s.id}`)"
           >
             <img :src="s.screenshots[locale]" :alt="l(s.text_en, s.text_ar)" loading="lazy">
-            <span class="sop-thumb-badge">{{ l('Click to zoom', 'اضغط للتكبير') }}</span>
+            <span class="sop-thumb-badge">{{ t('Click to zoom') }}</span>
           </button>
         </li>
       </ol>
-      <RouterLink v-if="g.route" :to="g.route">{{ g.module_name[locale] }}</RouterLink>
+      <RouterLink v-if="g.route" :to="g.route">{{ localizedText(g.module_name, locale) }}</RouterLink>
     </details>
 
     <Teleport to="body">
@@ -263,7 +263,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         class="sop-lightbox"
         role="dialog"
         aria-modal="true"
-        :dir="locale === 'ar' ? 'rtl' : 'ltr'"
+        :dir="isRtl ? 'rtl' : 'ltr'"
         :aria-label="l(currentSlide.guideTitleEn, currentSlide.guideTitleAr)"
         @click.self="closeLightbox"
       >
@@ -279,12 +279,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
               :to="currentSlide.route"
               class="sop-lb-link"
               @click="closeLightbox"
-            >{{ l('Open module', 'فتح الموديول') }}</RouterLink>
-            <button type="button" :disabled="zoom <= 0.5" :title="l('Zoom out (-)', 'تصغير (-)')" @click="setZoom(zoom - 0.25)">−</button>
+            >{{ t('Open module') }}</RouterLink>
+            <button type="button" :disabled="zoom <= 0.5" :title="t('Zoom out (-)')" @click="setZoom(zoom - 0.25)">−</button>
             <span class="sop-lb-zoom">{{ locale === 'ar' ? Math.round(zoom * 100).toLocaleString('ar-EG') + '٪' : Math.round(zoom * 100) + '%' }}</span>
-            <button type="button" :disabled="zoom >= 4" :title="l('Zoom in (+)', 'تكبير (+)')" @click="setZoom(zoom + 0.25)">+</button>
-            <button type="button" :disabled="zoom === 1 && pan.x === 0 && pan.y === 0" :title="l('Reset (0)', 'إعادة ضبط (0)')" @click="resetView">{{ l('Reset', 'إعادة ضبط') }}</button>
-            <button type="button" class="sop-lb-close" :aria-label="l('Close (Esc)', 'إغلاق (Esc)')" @click="closeLightbox">×</button>
+            <button type="button" :disabled="zoom >= 4" :title="t('Zoom in (+)')" @click="setZoom(zoom + 0.25)">+</button>
+            <button type="button" :disabled="zoom === 1 && pan.x === 0 && pan.y === 0" :title="t('Reset (0)')" @click="resetView">{{ t('Reset') }}</button>
+            <button type="button" class="sop-lb-close" :aria-label="t('Close (Esc)')" @click="closeLightbox">×</button>
           </div>
         </header>
 
@@ -303,7 +303,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
             v-if="slides.length > 1"
             type="button"
             class="sop-lb-nav prev"
-            :aria-label="l('Previous', 'السابق')"
+            :aria-label="t('Previous')"
             @click.stop="stepSlide(-1)"
           >{{ locale === 'ar' ? '›' : '‹' }}</button>
 
@@ -320,14 +320,14 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
             v-if="slides.length > 1"
             type="button"
             class="sop-lb-nav next"
-            :aria-label="l('Next', 'التالي')"
+            :aria-label="t('Next')"
             @click.stop="stepSlide(1)"
           >{{ locale === 'ar' ? '‹' : '›' }}</button>
         </div>
 
         <footer class="sop-lb-caption">
           <p>{{ l(currentSlide.textEn, currentSlide.textAr) }}</p>
-          <small>{{ l('Scroll or double-click to zoom • Drag to pan • Arrow keys to switch • Esc to close', 'استخدم عجلة الماوس أو الضغط المزدوج للتكبير • اسحب للتحريك • الأسهم للتنقل • Esc للإغلاق') }}</small>
+          <small>{{ t('Scroll or double-click to zoom • Drag to pan • Arrow keys to switch • Esc to close') }}</small>
         </footer>
       </div>
     </Teleport>

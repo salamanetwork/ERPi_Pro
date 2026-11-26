@@ -143,7 +143,7 @@ function editCosts(which:string){
     <p v-if="error" class="alert" role="alert">{{ error }}</p>
     <p v-if="notice" class="success" role="status">{{ t('Saved successfully.') }}</p>
     <template v-if="!entry&&screen">
-      <RouterLink v-if="filteredSites.length" class="button primary" to="/projects/new">{{ t('New project') }}</RouterLink>
+      <div class="actions" style="margin-block-end: 14px;"><RouterLink v-if="filteredSites.length" class="button primary" to="/projects/new">{{ t('New project') }}</RouterLink></div>
       <div class="panel table-panel"><table><thead><tr><th>{{ t('Code') }}</th><th>{{ t('Name') }}</th><th>{{ t('Site') }}</th><th>{{ t('Status') }}</th></tr></thead>
         <tbody><tr v-for="row in screen.results" :key="row.id"><td><RouterLink :to="'/projects/'+row.id">{{ row.code }}</RouterLink></td>
           <td>{{ row.name }}</td><td>{{ siteName(row.site_id) }}</td><td>{{ label(row.state) }}</td></tr></tbody></table>

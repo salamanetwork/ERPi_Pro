@@ -7,6 +7,7 @@ import { useDirtyForm } from './useDirectory'
 const emit = defineEmits<{saved:[brand:CompanyBrand]}>()
 const brand = ref<CompanyBrand>()
 const name = ref('')
+const deletionPolicy = ref<'soft' | 'permanent'>('soft')
 const upload = ref<File>()
 const preview = ref('')
 const remove = ref(false)
@@ -14,7 +15,7 @@ const busy = ref(false)
 const failure = ref('')
 const notice = ref(false)
 const fileInput = ref<HTMLInputElement>()
-const {reset} = useDirtyForm(() => [name.value, remove.value, preview.value])
+const {reset} = useDirtyForm(() => [name.value, deletionPolicy.value, remove.value, preview.value])
 const logo = computed(() => remove.value ? '' : preview.value || brand.value?.logo_url || '')
 let mounted = true
 
@@ -27,6 +28,7 @@ function apply(result: CompanyBrand) {
   clearPreview()
   brand.value = result
   name.value = result.name
+  deletionPolicy.value = result.deletion_policy === 'permanent' ? 'permanent' : 'soft'
   remove.value = false
   if (fileInput.value) fileInput.value.value = ''
   reset()
@@ -71,6 +73,7 @@ async function save() {
   failure.value = ''
   const fields = new FormData()
   fields.set('name', name.value)
+  fields.set('deletion_policy', deletionPolicy.value)
   fields.set('revision', String(brand.value.revision))
   if (upload.value) fields.set('logo', upload.value)
   if (remove.value) fields.set('remove_logo', '1')
@@ -102,6 +105,15 @@ onUnmounted(() => { mounted = false; clearPreview() })
         :disabled="busy" @change="pick"></label>
       <FieldHint :label="t('Company logo')" />
     </div>
+    <div class="field-wrap">
+      <label>{{ t('Record deletion policy') }}
+        <select data-field="deletion_policy" v-model="deletionPolicy" :disabled="busy">
+          <option value="soft">{{ t('Soft delete (archive records)') }}</option>
+          <option value="permanent">{{ t('Permanent delete (hard delete)') }}</option>
+        </select>
+      </label>
+      <small class="muted">{{ t('Controls whether deleting master records archives them or removes them permanently across the system.') }}</small>
+    </div>
     <div class="company-preview">
       <strong>{{ t('Brand preview') }}</strong>
       <img v-if="logo" :src="logo" alt="" @error="failure = 'The logo preview could not be displayed.'">
@@ -112,6 +124,7 @@ onUnmounted(() => { mounted = false; clearPreview() })
       <button class="primary" :disabled="busy">{{ t('Save') }}</button>
       <button v-if="logo" type="button" class="secondary" :disabled="busy" @click="removeLogo">{{ t('Remove logo') }}</button>
       <button v-if="remove" type="button" class="secondary" :disabled="busy" @click="remove = false">{{ t('Undo') }}</button>
+      <RouterLink to="/settings/trash" class="button secondary">{{ t('Trash & Restore') }}</RouterLink>
     </div>
   </form>
   <button v-else-if="failure" type="button" class="secondary" :disabled="busy" @click="load">{{ t('Retry') }}</button>

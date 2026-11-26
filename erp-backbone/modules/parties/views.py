@@ -28,10 +28,14 @@ def save(data,scope):
             raise Problem('invalid_account',field='account_id')
     from django.db.models import F
     from public_identity.models import ExternalIdentity
+    account_ids = sorted({uid for uid in (item.account_id, account) if uid})
+    locked_identities = {
+        obj.pk: obj for obj in ExternalIdentity.objects.select_for_update().filter(pk__in=account_ids).order_by("pk")
+    }
     if item.account_id and item.account_id != account:
         ExternalIdentity.objects.filter(pk=item.account_id,party=item).update(party=None,revision=F('revision')+1)
-    identity = ExternalIdentity.objects.select_for_update().get(pk=account) if account else None
-    if identity and (identity.party_id not in (None,item.pk) or Party.objects.filter(account=identity).exclude(pk=item.pk).exists()):
+    identity = locked_identities.get(account) if account else None
+    if identity and (identity.party_id not in (None,item.pk) or Party.objects.select_for_update().filter(account=identity).exclude(pk=item.pk).exists()):
         raise Problem('account_already_linked',409,field='account_id')
     item.account_id=account or None
     item.save()

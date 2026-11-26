@@ -76,6 +76,8 @@ def collection(request,kind):
                                    and (not row['cancel_on'] or row['next_date'] < row['cancel_on']))
         return result
     def create():
+        from backbone.site_admin import require_active_site
+        require_active_site(scope['site_id'],lock=True)
         if kind=='plans':
             code=string(data,'code',40)
             if Plan.objects.filter(site_id=scope['site_id'],code=code).exists():
@@ -126,6 +128,8 @@ def action(request,pk,action):
     data=body(request)
     scope=select_scope(request,data,'subscriptions.'+permissions[action])
     def apply():
+        from backbone.site_admin import require_active_site
+        require_active_site(scope['site_id'],lock=True)
         c=one(Contract.objects.select_for_update().filter(**scope),pk)
         revision(c,data)
         day=engine.today(c)

@@ -45,9 +45,9 @@ class CustomerMedia(CustomerView):
         if not key.strip() or len(key)>120: raise ValidationError({"idempotency_key":["Supply Idempotency-Key up to 120 characters."]})
         fingerprint=hashlib.sha256(content+name.encode()).hexdigest()
         with transaction.atomic():
-            receipt,fresh=UploadReceipt.objects.get_or_create(identity=request.user.identity,key=key,defaults={"fingerprint":fingerprint})
+            receipt,fresh=UploadReceipt.objects.select_for_update().get_or_create(identity=request.user.identity,key=key,defaults={"fingerprint":fingerprint})
             if not fresh:
-                if receipt.fingerprint!=fingerprint or receipt.asset.space_id!=request.auth.space_id:
+                if receipt.fingerprint!=fingerprint or not receipt.asset_id or receipt.asset.space_id!=request.auth.space_id:
                     return Response({"error":"idempotency_conflict"},status=409)
                 return Response(metadata(receipt.asset))
             row=create(request.auth.space,name,mime,content,identity=request.user.identity)

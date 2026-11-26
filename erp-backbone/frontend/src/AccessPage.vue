@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import { api, type Workspace } from './api'
-import { locale } from './i18n'
+import { locale, localizedText } from './i18n'
 import {
   catalog,
   roleList,
@@ -153,10 +153,10 @@ function meta(k: string) {
   return data.value?.permission_metadata[k]
 }
 function action(k: string) {
-  return meta(k)?.label[locale.value] ?? k
+  return localizedText(meta(k)?.label, locale.value) || k
 }
 function description(k: string) {
-  return meta(k)?.description[locale.value] ?? ''
+  return localizedText(meta(k)?.description, locale.value)
 }
 const types = computed<Record<string, string>>(() => ({
   read: s('Read', 'قراءة'),

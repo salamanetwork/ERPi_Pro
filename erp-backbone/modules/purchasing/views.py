@@ -161,7 +161,9 @@ def requisition(request, pk):
         return detail(user, find_row(user, pk))
     data = body(request)
     with transaction.atomic():
+        from backbone.site_admin import require_active_site
         row = find_row(user, pk, lock=True)
+        require_active_site(row.site_id, lock=True)
         reject_archived("pr", row)
         require(user, "purchasing.edit", row.site_id)
         check_revision(data, row)
@@ -194,7 +196,9 @@ def submit(request, pk):
     data = body(request)
     user = request.user
     with transaction.atomic():
+        from backbone.site_admin import require_active_site
         row = find_row(user, pk, lock=True)
+        require_active_site(row.site_id, lock=True)
         reject_archived("pr", row)
         require(user, "purchasing.submit", row.site_id)
         check_revision(data, row)
@@ -220,12 +224,14 @@ def review(request, pk):
     data = body(request)
     user = request.user
     with transaction.atomic():
+        from backbone.site_admin import require_active_site
         row = find_row(user, pk, lock=True)
+        require_active_site(row.site_id, lock=True)
         reject_archived("pr", row)
         check_revision(data, row)
         if row.status != Requisition.Status.IN_REVIEW:
             raise Problem("not_in_review", 409)
-        run = row.reviews.select_related("template").get(status="pending")
+        run = row.reviews.select_for_update(of=("self",)).select_related("template").get(status="pending")
         allowed, grant = authority(user, row, run, reviewer_scopes(user, MODULE))
         if not allowed:
             raise Problem("forbidden", 403)

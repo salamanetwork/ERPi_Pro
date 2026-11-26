@@ -3,6 +3,7 @@ import HistoryTable from "./HistoryTable.vue"
 import { computed, ref, watch } from 'vue'
 import { allows, api, requestKey, type Workspace } from './api'
 import { message, t } from './i18n'
+import { notify } from './useUnifiedNotice'
 import WorkOrderTime from './WorkOrderTime.vue'
 
 type Job = {asset_id: number; asset: string; status: string; stage: string; revision: number; plan_id: number | null; due_date: string | null;
@@ -64,7 +65,7 @@ async function run(action: () => Promise<void>) {
   if (busy.value) return
   busy.value = true
   error.value = notice.value = ''
-  try { await action(); await load(); emit('changed'); notice.value = 'Changes saved.' }
+  try { await action(); await load(); emit('changed'); notice.value = 'Changes saved.'; notify('saved', 'Maintenance Updated', 'Work order maintenance details and parts have been updated.', { suffix: `WO-${props.id}` }) }
   catch (failure) { error.value = message(failure) }
   finally { busy.value = false }
 }

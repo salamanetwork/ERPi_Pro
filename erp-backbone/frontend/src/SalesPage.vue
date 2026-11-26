@@ -10,6 +10,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { allows, api, createRequest, type Workspace } from './api'
 import { message, t } from './i18n'
+import { notify } from './useUnifiedNotice'
 
 type Customer = {id?: number; code: string; name: string; legal_name: string; contact: string; billing: string; shipping: string; tax_id: string; terms: number; active: boolean; revision?: number}
 type Line = {id: number; item_id: number; name: string; quantity: string; price: string; amount: string; cost?: string; location_id?: number; invoice_id?: number}
@@ -139,6 +140,7 @@ function save() {
     }
     draft.value = undefined
     notice.value = 'Changes saved.'
+    notify('saved', 'Sales documents', 'Changes saved.')
   })
 }
 const salesCenter = ref<number|null>(null)
@@ -150,6 +152,7 @@ function transition(action: string) {
     cancel.value = false
     cancelReason.value = ''
     notice.value = 'Changes saved.'
+    notify(action === 'cancel' ? 'warning' : 'confirmation', 'Sales documents', 'Changes saved.')
   })
 }
 function actions(row: Doc) {

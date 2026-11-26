@@ -22,8 +22,8 @@ def amount(data,key,digits,places):
     except (ValueError,KeyError,ValidationError,InvalidOperation):raise Problem('invalid_amount',field=key)
 def money(x):return x.quantize(Decimal('.01'),rounding=ROUND_HALF_UP)
 def number(scope,kind):
-    Site.objects.select_for_update().get(pk=scope['site_id'])
-    seq,_=Counter.objects.get_or_create(**scope,kind=kind)
+    Site.objects.select_for_update().filter(active=True).get(pk=scope['site_id'])
+    seq,_=Counter.objects.select_for_update().get_or_create(**scope,kind=kind)
     seq.last+=1
     seq.save(update_fields=['last'])
     return f'{kind}-{seq.last:06d}'

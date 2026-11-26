@@ -155,3 +155,33 @@ class SalesTests(PurchaseOrderFixture, TransactionTestCase):
             self.assertEqual(result.json()["sale_id"], doc["id"])
             self.assertEqual(self.post(f"/api/accounting/postings/{posting.pk}/retry", {}).json()["entry_id"],
                              result.json()["entry_id"])
+
+    def test_audit_deleted_customer_location_and_inactive_site_guards(self):
+        from backbone.models import Site
+        from sales.models import Customer
+
+        del_cust = Customer.objects.create(code="DEL-CUST", name="Deleted Cust", active=True, is_deleted=True)
+        res_q = self.make(
+            "quote", "audit-del-cust-q", site_id=self.east.pk, customer_id=del_cust.pk,
+            expires=(self.today + timedelta(days=5)).isoformat(),
+            lines=[{"item_id": self.item.pk, "quantity": "1", "price": "100"}],
+        )
+        self.assertEqual(res_q.status_code, 400)
+
+        # Inactive location rejected in delivery
+        order = self.order("audit-loc", qty="2")
+        Location.objects.filter(pk=self.location.pk).update(active=False)
+        try:
+            res_del = self.dispatch(order, "1", "audit-loc-del")
+            self.assertEqual(res_del.status_code, 400)
+            self.assertEqual(res_del.json()["error"], "invalid_location")
+        finally:
+            Location.objects.filter(pk=self.location.pk).update(active=True)
+
+        # Inactive site rejected on document PATCH
+        Site.objects.filter(pk=self.east.pk).update(active=False)
+        try:
+            res_patch = self.patch(f"/api/sales/documents/{order['id']}", {"revision": order["revision"], "action": "cancel", "reason": "test"})
+            self.assertIn(res_patch.status_code, (403, 409))
+        finally:
+            Site.objects.filter(pk=self.east.pk).update(active=True)

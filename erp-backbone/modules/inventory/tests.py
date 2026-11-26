@@ -189,3 +189,34 @@ class InventoryTests(PurchaseOrderFixture, TransactionTestCase):
         self.assertEqual(Unit.objects.get(code="PC").name, "Existing piece label")
         self.assertEqual(set(Unit.objects.filter(code__in=["PC", "KG", "BOX"]).values_list("code", flat=True)),
                          {"PC", "KG", "BOX"})
+
+    def test_audit_inactive_location_and_site_settings_protection(self):
+        from inventory.models import Item, Location, Warehouse
+        loc = Location.objects.select_related("warehouse").first()
+        item = Item.objects.first()
+        site_id = loc.warehouse.site_id
+
+        # Deactivate location and verify opening rejects it
+        res_loc = self.client.patch(f"/api/inventory/locations/{loc.pk}/state", {"active": False}, content_type="application/json")
+        self.assertEqual(res_loc.status_code, 200)
+        res_open = self.post("/api/inventory/opening", {
+            "site_id": site_id,
+            "lines": [{"item_id": item.pk, "location_id": loc.pk, "quantity": "5", "unit_cost": "10"}],
+        }, HTTP_IDEMPOTENCY_KEY="audit-inv-open-1")
+        self.assertEqual(res_open.status_code, 400)
+        self.assertEqual(res_open.json()["error"], "invalid_location")
+
+        # Deactivate warehouse and ensure location cannot be re-activated while warehouse is inactive
+        wh = loc.warehouse
+        res_wh = self.client.patch(f"/api/inventory/warehouses/{wh.pk}/state", {"active": False}, content_type="application/json")
+        self.assertEqual(res_wh.status_code, 200)
+        res_react = self.client.patch(f"/api/inventory/locations/{loc.pk}/state", {"active": True}, content_type="application/json")
+        self.assertEqual(res_react.status_code, 409)
+        self.assertEqual(res_react.json()["error"], "invalid_warehouse")
+
+        # Restore warehouse & location, close opening, and verify SiteSettings cannot be deleted
+        self.client.patch(f"/api/inventory/warehouses/{wh.pk}/state", {"active": True}, content_type="application/json")
+        self.client.patch(f"/api/inventory/locations/{loc.pk}/state", {"active": True}, content_type="application/json")
+        self.post("/api/inventory/opening", {"site_id": site_id, "lines": [], "close": True}, HTTP_IDEMPOTENCY_KEY="audit-inv-open-close-1")
+        res_del_site = self.client.delete(f"/api/inventory/setup/site/{site_id}")
+        self.assertEqual(res_del_site.status_code, 409)

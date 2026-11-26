@@ -194,3 +194,20 @@ class PurchaseOrderTests(PurchaseOrderFixture, TransactionTestCase):
         self.assertEqual(self.convert(key="archived", client=self.buyer).json()["error"], "purchase_request_already_converted")
         self.assertEqual(self.patch(archive, {"archived": False, "revision": revision}, self.buyer).status_code, 200)
         self.assertEqual(self.buyer.get(path).json()["number"], row["number"])
+
+    def test_audit_deleted_supplier_and_inactive_site_guards(self):
+        from backbone.models import Site
+        from purchasing.models import Supplier
+
+        sup = Supplier.objects.create(code="DEL-SUP", name="Deleted Sup", currency_default="AED", active=True, is_deleted=True)
+        res_conv = self.convert(supplier=sup.pk, key="audit-po-conv-del-sup", client=self.buyer)
+        self.assertEqual(res_conv.status_code, 409)
+        self.assertEqual(res_conv.json()["error"], "supplier_unavailable")
+
+        po = self.convert(key="audit-po-conv-valid", client=self.buyer).json()
+        Site.objects.filter(pk=self.east.pk).update(active=False)
+        try:
+            res_issue = self.post(f"/api/purchase-orders/{po['id']}/issue", {"revision": po["revision"]}, self.issuer)
+            self.assertIn(res_issue.status_code, (403, 409))
+        finally:
+            Site.objects.filter(pk=self.east.pk).update(active=True)

@@ -142,10 +142,10 @@ def match(s, bank_ids, gl_ids, user):
 
 
 def adjust(s, data, user):
-    bank = s.lines.filter(pk=identifier(data.get("line_id"),"line_id"),match=None).first()
+    ledger = ledger_lock()
+    bank = s.lines.select_for_update().filter(pk=identifier(data.get("line_id"),"line_id"),match=None).first()
     if not bank:
         raise Problem("line_unavailable",409)
-    ledger = ledger_lock()
     if not ledger.activated_at or ledger.cutoff and bank.date<ledger.cutoff:
         raise Problem("finance_not_active",409)
     kind = data.get("kind")

@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 
 PLATFORM_VERSION = "0.1"
-RELEASE_VERSION = "2.9.0"
+RELEASE_VERSION = "2.10.0"
 
 
 def extension_manifests(root, packages):

@@ -1,0 +1,199 @@
+{
+  "id": "pos",
+  "contract_version": "0.1",
+  "name": {
+    "en": "Point of Sale (POS)",
+    "ar": "نقاط البيع (POS)"
+  },
+  "description": {
+    "en": "Site-scoped point of sale terminals, shifts, split payments, and instant GL/stock posting",
+    "ar": "نقاط البيع المرتبطة بالفروع، إدارة الورديات، الدفع المقسم، والترحيل الفوري للمخزون والحسابات"
+  },
+  "version": "2.10.0",
+  "category": "shared_business",
+  "group": "Sales",
+  "scope_mode": "site_scoped",
+  "platform_compatibility": "0.1",
+  "core_version_range": ">=2.9,<3.0",
+  "dependencies": [
+    "inventory",
+    "sales",
+    "accounting"
+  ],
+  "required_dependencies": [
+    "inventory",
+    "sales",
+    "accounting"
+  ],
+  "optional_dependencies": [
+    "parties"
+  ],
+  "runtime": "internal",
+  "permissions": [
+    "pos.view",
+    "pos.operate",
+    "pos.refund",
+    "pos.open_shift",
+    "pos.close_shift",
+    "pos.admin",
+    "pos.reports"
+  ],
+  "permission_definitions": {
+    "pos.view": {
+      "name_en": "View POS terminals and sales",
+      "name_ar": "عرض نقاط البيع والمبيعات",
+      "description_en": "View POS terminals and sales within assigned sites.",
+      "description_ar": "عرض نقاط البيع والمبيعات ضمن الفروع المصرح بها.",
+      "action_type": "read"
+    },
+    "pos.operate": {
+      "name_en": "Operate POS checkout",
+      "name_ar": "تنفيذ عمليات البيع والكاشير",
+      "description_en": "Operate POS checkout within assigned sites.",
+      "description_ar": "تنفيذ عمليات البيع والكاشير ضمن الفروع المصرح بها.",
+      "action_type": "write"
+    },
+    "pos.refund": {
+      "name_en": "Void or refund POS sales",
+      "name_ar": "إلغاء أو استرجاع مبيعات نقاط البيع",
+      "description_en": "Void or refund POS sales within assigned sites.",
+      "description_ar": "إلغاء أو استرجاع مبيعات نقاط البيع ضمن الفروع المصرح بها.",
+      "action_type": "approve"
+    },
+    "pos.open_shift": {
+      "name_en": "Open POS cash shift",
+      "name_ar": "فتح وردية نقطة بيع",
+      "description_en": "Open POS cash shift within assigned sites.",
+      "description_ar": "فتح وردية نقطة بيع ضمن الفروع المصرح بها.",
+      "action_type": "write"
+    },
+    "pos.close_shift": {
+      "name_en": "Close POS cash shift",
+      "name_ar": "إغلاق وردية نقطة بيع وتسوية الصندوق",
+      "description_en": "Close POS cash shift within assigned sites.",
+      "description_ar": "إغلاق وردية نقطة بيع وتسوية الصندوق ضمن الفروع المصرح بها.",
+      "action_type": "approve"
+    },
+    "pos.admin": {
+      "name_en": "Configure POS terminals",
+      "name_ar": "إدارة وإعداد أجهزة نقاط البيع",
+      "description_en": "Configure POS terminals within assigned sites.",
+      "description_ar": "إدارة وإعداد أجهزة نقاط البيع ضمن الفروع المصرح بها.",
+      "action_type": "admin"
+    },
+    "pos.reports": {
+      "name_en": "View POS X/Z reports",
+      "name_ar": "عرض تقارير X و Z لنقاط البيع",
+      "description_en": "View POS X/Z reports within assigned sites.",
+      "description_ar": "عرض تقارير X و Z لنقاط البيع ضمن الفروع المصرح بها.",
+      "action_type": "read"
+    }
+  },
+  "commands": [
+    {
+      "code": "POS_L",
+      "name_en": "List POS Sales",
+      "name_ar": "قائمة مبيعات نقاط البيع",
+      "route": "/pos",
+      "permission": "pos.view"
+    },
+    {
+      "code": "POS_N",
+      "name_en": "New POS Sale",
+      "name_ar": "عملية بيع جديدة (POS)",
+      "route": "/pos",
+      "permission": "pos.operate"
+    },
+    {
+      "code": "POS_V",
+      "name_en": "View POS Sale",
+      "name_ar": "عرض إيصال نقطة بيع",
+      "route": "/pos",
+      "permission": "pos.view"
+    },
+    {
+      "code": "POS_E",
+      "name_en": "Edit Draft POS Sale",
+      "name_ar": "تعديل مسودة بيع (POS)",
+      "route": "/pos",
+      "permission": "pos.operate"
+    },
+    {
+      "code": "POS_D",
+      "name_en": "Void POS Sale",
+      "name_ar": "إلغاء فاتورة نقطة بيع",
+      "route": "/pos",
+      "permission": "pos.refund"
+    },
+    {
+      "code": "POS_R",
+      "name_en": "POS X/Z Shift Report",
+      "name_ar": "تقرير وردية X/Z",
+      "route": "/pos",
+      "permission": "pos.reports"
+    }
+  ],
+  "ui_entries": [
+    "/pos"
+  ],
+  "navigation": [
+    {
+      "route": "/pos",
+      "label": {
+        "en": "Point of Sale",
+        "ar": "نقاط البيع"
+      },
+      "required_permission": "pos.view"
+    }
+  ],
+  "events_published": [
+    "pos.sale.completed",
+    "pos.sale.voided",
+    "pos.shift.closed"
+  ],
+  "events_subscribed": [],
+  "offline_requirements": [],
+  "requested_service_permissions": [],
+  "sop_guides": [
+    {
+      "id": "pos-shift-checkout",
+      "title_en": "Operate POS shift and checkout",
+      "title_ar": "تشغيل وردية نقطة البيع وإتمام المبيعات",
+      "required_permission": "pos.operate",
+      "route": "/pos",
+      "keywords_en": [
+        "pos",
+        "barcode",
+        "shift",
+        "receipt",
+        "checkout"
+      ],
+      "keywords_ar": [
+        "نقطة بيع",
+        "باركود",
+        "وردية",
+        "إيصال",
+        "كاشير"
+      ],
+      "prerequisites_en": "Configure an active POS terminal linked to a cash/bank GL account.",
+      "prerequisites_ar": "تهيئة جهاز نقطة بيع نشط مرتبط بحساب نقدية/بنك في دليل الحسابات.",
+      "steps": [
+        {
+          "id": "1",
+          "text_en": "Select terminal and open shift with opening float.",
+          "text_ar": "اختر الجهاز وافتح الوردية برصيد البداية."
+        },
+        {
+          "id": "2",
+          "text_en": "Scan item barcodes, apply discounts, and settle via cash or split payment.",
+          "text_ar": "امسح باركود الأصناف وأتمم الدفع النقدي أو المقسم."
+        },
+        {
+          "id": "3",
+          "text_en": "Close shift, count physical cash, and review the Z-Report.",
+          "text_ar": "أغلق الوردية وأدخل الجرد النقدي وراجع تقرير Z."
+        }
+      ]
+    }
+  ]
+}
