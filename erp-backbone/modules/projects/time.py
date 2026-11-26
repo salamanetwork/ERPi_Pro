@@ -94,7 +94,7 @@ def change(sheet,user,data):
     timer = None
     start = end = None
     if timer_id:
-        timer = completed_timers(sheet).filter(pk=timer_id).first()
+        timer = completed_timers(sheet).select_for_update().filter(pk=timer_id).first()
         if not timer:
             raise Problem("project_timer_unavailable",409)
         if TimeAllocation.objects.filter(timer=timer).exclude(pk=key).exists():

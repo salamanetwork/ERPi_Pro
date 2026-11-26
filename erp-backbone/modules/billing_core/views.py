@@ -22,6 +22,8 @@ def action(request,pk,action):
     data=body(request)
     scope=select_scope(request,data,'billing_core.'+('pay' if action=='pay' else 'issue'))
     def change():
+        if not Site.objects.select_for_update().filter(pk=scope['site_id'],active=True).exists():
+            raise Problem('inactive_site',409)
         doc=one(Invoice.objects.select_for_update().filter(**scope),pk)
         revision(doc,data)
         receipt=None
@@ -33,7 +35,9 @@ def action(request,pk,action):
             doc.paid+=paid
             doc.status='paid' if doc.paid==doc.total else 'partially_paid'
             publish('billing_core','receipt.recorded',receipt.id,'billing_core:receipt:'+str(receipt.pk))
-        elif action=='issue':issue(doc)
+        elif action=='issue':
+            if not doc.party.active:raise Problem('inactive_party',409)
+            issue(doc)
         elif action=='void' and doc.status in ('draft','issued'):
             from subscriptions.gl import protect_void
             protect_void(doc)

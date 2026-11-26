@@ -149,11 +149,13 @@ def transition(row, data):
 @endpoint("POST",module=MODULE)
 def mutate(request,pk,operation):
     user,data=request.user,body(request)
-    member(get_project(user,pk),user,"manage")
+    initial=get_project(user,pk)
+    member(initial,user,"manage")
     if operation=="link":
         return once(request,"projects.link",{"project_id":pk,**data},lambda:links.link(user,pk,data))
 
     def commit():
+        require_active_site(initial.site_id,lock=True)
         row=get_project(user,pk,lock=True)
         member(row,user,"manage")
         edit_revision(row,data)
@@ -210,15 +212,16 @@ def mutate(request,pk,operation):
 @endpoint("POST",module=MODULE)
 def tasks(request,pk):
     user,data=request.user,body(request)
-    get_project(user,pk)
+    initial=get_project(user,pk)
 
     def commit():
+        require_active_site(initial.site_id,lock=True)
         row=get_project(user,pk,lock=True)
         membership=member(row,user)
         if row.state not in ("draft","active"):
             raise Problem("project_inactive",409)
         key=identifier(data.get("id"),"id",optional=True)
-        task=by_id(row.tasks,key) if key else Task(project=row)
+        task=by_id(row.tasks.select_for_update(),key) if key else Task(project=row)
         if key:
             edit_revision(task,data)
         state=data.get("state","todo")
@@ -244,6 +247,8 @@ def tasks(request,pk):
                     raise Problem("project_task_cycle",409)
                 cursor=cursor.parent
             task.milestone=data.get("milestone") is True
+        if state=="done" and task.pk and row.tasks.filter(parent=task).exclude(state="done").exists():
+            raise Problem("project_open_tasks",409)
         task.state=state
         task.save()
         audit(user,"projects.task",f"{row.code} / #{task.pk} / {state}")
