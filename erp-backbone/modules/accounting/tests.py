@@ -206,3 +206,37 @@ class AccountingTests(PurchaseOrderFixture, TransactionTestCase):
                 (accts[1], Decimal("-60.00"), None, None),
             ])
         self.assertEqual(ctx.exception.code, "finance_unbalanced")
+
+    def test_non_detail_or_inactive_account_rejected(self):
+        from decimal import Decimal
+        from django.contrib.auth import get_user_model
+        from accounting.models import Account, Entry, Ledger, Period
+        from accounting.services import write_lines
+        from backbone.http import Problem
+
+        User = get_user_model()
+        actor = getattr(self, "user", None) or User.objects.filter(is_active=True).first()
+        self.assertIsNotNone(actor)
+
+        ledger = Ledger.objects.get(pk=1)
+        period = Period.objects.filter(ledger=ledger).order_by("-start").first()
+        detail_acc = Account.objects.filter(ledger=ledger, active=True, detail=True).first()
+        header_acc = Account.objects.filter(ledger=ledger, detail=False).first()
+        self.assertIsNotNone(detail_acc)
+        self.assertIsNotNone(header_acc)
+
+        entry = Entry.objects.create(
+            ledger=ledger,
+            period=period,
+            date=period.start if period else self.cut,
+            description="Header account check",
+            kind="manual",
+            created_by=actor,
+            posted_by=actor,
+        )
+        with self.assertRaises(Problem) as ctx:
+            write_lines(entry, [
+                (header_acc, Decimal("100.00"), None, None),
+                (detail_acc, Decimal("-100.00"), None, None),
+            ])
+        self.assertEqual(ctx.exception.code, "finance_account_unavailable")
