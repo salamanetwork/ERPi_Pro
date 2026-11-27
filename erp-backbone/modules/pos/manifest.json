@@ -9,7 +9,7 @@
     "en": "Site-scoped point of sale terminals, shifts, split payments, and instant GL/stock posting",
     "ar": "نقاط البيع المرتبطة بالفروع، إدارة الورديات، الدفع المقسم، والترحيل الفوري للمخزون والحسابات"
   },
-  "version": "2.10.0",
+  "version": "2.11.0",
   "category": "shared_business",
   "group": "Sales",
   "scope_mode": "site_scoped",
