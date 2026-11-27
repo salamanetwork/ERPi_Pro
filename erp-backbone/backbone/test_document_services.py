@@ -128,7 +128,20 @@ class DocumentServicesTests(TransactionTestCase):
         self.assertContains(self.reader.get(printed), "12.34")
         self.assertContains(self.reader.get(printed), "&lt;script&gt;Seal&lt;/script&gt;")
         self.assertEqual(self.outsider.get(printed).status_code, 404)
-        self.assertEqual(self.client.get(f"/print/pr/{row['id']}?language=fr").status_code, 400)
+        for lang, expected_dir, expected_title in (
+            ("fr", 'dir="ltr"', "Demande d&#x27;achat"),
+            ("ur", 'dir="rtl"', "خریداری کی درخواست"),
+            ("fa", 'dir="rtl"', "درخواست خرید"),
+            ("es", 'dir="ltr"', "Solicitud de compra"),
+            ("de", 'dir="ltr"', "Bestellanforderung"),
+            ("tr", 'dir="ltr"', "Satın alma talebi"),
+            ("hi", 'dir="ltr"', "क्रय मांग पत्र"),
+        ):
+            res = self.reader.get(f"/print/pr/{row['id']}?language={lang}")
+            self.assertEqual(res.status_code, 200)
+            self.assertContains(res, expected_dir)
+            self.assertContains(res, expected_title)
+        self.assertEqual(self.client.get(f"/print/pr/{row['id']}?language=xx").status_code, 400)
 
         finance = Role.objects.create(name="Finance", permissions=["purchasing.view", "purchasing.approve"])
         publish = self.client.post("/api/purchase-templates", {

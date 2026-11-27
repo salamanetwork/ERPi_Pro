@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="{{ language }}" dir="{% if language == 'ar' %}rtl{% else %}ltr{% endif %}">
+<html lang="{{ language }}" dir="{{ dir|default:'ltr' }}">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ document.document_number }} · {{ layout.heading|default:labels.title }}</title>
@@ -18,11 +18,11 @@ button{padding:8px 13px;margin-bottom:16px}
 @media print{body{max-width:none;margin:0;padding:0}.print-controls{display:none}th{background:#eef2f6}}
 </style>
 <body>
-<div class="print-controls"><button type="button" onclick="window.print()">{% if language == 'ar' %}طباعة أو حفظ PDF{% else %}Print or save as PDF{% endif %}</button></div>
+<div class="print-controls"><button type="button" onclick="window.print()">{{ ui.print_button|default:"Print or save as PDF" }}</button></div>
 <header>
   {% if layout.logo %}<img class="logo" src="{{ layout.logo }}" alt="{{ layout.company_name|default:company.name }}">{% endif %}
   {% if layout.company_name|default:company.name %}<div><strong>{{ layout.company_name|default:company.name }}</strong></div>{% endif %}
-  {% if company.tax_registration_number or company.commercial_registration %}<div class="metadata">{% if company.tax_registration_number %}{% if language == 'ar' %}الرقم الضريبي{% else %}TRN{% endif %}: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}{% if language == 'ar' %}السجل التجاري{% else %}CR{% endif %}: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</div>{% endif %}
+  {% if company.tax_registration_number or company.commercial_registration %}<div class="metadata">{% if company.tax_registration_number %}{{ ui.trn|default:"TRN" }}: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}{{ ui.cr|default:"CR" }}: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</div>{% endif %}
   {% if company.address %}<div class="metadata">{{ company.address }}</div>{% endif %}
   <h1>{{ layout.heading|default:labels.title }} · <bdi>{{ document.document_number }}</bdi></h1>
   <div>{{ document.title }}</div>

@@ -361,9 +361,17 @@ def slip(request, pk):
 @endpoint("GET", module="payroll")
 def print_slip(request, pk):
     row = one(visible_slips(request.user),pk)
-    language = request.GET.get("language","en")
     from backbone.company_profile import branding
-    response = render(request,"hr/payslip.html",{"slip":slip_data(row),"arabic":language=="ar","company":branding()})
+    from backbone.print_i18n import is_rtl_language, normalize_print_language, print_direction, print_strings
+    language = normalize_print_language(request.GET.get("language"), "en")
+    response = render(request,"hr/payslip.html",{
+        "slip":slip_data(row),
+        "language":language,
+        "dir":print_direction(language),
+        "ui":print_strings(language),
+        "arabic":is_rtl_language(language),
+        "company":branding(),
+    })
     response["Content-Security-Policy"] = (
         "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; "
         "base-uri 'none'; frame-ancestors 'none'"

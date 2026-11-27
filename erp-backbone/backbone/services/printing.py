@@ -9,11 +9,12 @@ from backbone.access import audit
 from backbone.company_profile import branding
 from backbone.http import Problem, body, endpoint, string
 from backbone.models import PrintTemplate
+from backbone.print_i18n import SUPPORTED_PRINT_LANGUAGES, print_direction, print_strings, print_text
 from .documents import definition, scoped_document
 
 
 def template(kind, language):
-    if language not in ("ar", "en"):
+    if language not in SUPPORTED_PRINT_LANGUAGES:
         raise Problem("invalid_language")
     if definition(kind).print_context is None:
         raise Problem("unknown_document_type", 404)
@@ -73,7 +74,12 @@ def print_document(request, kind, pk):
     language = request.GET.get("language", "en")
     settings = serialize(template(kind, language))
     response = render(request, "backbone/document_print.html", {
-        **document.print_context(row, language), "language": language, "layout": settings, "company": branding(),
+        **document.print_context(row, language),
+        "language": language,
+        "dir": print_direction(language),
+        "ui": print_strings(language),
+        "layout": settings,
+        "company": branding(),
     })
     response["Cache-Control"] = "private, no-store"
     response["Content-Security-Policy"] = "default-src 'none'; img-src data:; font-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"
@@ -87,16 +93,29 @@ def preview(request, kind, language):
     layout = {field: string(data, field, size, required=False)
               for field, size in (("heading", 120), ("company_name", 120), ("footer", 240))}
     layout["logo"] = logo_value(data)
-    arabic = language == "ar"
     response = render(request, "backbone/document_print.html", {
-        "document": {"document_number": f"{kind.upper()}-000001", "title": "معاينة" if arabic else "Preview",
-                     "currency": "AED", "lines": [{"description": "بند تجريبي" if arabic else "Sample item",
+        "document": {"document_number": f"{kind.upper()}-000001", "title": print_text(language, "preview"),
+                     "currency": "AED", "lines": [{"description": print_text(language, "sample_item"),
                                                    "quantity": 1, "unit_price": "125.00", "amount": "125.00"}]},
-        "language": language, "layout": layout, "company": branding(), "site": "—", "status": "—", "total": "125.00",
-        "labels": dict(zip(("title", "site", "status", "currency", "description", "quantity", "price", "amount", "total"),
-                           ("مستند تجريبي", "الموقع", "الحالة", "العملة", "الوصف", "الكمية", "السعر", "المبلغ", "الإجمالي")
-                           if arabic else ("Sample document", "Site", "Status", "Currency", "Description",
-                                           "Quantity", "Price", "Amount", "Total"))),
+        "language": language,
+        "dir": print_direction(language),
+        "ui": print_strings(language),
+        "layout": layout,
+        "company": branding(),
+        "site": "—",
+        "status": "—",
+        "total": "125.00",
+        "labels": {
+            "title": print_text(language, "sample_document"),
+            "site": print_text(language, "site"),
+            "status": print_text(language, "status"),
+            "currency": print_text(language, "currency"),
+            "description": print_text(language, "description"),
+            "quantity": print_text(language, "quantity"),
+            "price": print_text(language, "price"),
+            "amount": print_text(language, "amount"),
+            "total": print_text(language, "total"),
+        },
     })
     response["Cache-Control"] = "private, no-store"
     response["X-Frame-Options"] = "SAMEORIGIN"

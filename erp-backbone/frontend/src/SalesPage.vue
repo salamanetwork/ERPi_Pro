@@ -9,7 +9,7 @@ import SavedViews from './SavedViews.vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { allows, api, createRequest, type Workspace } from './api'
-import { message, t } from './i18n'
+import { locale, message, t } from './i18n'
 import { notify } from './useUnifiedNotice'
 
 type Customer = {id?: number; code: string; name: string; legal_name: string; contact: string; billing: string; shipping: string; tax_id: string; terms: number; active: boolean; revision?: number}
@@ -250,7 +250,7 @@ import DateInput from './DateInput.vue'
           </tr></tbody></table></div>
         <p>{{ t('Total') }} · {{ current.amount }} AED</p>
         <div class="actions">
-          <a v-if="['quote','invoice','credit'].includes(current.kind)" class="button secondary" :href="'/sales/print/' + current.id" target="_blank" rel="noopener">{{ t('Print or save as PDF') }}</a>
+          <a v-if="['quote','invoice','credit'].includes(current.kind)" class="button secondary" :href="'/sales/print/' + current.id + '?language=' + locale" target="_blank" rel="noopener">{{ t('Print or save as PDF') }}</a>
           <template v-if="current.kind === 'quote' && scope('quote', current.site_id)">
             <button v-if="current.status === 'draft'" class="secondary" :disabled="busy" @click="start('quote', true)">{{ t('Edit') }}</button>
             <button v-if="current.status === 'draft'" class="primary" :disabled="busy" @click="transition('send')">{{ t('Mark as sent') }}</button>

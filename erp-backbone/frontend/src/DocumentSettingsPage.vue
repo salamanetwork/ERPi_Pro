@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { api, type Workspace } from './api'
-import { message, t } from './i18n'
+import { SUPPORTED_LOCALES, message, t } from './i18n'
 
 type Rule = {kind: string; allow_site_numbering: boolean; prefix: string; per_site: boolean; start: number; revision: number; locked: boolean}
 type Layout = {heading: string; company_name: string; footer: string; logo: string; revision: number}
@@ -124,7 +124,7 @@ function logo(event: Event) {
   <form v-validated-form v-if="tab==='print'" class="panel record-form" @submit.prevent="save('print')">
     <h2>{{ t(documentKind === 'pr' ? 'Purchase requisition print layout' : documentKind === 'po' ? 'Purchase order print layout' : 'Goods receipt print layout') }}</h2>
     <div class="field-wrap"><label>{{ t('Language') }}
-      <select data-field="language" v-model="language" :disabled="busy"><option value="en">English</option><option value="ar">العربية</option></select>
+      <select data-field="language" v-model="language" :disabled="busy"><option v-for="item in SUPPORTED_LOCALES" :key="item.code" :value="item.code">{{ item.name }}</option></select>
     </label><FieldHint :label="t('Language')" /></div>
     <template v-if="layout">
       <div class="field-wrap"><label>{{ t('Print heading') }}<input data-field="heading" :placeholder="t('Enter {field}').replace('{field}', t('Print heading'))" v-model="layout.heading" maxlength="120"></label><FieldHint :label="t('Print heading')" /></div>

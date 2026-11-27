@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ language|default:'en' }}" dir="{{ dir|default:'ltr' }}">
 <meta charset="utf-8">
 <title>{{ title }} {{ row.number }}</title>
 <style>
@@ -8,19 +8,19 @@ table {width:100%;border-collapse:collapse}
 th,td {text-align:start;border-bottom:1px solid #ddd;padding:.55rem}
 @media print {button {display:none}}
 </style>
-<button type="button" onclick="window.print()">Print or save as PDF</button>
+<button type="button" onclick="window.print()">{{ ui.print_button|default:"Print or save as PDF" }}</button>
 {% if company.name %}<div><strong>{{ company.name }}</strong></div>{% endif %}
-{% if company.tax_registration_number or company.commercial_registration %}<p>{% if company.tax_registration_number %}TRN: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}CR: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</p>{% endif %}
+{% if company.tax_registration_number or company.commercial_registration %}<p>{% if company.tax_registration_number %}{{ ui.trn|default:"TRN" }}: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}{{ ui.cr|default:"CR" }}: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</p>{% endif %}
 {% if company.address %}<p>{{ company.address }}</p>{% endif %}
-<h1>{{ title }} {{ row.number }}</h1>
-<p>{{ row.date|date:"Y-m-d" }} · {{ row.status }}</p>
+<h1>{{ title }} <bdi>{{ row.number }}</bdi></h1>
+<p><bdi>{{ row.date|date:"Y-m-d" }}</bdi> · {{ status_label|default:row.status }}</p>
 <p>{{ customer.name }}{% if customer.legal_name %} · {{ customer.legal_name }}{% endif %}</p>
 {% if customer.billing %}<p>{{ customer.billing }}</p>{% endif %}
-{% if row.due %}<p>Due {{ row.due|date:"Y-m-d" }}</p>{% endif %}
-{% if row.expires %}<p>Valid through {{ row.expires|date:"Y-m-d" }}</p>{% endif %}
-{% if row.source %}<p>Source {{ row.source.number }}</p>{% endif %}
-<table><thead><tr><th>Item</th><th>Quantity</th><th>Unit price</th><th>Amount AED</th></tr></thead>
-<tbody>{% for line in row.lines %}<tr><td>{{ line.name }}</td><td>{{ line.quantity }} {{ line.unit }}</td><td>{{ line.price }}</td><td>{{ line.amount }}</td></tr>{% endfor %}</tbody></table>
-<p>Total <strong>{{ row.amount }} AED</strong></p>
-{% if row.kind != "quote" %}<p>Operational document · VAT not calculated</p>{% endif %}
+{% if row.due %}<p>{{ ui.due|default:"Due" }} <bdi>{{ row.due|date:"Y-m-d" }}</bdi></p>{% endif %}
+{% if row.expires %}<p>{{ ui.valid_through|default:"Valid through" }} <bdi>{{ row.expires|date:"Y-m-d" }}</bdi></p>{% endif %}
+{% if row.source %}<p>{{ ui.source|default:"Source" }} <bdi>{{ row.source.number }}</bdi></p>{% endif %}
+<table><thead><tr><th>{{ ui.item|default:"Item" }}</th><th>{{ ui.quantity|default:"Quantity" }}</th><th>{{ ui.unit_price|default:"Unit price" }}</th><th>{{ ui.amount|default:"Amount" }} AED</th></tr></thead>
+<tbody>{% for line in row.lines %}<tr><td>{{ line.name }}</td><td><bdi>{{ line.quantity }} {{ line.unit }}</bdi></td><td><bdi>{{ line.price }}</bdi></td><td><bdi>{{ line.amount }}</bdi></td></tr>{% endfor %}</tbody></table>
+<p>{{ ui.total|default:"Total" }} <strong><bdi>{{ row.amount }} AED</bdi></strong></p>
+{% if row.kind != "quote" %}<p>{{ ui.operational_note|default:"Operational document · VAT not calculated" }}</p>{% endif %}
 </html>

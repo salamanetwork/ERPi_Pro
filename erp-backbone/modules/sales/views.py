@@ -559,9 +559,20 @@ def print_document(request, pk):
     if row.kind not in ("quote", "invoice", "credit"):
         raise Problem("not_found", 404)
     from backbone.company_profile import branding
+    from backbone.print_i18n import normalize_print_language, print_direction, print_status, print_strings, print_text
+    language = normalize_print_language(request.GET.get("language") or request.GET.get("lang"), "en")
+    title_key = {"quote": "quotation", "invoice": "sales_invoice", "credit": "credit_note"}[row.kind]
     data = row.snapshot.get("customer") or customer_data(row.customer)
-    response = render(request, "sales/print.html", {"row": row, "customer": data, "company": branding(),
-        "title": {"quote": "Quotation", "invoice": "Sales invoice", "credit": "Credit note"}[row.kind]})
+    response = render(request, "sales/print.html", {
+        "row": row,
+        "customer": data,
+        "company": branding(),
+        "language": language,
+        "dir": print_direction(language),
+        "ui": print_strings(language),
+        "status_label": print_status(language, row.status),
+        "title": print_text(language, title_key),
+    })
     response["Cache-Control"] = "private, no-store"
     return response
 

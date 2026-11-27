@@ -106,4 +106,7 @@ class PrintDocument(CustomerView):
             doc=receipt.invoice
         elif kind=='invoices':doc=get_object_or_404(docs,pk=pk)
         else:raise NotFound()
-        return render(request,'billing_core/document.html',dict(doc=doc,receipt=receipt,ar=request.GET.get('lang')=='ar'))
+        from backbone.company_profile import branding
+        from backbone.print_i18n import is_rtl_language, normalize_print_language, print_direction, print_strings
+        lang = normalize_print_language(request.GET.get('lang') or request.GET.get('language'), 'en')
+        return render(request,'billing_core/document.html',dict(doc=doc,receipt=receipt,language=lang,dir=print_direction(lang),ui=print_strings(lang),ar=is_rtl_language(lang),company=branding()))
