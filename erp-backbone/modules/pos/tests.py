@@ -592,3 +592,15 @@ class PosModuleTestSuite(TestCase):
         )
         res = self.client.get(f"/api/pos/catalog?terminal_id={other_term.id}")
         self.assertEqual(res.status_code, 403)
+
+    def test_43_overpayment_exceeds_cash_rejected(self):
+        from backbone.http import Problem
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        with self.assertRaises(Problem) as ctx:
+            checkout_sale(
+                shift=shift,
+                cashier=self.user,
+                lines_data=[{"item_id": self.item1.id, "quantity": "1"}],
+                payments_data=[{"method": "card", "amount": "999999.00"}],
+            )
+        self.assertEqual(ctx.exception.code, "pos_overpayment_exceeds_cash")
