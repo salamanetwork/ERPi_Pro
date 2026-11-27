@@ -109,6 +109,49 @@ class BrandingTests(TestCase):
         self.assertEqual(payload["default_currency"], "USD")
         self.assertEqual(payload["address"], "Dubai, UAE")
 
+    def test_company_identity_renders_in_print_outputs(self):
+        from django.template.loader import render_to_string
+        from .company_profile import branding
+
+        saved = self.save(
+            0,
+            name="ERPi Technologies LLC",
+            tax_registration_number="100456789000003",
+            commercial_registration="CN-445566",
+            default_currency="AED",
+            address="Sheikh Zayed Road, Dubai, UAE",
+        )
+        self.assertEqual(saved.status_code, 200, saved.content)
+
+        # 1. Generic print preview endpoint (en & ar)
+        for lang, expected_labels in (
+            ("en", ("ERPi Technologies LLC", "TRN: <bdi>100456789000003</bdi>", "CR: <bdi>CN-445566</bdi>", "Sheikh Zayed Road, Dubai, UAE")),
+            ("ar", ("ERPi Technologies LLC", "الرقم الضريبي: <bdi>100456789000003</bdi>", "السجل التجاري: <bdi>CN-445566</bdi>", "Sheikh Zayed Road, Dubai, UAE")),
+        ):
+            preview = self.client.post(
+                f"/api/print-templates/pr/{lang}/preview",
+                {"heading": "", "company_name": "", "footer": "", "logo": ""},
+                content_type="application/json",
+            )
+            self.assertEqual(preview.status_code, 200, preview.content)
+            html = preview.content.decode("utf-8")
+            for snippet in expected_labels:
+                self.assertIn(snippet, html)
+
+        # 2. Sales, Billing Core, and HR Payslip templates with shared branding()
+        company = branding()
+        templates = [
+            ("sales/print.html", {"row": {"number": "INV-1", "status": "issued", "amount": "100.00", "kind": "invoice", "lines": []}, "customer": {"name": "Cust"}, "title": "Sales invoice", "company": company}),
+            ("billing_core/document.html", {"doc": {"number": "BC-1", "currency": "AED", "subtotal": "100.00", "tax": "5.00", "total": "105.00", "site": {"name": "HQ"}, "party": {"name_en": "Client", "name_ar": "عميل"}}, "receipt": None, "ar": False, "company": company}),
+            ("hr/payslip.html", {"slip": {"number": "PAY-1", "name": "Staff", "month": "2026-11", "department": "IT", "center": "HQ", "state": "posted", "basic": "5000", "allowance": "1000", "extra": "0", "gross": "6000", "deduction": "0", "net": "6000", "inputs": []}, "arabic": True, "company": company}),
+        ]
+        for tpl_name, ctx in templates:
+            rendered = render_to_string(tpl_name, ctx)
+            self.assertIn("ERPi Technologies LLC", rendered)
+            self.assertIn("100456789000003", rendered)
+            self.assertIn("CN-445566", rendered)
+            self.assertIn("Sheikh Zayed Road, Dubai, UAE", rendered)
+
 
 class DeletionPolicyAndInventorySetupTests(TestCase):
     def setUp(self):
