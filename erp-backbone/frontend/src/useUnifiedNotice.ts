@@ -105,9 +105,6 @@ export function notify(
     resolvedHint = resolvedHint || t(entryMeta.hintKey)
   }
 
-  if (options.suffix) {
-    resolvedExplanation = `${resolvedExplanation} (${options.suffix})`
-  }
 
   const dedupKey = `${resolvedType}|${raw}|${resolvedTitle}|${resolvedExplanation}`
   const now = Date.now()
