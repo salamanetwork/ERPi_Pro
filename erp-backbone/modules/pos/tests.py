@@ -662,3 +662,27 @@ class PosModuleTestSuite(TestCase):
             },
         )
         self.assertEqual(sum(by_method.values()), sale.total)
+
+
+    def test_47_shift_variance_gl_posting(self):
+        from modules.accounting.models import Entry
+
+        self.terminal.over_short_account = self.overshort_acc
+        self.terminal.save(update_fields=["over_short_account"])
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("100.00"))
+        checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "1"}],
+            payments_data=[{"method": "cash", "amount": "50.00"}],
+        )
+        # Expected cash = 150.00; counted = 135.00 => -15.00 shortage variance
+        closed = close_shift(shift=shift, closing_balance=Decimal("135.00"), actor="cashier@test", notes="Shortage check")
+        self.assertEqual(closed.cash_variance, Decimal("-15.00"))
+
+        entry = Entry.objects.filter(kind="pos_shift_close", description__contains=f"Shift #{shift.id}").first()
+        self.assertIsNotNone(entry)
+        lines = {ln.account_id: ln.amount for ln in entry.lines.all()}
+        self.assertEqual(lines.get(self.cash_acc.id), Decimal("-15.00"))
+        self.assertEqual(lines.get(self.overshort_acc.id), Decimal("15.00"))
