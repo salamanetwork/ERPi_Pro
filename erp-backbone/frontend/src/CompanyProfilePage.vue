@@ -7,6 +7,10 @@ import { useDirtyForm } from './useDirectory'
 const emit = defineEmits<{saved:[brand:CompanyBrand]}>()
 const brand = ref<CompanyBrand>()
 const name = ref('')
+const taxRegistrationNumber = ref('')
+const commercialRegistration = ref('')
+const defaultCurrency = ref('AED')
+const address = ref('')
 const deletionPolicy = ref<'soft' | 'permanent'>('soft')
 const upload = ref<File>()
 const preview = ref('')
@@ -15,7 +19,16 @@ const busy = ref(false)
 const failure = ref('')
 const notice = ref(false)
 const fileInput = ref<HTMLInputElement>()
-const {reset} = useDirtyForm(() => [name.value, deletionPolicy.value, remove.value, preview.value])
+const {reset} = useDirtyForm(() => [
+  name.value,
+  taxRegistrationNumber.value,
+  commercialRegistration.value,
+  defaultCurrency.value,
+  address.value,
+  deletionPolicy.value,
+  remove.value,
+  preview.value,
+])
 const logo = computed(() => remove.value ? '' : preview.value || brand.value?.logo_url || '')
 let mounted = true
 
@@ -28,6 +41,10 @@ function apply(result: CompanyBrand) {
   clearPreview()
   brand.value = result
   name.value = result.name
+  taxRegistrationNumber.value = result.tax_registration_number ?? ''
+  commercialRegistration.value = result.commercial_registration ?? ''
+  defaultCurrency.value = result.default_currency || 'AED'
+  address.value = result.address ?? ''
   deletionPolicy.value = result.deletion_policy === 'permanent' ? 'permanent' : 'soft'
   remove.value = false
   if (fileInput.value) fileInput.value.value = ''
@@ -71,8 +88,14 @@ async function save() {
   busy.value = true
   notice.value = false
   failure.value = ''
+  const currency = defaultCurrency.value.trim().toUpperCase() || 'AED'
+  defaultCurrency.value = currency
   const fields = new FormData()
   fields.set('name', name.value)
+  fields.set('tax_registration_number', taxRegistrationNumber.value)
+  fields.set('commercial_registration', commercialRegistration.value)
+  fields.set('default_currency', currency)
+  fields.set('address', address.value)
   fields.set('deletion_policy', deletionPolicy.value)
   fields.set('revision', String(brand.value.revision))
   if (upload.value) fields.set('logo', upload.value)
@@ -99,6 +122,22 @@ onUnmounted(() => { mounted = false; clearPreview() })
     <div class="field-wrap">
       <label>{{ t('Company name') }}<input data-field="name" v-model="name" maxlength="120" placeholder="ERPi Pro" dir="auto" :disabled="busy"></label>
       <FieldHint :label="t('Company name')" />
+    </div>
+    <div class="field-wrap">
+      <label>{{ t('Tax registration number') }}<input data-field="tax_registration_number" v-model="taxRegistrationNumber" maxlength="64" dir="auto" :disabled="busy"></label>
+      <FieldHint :label="t('Tax registration number')" />
+    </div>
+    <div class="field-wrap">
+      <label>{{ t('Commercial registration') }}<input data-field="commercial_registration" v-model="commercialRegistration" maxlength="64" dir="auto" :disabled="busy"></label>
+      <FieldHint :label="t('Commercial registration')" />
+    </div>
+    <div class="field-wrap">
+      <label>{{ t('Default currency') }}<input data-field="default_currency" v-model.trim="defaultCurrency" maxlength="3" pattern="[A-Za-z]{3}" placeholder="AED" required :disabled="busy"></label>
+      <FieldHint :label="t('Default currency')" required />
+    </div>
+    <div class="field-wrap">
+      <label>{{ t('Address') }}<textarea data-field="address" v-model="address" maxlength="500" rows="3" dir="auto" :disabled="busy"></textarea></label>
+      <FieldHint :label="t('Address')" />
     </div>
     <div class="field-wrap">
       <label>{{ t('Company logo') }}<input data-field="logo" ref="fileInput" type="file" accept=".png,.jpg,.jpeg,.svg,image/png,image/jpeg,image/svg+xml"

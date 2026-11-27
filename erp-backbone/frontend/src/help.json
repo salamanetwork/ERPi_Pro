@@ -7140,6 +7140,28 @@
       "de": "Tage nach dem Fälligkeitsdatum der Rechnung. Die Schwellenwerte müssen von der ersten Benachrichtigung bis zur Aussetzung ansteigen.",
       "tr": "Fatura vade tarihinden sonraki günler. Eşikler ilk bildirimden askıya alma anına kadar artırılmalıdır.",
       "hi": "चालान की देय तिथि के बाद के दिन. प्रथम नोटिस से निलंबन तक सीमाएँ बढ़नी चाहिए।"
+    },
+    "Tax registration number": {
+      "en": "Enter the company's official tax or VAT registration number shown on invoices.",
+      "ar": "أدخل الرقم الضريبي الرسمي للشركة الذي يظهر في الفواتير والمستندات.",
+      "ur": "انوائسز پر دکھایا گیا کمپنی کا سرکاری ٹیکس یا ویٹ رجسٹریشن نمبر درج کریں۔",
+      "fa": "شماره ثبت مالیاتی رسمی شرکت که در فاکتورها درج می‌شود را وارد کنید.",
+      "fr": "Saisissez le numéro d'identification fiscale ou de TVA officiel de l'entreprise.",
+      "es": "Ingrese el número oficial de registro fiscal o de IVA de la empresa.",
+      "de": "Geben Sie die offizielle Steuer- oder USt-IdNr. des Unternehmens ein.",
+      "tr": "Faturalarda yer alan şirketin resmi vergi kayıt numarasını girin.",
+      "hi": "चालानों पर दिखाया गया कंपनी का आधिकारिक कर या वैट पंजीकरण नंबर दर्ज करें।"
+    },
+    "Commercial registration": {
+      "en": "Enter the company's official commercial license or registration number.",
+      "ar": "أدخل رقم السجل التجاري أو الرخصة التجارية الرسمية للشركة.",
+      "ur": "کمپنی کا سرکاری تجارتی لائسنس یا رجسٹریشن نمبر درج کریں۔",
+      "fa": "شماره ثبت تجاری یا پروانه کسب رسمی شرکت را وارد کنید.",
+      "fr": "Saisissez le numéro d'immatriculation au registre du commerce de l'entreprise.",
+      "es": "Ingrese el número oficial de registro mercantil o licencia comercial.",
+      "de": "Geben Sie die offizielle Handelsregisternummer des Unternehmens ein.",
+      "tr": "Şirketin resmi ticaret sicil veya ruhsat numarasını girin.",
+      "hi": "कंपनी का आधिकारिक वाणिज्यिक लाइसेंस या पंजीकरण नंबर दर्ज करें।"
     }
   },
   "trashRestore": {

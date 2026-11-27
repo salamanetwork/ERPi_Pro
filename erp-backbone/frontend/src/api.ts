@@ -42,7 +42,7 @@ export interface UserProfile {
   picture_url: string | null
 }
 
-export type CompanyBrand = {name:string;logo_url:string|null;deletion_policy?:'soft'|'permanent';revision:number}
+export type CompanyBrand = {name:string;tax_registration_number?:string;commercial_registration?:string;default_currency?:string;address?:string;logo_url:string|null;deletion_policy?:'soft'|'permanent';revision:number}
 
 export interface Workspace {
   username: string
