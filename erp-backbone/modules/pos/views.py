@@ -168,10 +168,13 @@ def terminals(request):
 @never_cache
 @endpoint("GET")
 def catalog(request):
-    _require_perm(request.user, "pos.view")
     q = (request.GET.get("q") or "").strip()
     terminal_id = request.GET.get("terminal_id")
     terminal = PosTerminal.objects.filter(pk=terminal_id).first() if terminal_id else None
+    if terminal is not None:
+        _require_perm(request.user, "pos.view", site=terminal.site)
+    else:
+        _require_perm(request.user, "pos.view")
 
     qs = Item.objects.filter(active=True).order_by("name")
     if q:
