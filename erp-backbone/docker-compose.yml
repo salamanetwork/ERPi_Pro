@@ -17,7 +17,7 @@ services:
     networks: [data]
 
   app:
-    image: erp-backbone:${ERP_RELEASE:-2.8.1}
+    image: erp-backbone:${ERP_RELEASE:-2.10.1}
     build: .
     restart: unless-stopped
     environment: &erp-environment
@@ -79,7 +79,7 @@ services:
     networks: [front, data, mail]
 
   migrate:
-    image: erp-backbone:${ERP_RELEASE:-2.8.1}
+    image: erp-backbone:${ERP_RELEASE:-2.10.1}
     pull_policy: never
     environment: *erp-environment
     command: [sh, -ec, "python manage.py erp_preflight && python manage.py migrate --noinput && python manage.py collectstatic --noinput"]
@@ -102,7 +102,7 @@ services:
     networks: [data]
 
   worker:
-    image: erp-backbone:${ERP_RELEASE:-2.8.1}
+    image: erp-backbone:${ERP_RELEASE:-2.10.1}
     pull_policy: never
     environment: *erp-environment
     command: [celery, -A, backbone.celeryapp:app, worker, -Q, notifications, --concurrency=2, --loglevel=INFO]
@@ -117,7 +117,7 @@ services:
     networks: [data, mail]
 
   marketing-worker:
-    image: erp-backbone:${ERP_RELEASE:-2.8.1}
+    image: erp-backbone:${ERP_RELEASE:-2.10.1}
     pull_policy: never
     environment: *erp-environment
     command: [celery, -A, backbone.celeryapp:app, worker, -Q, marketing, --concurrency=2, --loglevel=INFO]
@@ -132,7 +132,7 @@ services:
     networks: [data, mail]
 
   outbox-dispatcher:
-    image: erp-backbone:${ERP_RELEASE:-2.8.1}
+    image: erp-backbone:${ERP_RELEASE:-2.10.1}
     pull_policy: never
     environment: *erp-environment
     command: [python, manage.py, erp_dispatch_outbox]
