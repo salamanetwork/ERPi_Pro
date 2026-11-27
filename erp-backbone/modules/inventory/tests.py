@@ -220,3 +220,63 @@ class InventoryTests(PurchaseOrderFixture, TransactionTestCase):
         self.post("/api/inventory/opening", {"site_id": site_id, "lines": [], "close": True}, HTTP_IDEMPOTENCY_KEY="audit-inv-open-close-1")
         res_del_site = self.client.delete(f"/api/inventory/setup/site/{site_id}")
         self.assertEqual(res_del_site.status_code, 409)
+
+    def test_record_rejects_insufficient_stock(self):
+        from decimal import Decimal
+        from django.contrib.auth import get_user_model
+        from backbone.http import Problem
+        from backbone.models import Site
+        from inventory.models import Item, Location, Warehouse
+        from inventory.stock import record
+
+        User = get_user_model()
+        actor = getattr(self, "user", None) or User.objects.filter(is_active=True).first()
+        site = getattr(self, "site", None) or Site.objects.first()
+
+        raw_item = getattr(self, "item", None)
+        if isinstance(raw_item, Item):
+            item = raw_item
+        elif isinstance(raw_item, int):
+            item = Item.objects.filter(pk=raw_item).first()
+        else:
+            item = None
+        if not item:
+            item = Item.objects.filter(is_deleted=False).first()
+
+        raw_loc = getattr(self, "location", None)
+        if isinstance(raw_loc, Location):
+            loc = Location.objects.select_related("warehouse").filter(pk=raw_loc.pk).first()
+        elif isinstance(raw_loc, int):
+            loc = Location.objects.select_related("warehouse").filter(pk=raw_loc).first()
+        else:
+            loc = None
+        if not loc:
+            loc = Location.objects.filter(
+                active=True, is_deleted=False, warehouse__active=True, warehouse__is_deleted=False
+            ).select_related("warehouse").first()
+        wh = loc.warehouse if loc else Warehouse.objects.filter(active=True, is_deleted=False).first()
+
+        self.assertIsNotNone(actor)
+        self.assertIsNotNone(site)
+        self.assertIsNotNone(item)
+        self.assertIsNotNone(loc)
+        self.assertIsNotNone(wh)
+
+        settings_obj = type("SettingsStub", (), {
+            "site_id": wh.site_id,
+            "business_day_start": None,
+            "timezone": "UTC",
+        })()
+
+        with self.assertRaises(Problem) as ctx:
+            record(
+                actor,
+                settings_obj,
+                item,
+                loc,
+                "sale",
+                Decimal("-999999.0000"),
+                Decimal("0.00"),
+                {},
+            )
+        self.assertEqual(ctx.exception.code, "insufficient_stock")
