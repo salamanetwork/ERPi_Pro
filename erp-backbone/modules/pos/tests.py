@@ -636,3 +636,29 @@ class PosModuleTestSuite(TestCase):
         with self.assertRaises(Problem) as ctx:
             open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("50.00"))
         self.assertEqual(ctx.exception.code, "pos_shift_already_open")
+
+
+    def test_46_split_payment_three_methods_with_cash_change(self):
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        # 2 * 50.00 = 100.00 total; paid 40 card + 30 manual + 50 cash = 120.00 => 20.00 cash change returned
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "2"}],
+            payments_data=[
+                {"method": "card", "amount": "40.00", "reference": "AUTH-401"},
+                {"method": "manual", "amount": "30.00", "reference": "VOUCH-9"},
+                {"method": "cash", "amount": "50.00"},
+            ],
+        )
+        self.assertEqual(sale.total, Decimal("100.00"))
+        by_method = {p.method: p.amount for p in sale.payments.all()}
+        self.assertEqual(
+            by_method,
+            {
+                "card": Decimal("40.00"),
+                "manual": Decimal("30.00"),
+                "cash": Decimal("30.00"),
+            },
+        )
+        self.assertEqual(sum(by_method.values()), sale.total)
