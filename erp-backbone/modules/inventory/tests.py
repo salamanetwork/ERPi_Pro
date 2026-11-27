@@ -280,3 +280,43 @@ class InventoryTests(PurchaseOrderFixture, TransactionTestCase):
                 {},
             )
         self.assertEqual(ctx.exception.code, "insufficient_stock")
+
+    def test_record_rejects_cross_site_location(self):
+        from decimal import Decimal
+        from django.contrib.auth import get_user_model
+        from backbone.http import Problem
+        from inventory.models import Location
+        from inventory.stock import record
+
+        User = get_user_model()
+        actor = getattr(self, "user", None) or User.objects.filter(is_active=True).first()
+        loc = Location.objects.filter(
+            active=True, is_deleted=False, warehouse__active=True, warehouse__is_deleted=False
+        ).select_related("warehouse").first()
+        item = getattr(self, "item", None)
+        if item is None:
+            from catalog.models import Item
+            item = Item.objects.filter(is_deleted=False).first()
+
+        self.assertIsNotNone(actor)
+        self.assertIsNotNone(loc)
+        self.assertIsNotNone(item)
+
+        wrong_site_settings = type("SettingsStub", (), {
+            "site_id": loc.warehouse.site_id + 9999,
+            "business_day_start": None,
+            "timezone": "UTC",
+        })()
+
+        with self.assertRaises(Problem) as ctx:
+            record(
+                actor,
+                wrong_site_settings,
+                item,
+                loc,
+                "adjustment",
+                Decimal("1.0000"),
+                Decimal("10.00"),
+                {},
+            )
+        self.assertEqual(ctx.exception.code, "invalid_location")
