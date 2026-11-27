@@ -7,3 +7,11 @@
 **/*.zip
 *.png
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.sql
+*.sql.gz
+*.dump
+backups/
