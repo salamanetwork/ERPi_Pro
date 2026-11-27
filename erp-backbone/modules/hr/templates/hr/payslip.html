@@ -3,6 +3,9 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{% if arabic %}كشف الراتب{% else %}Payslip{% endif %}</title>
 <style>body{font-family:Arial,sans-serif;margin:2rem auto;max-width:42rem;padding:1rem}table{width:100%;border-collapse:collapse}th,td{text-align:start;padding:.7rem;border-bottom:1px solid #999}@media print{button{display:none}}</style></head>
 <body>
+{% if company.name %}<div><strong>{{ company.name }}</strong></div>{% endif %}
+{% if company.tax_registration_number or company.commercial_registration %}<p>{% if company.tax_registration_number %}{% if arabic %}الرقم الضريبي{% else %}TRN{% endif %}: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}{% if arabic %}السجل التجاري{% else %}CR{% endif %}: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</p>{% endif %}
+{% if company.address %}<p>{{ company.address }}</p>{% endif %}
 <h1>{% if arabic %}كشف الراتب{% else %}Payslip{% endif %}</h1>
 <p><bdi>{{ slip.number }}</bdi> · {{ slip.name }} · <bdi>{{ slip.month }}</bdi></p>
 <p>{{ slip.department }} · {{ slip.center }} · {% if arabic %}تشغيل تجريبي{% else %}Parallel run{% endif %}</p>

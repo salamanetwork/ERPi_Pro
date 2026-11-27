@@ -6,6 +6,7 @@ from django.db import transaction
 from django.shortcuts import render
 
 from backbone.access import audit
+from backbone.company_profile import branding
 from backbone.http import Problem, body, endpoint, string
 from backbone.models import PrintTemplate
 from .documents import definition, scoped_document
@@ -72,7 +73,7 @@ def print_document(request, kind, pk):
     language = request.GET.get("language", "en")
     settings = serialize(template(kind, language))
     response = render(request, "backbone/document_print.html", {
-        **document.print_context(row, language), "language": language, "layout": settings,
+        **document.print_context(row, language), "language": language, "layout": settings, "company": branding(),
     })
     response["Cache-Control"] = "private, no-store"
     response["Content-Security-Policy"] = "default-src 'none'; img-src data:; font-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"
@@ -91,7 +92,7 @@ def preview(request, kind, language):
         "document": {"document_number": f"{kind.upper()}-000001", "title": "معاينة" if arabic else "Preview",
                      "currency": "AED", "lines": [{"description": "بند تجريبي" if arabic else "Sample item",
                                                    "quantity": 1, "unit_price": "125.00", "amount": "125.00"}]},
-        "language": language, "layout": layout, "site": "—", "status": "—", "total": "125.00",
+        "language": language, "layout": layout, "company": branding(), "site": "—", "status": "—", "total": "125.00",
         "labels": dict(zip(("title", "site", "status", "currency", "description", "quantity", "price", "amount", "total"),
                            ("مستند تجريبي", "الموقع", "الحالة", "العملة", "الوصف", "الكمية", "السعر", "المبلغ", "الإجمالي")
                            if arabic else ("Sample document", "Site", "Status", "Currency", "Description",

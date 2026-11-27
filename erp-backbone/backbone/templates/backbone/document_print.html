@@ -20,8 +20,10 @@ button{padding:8px 13px;margin-bottom:16px}
 <body>
 <div class="print-controls"><button type="button" onclick="window.print()">{% if language == 'ar' %}طباعة أو حفظ PDF{% else %}Print or save as PDF{% endif %}</button></div>
 <header>
-  {% if layout.logo %}<img class="logo" src="{{ layout.logo }}" alt="{{ layout.company_name }}">{% endif %}
-  {% if layout.company_name %}<div>{{ layout.company_name }}</div>{% endif %}
+  {% if layout.logo %}<img class="logo" src="{{ layout.logo }}" alt="{{ layout.company_name|default:company.name }}">{% endif %}
+  {% if layout.company_name|default:company.name %}<div><strong>{{ layout.company_name|default:company.name }}</strong></div>{% endif %}
+  {% if company.tax_registration_number or company.commercial_registration %}<div class="metadata">{% if company.tax_registration_number %}{% if language == 'ar' %}الرقم الضريبي{% else %}TRN{% endif %}: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}{% if language == 'ar' %}السجل التجاري{% else %}CR{% endif %}: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</div>{% endif %}
+  {% if company.address %}<div class="metadata">{{ company.address }}</div>{% endif %}
   <h1>{{ layout.heading|default:labels.title }} · <bdi>{{ document.document_number }}</bdi></h1>
   <div>{{ document.title }}</div>
   <div class="metadata">{{ labels.site }} · <bdi>{{ site }}</bdi> | {{ labels.status }} · {{ status }} | {{ labels.currency }} · <bdi>{{ document.currency }}</bdi></div>

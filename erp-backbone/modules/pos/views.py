@@ -355,25 +355,45 @@ def receipt_print(request, pk: int):
         f"<tr><td>{escape(ln.item.name)}</td><td>{ln.quantity}</td><td>{ln.unit_price}</td><td>{ln.line_total}</td></tr>"
         for ln in sale.lines.select_related("item")
     )
+    from backbone.company_profile import branding
+    company = branding()
+    c_name = escape(company.get("name") or "")
+    c_trn = escape(company.get("tax_registration_number") or "")
+    c_cr = escape(company.get("commercial_registration") or "")
+    c_addr = escape(company.get("address") or "")
     lang = (request.GET.get("lang") or Profile.objects.filter(user=request.user).values_list("language", flat=True).first() or "en").lower()
     is_ar = lang.startswith("ar")
     if is_ar:
+        c_meta_ar = " · ".join(p for p in (f"الرقم الضريبي: {c_trn}" if c_trn else "", f"السجل التجاري: {c_cr}" if c_cr else "") if p)
+        c_block_ar = "".join([
+            f"<div style='font-weight:bold;font-size:15px'>{c_name}</div>" if c_name else "",
+            f"<div style='font-size:12px'>{c_meta_ar}</div>" if c_meta_ar else "",
+            f"<div style='font-size:12px'>{c_addr}</div>" if c_addr else "",
+        ])
         html = f"""<!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>إيصال {escape(sale.receipt_number)}</title>
 <style>body{{font-family:Noto Sans Arabic,Tahoma,sans-serif;direction:rtl;width:320px;margin:auto;padding:12px}}
 table{{width:100%;border-collapse:collapse;font-size:13px}}td,th{{border-bottom:1px dashed #999;padding:4px;text-align:right}}</style>
 </head><body>
+{c_block_ar}
 <h3>إيصال مبيعات نقطة بيع</h3>
 <p>رقم الإيصال: <strong>{escape(sale.receipt_number)}</strong><br>التاريخ: {escape(sale.sale_date.isoformat())}</p>
 <table><thead><tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>{rows}</tbody></table>
 <p>المجموع الفرعي: {sale.subtotal}<br>الخصم: {sale.discount}<br>الضريبة: {sale.tax}<br><strong>الإجمالي: {sale.total}</strong></p>
 </body></html>"""
     else:
+        c_meta_en = " · ".join(p for p in (f"TRN: {c_trn}" if c_trn else "", f"CR: {c_cr}" if c_cr else "") if p)
+        c_block_en = "".join([
+            f"<div style='font-weight:bold;font-size:15px'>{c_name}</div>" if c_name else "",
+            f"<div style='font-size:12px'>{c_meta_en}</div>" if c_meta_en else "",
+            f"<div style='font-size:12px'>{c_addr}</div>" if c_addr else "",
+        ])
         html = f"""<!doctype html>
 <html lang="en" dir="ltr"><head><meta charset="utf-8"><title>Receipt {escape(sale.receipt_number)}</title>
 <style>body{{font-family:Inter,Segoe UI,Arial,sans-serif;direction:ltr;width:320px;margin:auto;padding:12px}}
 table{{width:100%;border-collapse:collapse;font-size:13px}}td,th{{border-bottom:1px dashed #999;padding:4px;text-align:left}}</style>
 </head><body>
+{c_block_en}
 <h3>POS Sales Receipt</h3>
 <p>Receipt No: <strong>{escape(sale.receipt_number)}</strong><br>Date: {escape(sale.sale_date.isoformat())}</p>
 <table><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>{rows}</tbody></table>

@@ -9,6 +9,9 @@ th,td {text-align:start;border-bottom:1px solid #ddd;padding:.55rem}
 @media print {button {display:none}}
 </style>
 <button type="button" onclick="window.print()">Print or save as PDF</button>
+{% if company.name %}<div><strong>{{ company.name }}</strong></div>{% endif %}
+{% if company.tax_registration_number or company.commercial_registration %}<p>{% if company.tax_registration_number %}TRN: <bdi>{{ company.tax_registration_number }}</bdi>{% endif %}{% if company.tax_registration_number and company.commercial_registration %} · {% endif %}{% if company.commercial_registration %}CR: <bdi>{{ company.commercial_registration }}</bdi>{% endif %}</p>{% endif %}
+{% if company.address %}<p>{{ company.address }}</p>{% endif %}
 <h1>{{ title }} {{ row.number }}</h1>
 <p>{{ row.date|date:"Y-m-d" }} · {{ row.status }}</p>
 <p>{{ customer.name }}{% if customer.legal_name %} · {{ customer.legal_name }}{% endif %}</p>

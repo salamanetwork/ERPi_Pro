@@ -558,8 +558,9 @@ def print_document(request, pk):
     row = scoped(request.user, pk)
     if row.kind not in ("quote", "invoice", "credit"):
         raise Problem("not_found", 404)
+    from backbone.company_profile import branding
     data = row.snapshot.get("customer") or customer_data(row.customer)
-    response = render(request, "sales/print.html", {"row": row, "customer": data,
+    response = render(request, "sales/print.html", {"row": row, "customer": data, "company": branding(),
         "title": {"quote": "Quotation", "invoice": "Sales invoice", "credit": "Credit note"}[row.kind]})
     response["Cache-Control"] = "private, no-store"
     return response

@@ -58,7 +58,8 @@ def printable(request,kind,pk):
         doc=receipt.invoice
     elif kind=='invoices':doc=one(Invoice.objects.filter(**scope),pk)
     else:raise Problem('not_found',404)
-    return render(request,'billing_core/document.html',dict(doc=doc,receipt=receipt,ar=request.GET.get('lang')=='ar'))
+    from backbone.company_profile import branding
+    return render(request,'billing_core/document.html',dict(doc=doc,receipt=receipt,ar=request.GET.get('lang')=='ar',company=branding()))
 
 @endpoint('GET',module='billing_core')
 def receipts(request):
