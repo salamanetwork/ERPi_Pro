@@ -627,3 +627,12 @@ class PosModuleTestSuite(TestCase):
                 payments_data=[{"method": "cash", "amount": "50.00"}],
             )
         self.assertEqual(cart_ctx.exception.code, "pos_invalid_discount")
+
+
+    def test_45_concurrent_shift_open_rejected(self):
+        from backbone.http import Problem
+
+        open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("100.00"))
+        with self.assertRaises(Problem) as ctx:
+            open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("50.00"))
+        self.assertEqual(ctx.exception.code, "pos_shift_already_open")
