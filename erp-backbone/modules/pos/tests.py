@@ -581,3 +581,14 @@ class PosModuleTestSuite(TestCase):
         s1 = checkout_sale(shift=shift, cashier=self.user, lines_data=[{"item_id": self.item1.id, "quantity": "1"}], payments_data=[{"method": "cash", "amount": "50.00"}])
         s2 = checkout_sale(shift=shift, cashier=self.user, lines_data=[{"item_id": self.item1.id, "quantity": "1"}], payments_data=[{"method": "cash", "amount": "50.00"}])
         self.assertEqual(s1.customer_id, s2.customer_id)
+
+    def test_42_catalog_enforces_terminal_site_permission(self):
+        other_site = Site.objects.create(name="Sharjah Branch")
+        other_term = PosTerminal.objects.create(
+            site=other_site,
+            code="SHJ-01",
+            name="SHJ Counter",
+            cash_account=self.cash_acc,
+        )
+        res = self.client.get(f"/api/pos/catalog?terminal_id={other_term.id}")
+        self.assertEqual(res.status_code, 403)
