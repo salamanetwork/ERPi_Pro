@@ -665,7 +665,7 @@ class PosModuleTestSuite(TestCase):
 
 
     def test_47_shift_variance_gl_posting(self):
-        from modules.accounting.models import Entry
+        from accounting.models import Entry
 
         self.terminal.over_short_account = self.overshort_acc
         self.terminal.save(update_fields=["over_short_account"])
