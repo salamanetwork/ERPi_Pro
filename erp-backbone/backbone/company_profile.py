@@ -118,12 +118,32 @@ def normalize_logo(file):
 
 
 def branding():
-    row = CompanyProfile.objects.values("name", "logo_type", "deletion_policy", "revision").filter(pk=1).first()
+    row = CompanyProfile.objects.values(
+        "name", "tax_registration_number", "commercial_registration", "default_currency", "address",
+        "logo_type", "deletion_policy", "revision",
+    ).filter(pk=1).first()
     if row is None:
-        return {"name": "", "logo_url": None, "deletion_policy": "soft", "revision": 0}
+        return {
+            "name": "",
+            "tax_registration_number": "",
+            "commercial_registration": "",
+            "default_currency": "AED",
+            "address": "",
+            "logo_url": None,
+            "deletion_policy": "soft",
+            "revision": 0,
+        }
     version = row["revision"]
-    return {"name": row["name"], "logo_url": f"/api/company-profile/logo?v={version}" if row["logo_type"] else None,
-            "deletion_policy": row.get("deletion_policy") or "soft", "revision": version}
+    return {
+        "name": row["name"],
+        "tax_registration_number": row.get("tax_registration_number") or "",
+        "commercial_registration": row.get("commercial_registration") or "",
+        "default_currency": row.get("default_currency") or "AED",
+        "address": row.get("address") or "",
+        "logo_url": f"/api/company-profile/logo?v={version}" if row["logo_type"] else None,
+        "deletion_policy": row.get("deletion_policy") or "soft",
+        "revision": version,
+    }
 
 
 @never_cache
@@ -132,6 +152,10 @@ def company_profile(request):
     if request.method == "GET":
         return branding()
     name = string(request.POST, "name", 120, required=False)
+    tax_registration_number = string(request.POST, "tax_registration_number", 64, required=False) if "tax_registration_number" in request.POST else None
+    commercial_registration = string(request.POST, "commercial_registration", 64, required=False) if "commercial_registration" in request.POST else None
+    default_currency = string(request.POST, "default_currency", 3, required=False).upper() if "default_currency" in request.POST else None
+    address = string(request.POST, "address", 500, required=False) if "address" in request.POST else None
     revision = request.POST.get("revision", "")
     remove = request.POST.get("remove_logo", "0")
     deletion_policy = request.POST.get("deletion_policy")
@@ -140,12 +164,22 @@ def company_profile(request):
         raise Problem("invalid_company_profile")
     if deletion_policy is not None and deletion_policy not in {"soft", "permanent"}:
         raise Problem("invalid_company_profile")
+    if default_currency is not None and not re.fullmatch(r"[A-Z]{3}", default_currency):
+        raise Problem("invalid_company_profile")
     logo = normalize_logo(upload) if upload else None
     with transaction.atomic():
         row, _ = CompanyProfile.objects.select_for_update().get_or_create(pk=1)
         if int(revision) != row.revision:
             raise Problem("revision_conflict", 409)
         row.name = name
+        if tax_registration_number is not None:
+            row.tax_registration_number = tax_registration_number
+        if commercial_registration is not None:
+            row.commercial_registration = commercial_registration
+        if default_currency is not None:
+            row.default_currency = default_currency
+        if address is not None:
+            row.address = address
         if deletion_policy in {"soft", "permanent"}:
             row.deletion_policy = deletion_policy
         if logo:
@@ -153,7 +187,10 @@ def company_profile(request):
         elif remove == "1":
             row.logo, row.logo_type = b"", ""
         row.revision += 1
-        row.save(update_fields=["name", "logo", "logo_type", "deletion_policy", "revision"])
+        row.save(update_fields=[
+            "name", "tax_registration_number", "commercial_registration", "default_currency", "address",
+            "logo", "logo_type", "deletion_policy", "revision",
+        ])
         audit(request.user, "company_profile.update", row.pk)
         return branding()
 

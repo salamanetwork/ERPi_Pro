@@ -50,7 +50,16 @@ class BrandingTests(TestCase):
         self.assertEqual(self.reader.get(replaced["logo_url"])["Content-Type"], "image/jpeg")
         self.assertEqual(self.reader.get(record["logo_url"]).status_code, 404)
         cleared = self.save(2, name="", remove_logo="1").json()
-        self.assertEqual(cleared, {"revision": 3, "name": "", "logo_url": None, "deletion_policy": "soft"})
+        self.assertEqual(cleared, {
+            "revision": 3,
+            "name": "",
+            "tax_registration_number": "",
+            "commercial_registration": "",
+            "default_currency": "AED",
+            "address": "",
+            "logo_url": None,
+            "deletion_policy": "soft",
+        })
 
     def test_svg_logo_is_parsed_and_untrusted_content_is_rejected(self):
         good = b'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 16">
@@ -81,6 +90,24 @@ class BrandingTests(TestCase):
         self.assertEqual(self.save(1, logo=too_big).status_code, 413)
         self.assertEqual(CompanyProfile.objects.get(pk=1).name, "شركة اختبار")
         self.assertEqual(CompanyProfile.objects.get(pk=1).revision, 1)
+
+
+    def test_company_identity_and_currency_fields(self):
+        bad = self.save(0, default_currency="12")
+        self.assertEqual(bad.status_code, 400)
+        saved = self.save(
+            0,
+            tax_registration_number="100123456700003",
+            commercial_registration="CN-987654",
+            default_currency="usd",
+            address="Dubai, UAE",
+        )
+        self.assertEqual(saved.status_code, 200, saved.content)
+        payload = saved.json()
+        self.assertEqual(payload["tax_registration_number"], "100123456700003")
+        self.assertEqual(payload["commercial_registration"], "CN-987654")
+        self.assertEqual(payload["default_currency"], "USD")
+        self.assertEqual(payload["address"], "Dubai, UAE")
 
 
 class DeletionPolicyAndInventorySetupTests(TestCase):
@@ -139,3 +166,4 @@ class DeletionPolicyAndInventorySetupTests(TestCase):
 
         self.assertEqual(self.client.delete(f"/api/inventory/setup/unit/{unit.id}").status_code, 200)
         self.assertFalse(Unit.objects.filter(pk=unit.id).exists())
+

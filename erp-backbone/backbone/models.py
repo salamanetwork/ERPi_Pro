@@ -220,6 +220,10 @@ class ProfilePicture(models.Model):
 
 class CompanyProfile(models.Model):
     name = models.CharField(max_length=120, blank=True)
+    tax_registration_number = models.CharField(max_length=64, blank=True, default="", db_default="")
+    commercial_registration = models.CharField(max_length=64, blank=True, default="", db_default="")
+    default_currency = models.CharField(max_length=3, blank=True, default="AED", db_default="AED")
+    address = models.CharField(max_length=500, blank=True, default="", db_default="")
     logo = models.BinaryField(default=bytes, blank=True)
     logo_type = models.CharField(max_length=24, blank=True)
     deletion_policy = models.CharField(max_length=16, default="soft", db_default="soft")
