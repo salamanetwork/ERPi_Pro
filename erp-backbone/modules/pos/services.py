@@ -482,22 +482,31 @@ def checkout_sale(
     if gl_lines:
         write_lines(gl_entry, gl_lines)
 
-    sale = PosSale.objects.create(
-        terminal=terminal,
-        shift=shift,
-        receipt_number=receipt_number,
-        sale_date=today,
-        customer=customer_party,
-        sales_document=sales_doc,
-        gl_entry=gl_entry,
-        subtotal=_q2(subtotal),
-        discount=total_discount,
-        tax=tax_total,
-        total=grand_total,
-        payment_status=PosSale.STATUS_PAID,
-        idempotency_key=idempotency_key,
-        cashier=cashier,
-    )
+    from django.db import IntegrityError
+
+    try:
+        sale = PosSale.objects.create(
+            terminal=terminal,
+            shift=shift,
+            receipt_number=receipt_number,
+            sale_date=today,
+            customer=customer_party,
+            sales_document=sales_doc,
+            gl_entry=gl_entry,
+            subtotal=_q2(subtotal),
+            discount=total_discount,
+            tax=tax_total,
+            total=grand_total,
+            payment_status=PosSale.STATUS_PAID,
+            idempotency_key=idempotency_key,
+            cashier=cashier,
+        )
+    except IntegrityError:
+        if idempotency_key:
+            existing = PosSale.objects.filter(idempotency_key=idempotency_key).first()
+            if existing is not None:
+                return existing
+        raise
     if not sale.idempotency_key:
         sale.idempotency_key = f"pos:sale:{sale.pk}"
         sale.save(update_fields=["idempotency_key"])
