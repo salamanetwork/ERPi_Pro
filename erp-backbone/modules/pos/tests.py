@@ -686,3 +686,29 @@ class PosModuleTestSuite(TestCase):
         lines = {ln.account_id: ln.amount for ln in entry.lines.all()}
         self.assertEqual(lines.get(self.cash_acc.id), Decimal("-15.00"))
         self.assertEqual(lines.get(self.overshort_acc.id), Decimal("15.00"))
+
+
+    def test_48_refund_after_shift_close_and_double_reverse_rejected(self):
+        from backbone.http import Problem
+        from accounting.models import Entry
+        from pos.services import void_or_refund_sale
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "1"}],
+            payments_data=[{"method": "cash", "amount": "50.00"}],
+        )
+        close_shift(shift=shift, closing_balance=Decimal("50.00"), actor="cashier@test")
+
+        refunded = void_or_refund_sale(sale=sale, actor_user=self.user, reason="Customer return after close")
+        self.assertEqual(refunded.payment_status, PosSale.STATUS_REFUNDED)
+
+        rev_entry = Entry.objects.filter(kind="pos_reversal", description__contains=sale.receipt_number).first()
+        self.assertIsNotNone(rev_entry)
+        self.assertEqual(sum(ln.amount for ln in rev_entry.lines.all()), Decimal("0.00"))
+
+        with self.assertRaises(Problem) as ctx:
+            void_or_refund_sale(sale=refunded, actor_user=self.user, reason="Duplicate refund attempt")
+        self.assertEqual(ctx.exception.code, "pos_sale_already_reversed")
