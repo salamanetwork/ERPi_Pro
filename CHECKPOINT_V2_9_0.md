@@ -1,3 +1,5 @@
+> **[Historical Snapshot — Superseded by `CHECKPOINT_V2_11_0.md` & `SESSION_HANDOFF_V2_11_0.md`]**
+
 # ERPi Pro — Master Checkpoint & AI Handoff (`v2.9.0`)
 
 > **AI Context Directive:** Paste this entire file at the start of any new AI session. Maintain strict Arabic explanations with English technical terms, code snippets, and file paths. Do not re-suggest completed `v2.9.0` tasks; continue directly from **Section 6 (Next Steps)**.

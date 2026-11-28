@@ -1,18 +1,18 @@
-# ERPi Pro — Technical Checkpoint (`v2.10.0`)
-**Timestamp:** 2026-11-25 20:52
+# ERPi Pro — Technical Checkpoint (`v2.11.0`)
+**Timestamp:** 2026-11-28 | **Git Tag:** `v2.11.0` | **Branch:** `master`
 
 ## 1. Verification Matrix
 | Subsystem | Command / Check | Status | Metrics / Notes |
 | :--- | :--- | :--- | :--- |
-| **i18n Integrity** | `npm run check:i18n` | PASS | 1986 keys across 9 locales; 77 help topics; 257 field hints |
-| **TypeScript Check** | `vue-tsc --noEmit` | PASS | Strict type validation across `frontend/src` |
-| **Frontend Bundle** | `npm run build` | PASS | 870 modules transformed into `frontend/dist` |
-| **Django System** | `python manage.py check` | PASS | 0 issues silenced |
-| **Static Assets** | `collectstatic --noinput` | PASS | Synced to `staticfiles/` |
-| **Dev Server** | `runserver 0.0.0.0:8000` | ACTIVE | Serving API + SPA cleanly |
+| **Module Contracts** | `python manage.py audit_modules` | PASS | 29 contracts passed (`RELEASE_VERSION = "2.11.0"`) |
+| **Django System** | `python manage.py check` | PASS | 0 issues silenced; migration `0023` applied |
+| **i18n Integrity** | `npm run check:i18n` | PASS | 1,988 paired keys across 9 locales; 77 help topics; 259 field explanations |
+| **Print i18n & Identity** | `test_company_profile.py` / `test_document_services.py` | PASS | 9-locale print templates (`RTL`/`LTR`) + TRN, CR, currency, address |
+| **Frontend Components** | `frontend/src/*.vue` | VERIFIED | 88 active Vue views & components |
 
-## 2. Active Backend Django Apps (1)
-- `backbone`
+## 2. Active Backend Django Apps & Contracts (`29`)
+- **Core & Native Manifests (`15`):** `platform`, `accounting`, `assets`, `crm`, `hr`, `inventory`, `purchasing`, `sales`, `supply`, `workorders`, `suppliers`, `purchase_orders`, `supplier_invoices`, `customers`, `payroll`.
+- **Extension Apps (`14`):** `manufacturing`, `projects`, `helpdesk`, `marketing`, `publication`, `public_identity`, `media_service`, `bank_reconciliation`, `billing_core`, `expenses`, `parties`, `pos`, `scheduling`, `subscriptions`.
 
 ## 3. Active Frontend Vue Views & Components (88)
 - `AccessPage.vue`

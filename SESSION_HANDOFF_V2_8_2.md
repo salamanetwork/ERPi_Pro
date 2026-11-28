@@ -1,3 +1,5 @@
+> **[Historical Snapshot — Superseded by `CHECKPOINT_V2_11_0.md` & `SESSION_HANDOFF_V2_11_0.md`]**
+
 # ERPi Pro v2.8.2 — Technical Handoff & Current State
 
 ## 1. Environment & Workspace Architecture

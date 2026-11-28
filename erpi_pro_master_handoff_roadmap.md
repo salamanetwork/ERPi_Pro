@@ -1,5 +1,13 @@
 # ERPi Pro — Master handoff and approved release roadmap
 
+
+## 0. Current Baseline — `v2.11.0` (2026-11-28)
+- **Certified Tag:** `v2.11.0` (`29 contracts passed`, `RELEASE_VERSION = "2.11.0"`).
+- **Delivered in `v2.11.0`:** 9-locale `RTL`/`LTR` print engine (`backbone/print_i18n.py`), `CompanyProfile` legal identity fields (TRN, CR, default currency, address) in UI and print templates, and unified toast notice rendering fix.
+- **Active Handoff Pack:** See `ERPi_Pro_Handoff_Docs/` and `CHECKPOINT_V2_11_0.md`.
+
+---
+
 ## 1. Current baseline — v2.8.1 Subscription revenue recognition
 
 Subscriptions map six posting accounts per site. Billing Core owns documents and receipts. PostgreSQL Outbox delivery requests idempotent subscription journals. Cumulative daily recognition uses completed service days in the contract timezone, checkpoints a cycle schedule and resolves rounding at period end. Finance administrators review mapping and pending cycles. Historical replay uses backfill_subscription_gl. This release extends the existing module (28 contracts). Workspace billing KPIs continue to measure operational documents.

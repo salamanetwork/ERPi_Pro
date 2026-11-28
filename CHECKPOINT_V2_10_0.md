@@ -1,3 +1,5 @@
+> **[Historical Snapshot — Superseded by `CHECKPOINT_V2_11_0.md` & `SESSION_HANDOFF_V2_11_0.md`]**
+
 # ERPi Pro v2.10.0 — Audit & Release Checkpoint
 
 - **Date:** 2026-11-26
