@@ -56,8 +56,14 @@ def draft(data,scope,*,applied_credit=Decimal(0)):
     return doc,'invoice.created'
 
 def issue(doc):
-    if doc.status != 'draft':
-        raise Problem('invalid_transition', 409)
-    doc.status = 'issued'
-    doc.save(update_fields=['status', 'revision'])
-    publish('billing_core', 'invoice.issued', doc.pk, f'billing_core:invoice:{doc.pk}:issued')
+    from django.db import transaction
+    with transaction.atomic():
+        locked = Invoice.objects.select_for_update().get(pk=doc.pk)
+        if locked.status != 'draft':
+            raise Problem('invalid_transition', 409)
+        locked.status = 'issued'
+        locked.revision += 1
+        locked.save(update_fields=['status', 'revision'])
+        doc.status = locked.status
+        doc.revision = locked.revision
+        publish('billing_core', 'invoice.issued', locked.pk, f'billing_core:invoice:{locked.pk}:issued')

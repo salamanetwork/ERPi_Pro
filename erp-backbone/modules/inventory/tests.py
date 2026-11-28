@@ -320,3 +320,33 @@ class InventoryTests(PurchaseOrderFixture, TransactionTestCase):
                 {},
             )
         self.assertEqual(ctx.exception.code, "invalid_location")
+
+
+    def test_stock_movement_uses_dynamic_ledger_currency(self):
+        from accounting.models import Posting
+        from accounting.services import ledger_lock, process
+        from inventory.stock import locked_site, record
+
+        from django.contrib.auth import get_user_model
+        from django.db import transaction
+        from inventory.models import Item, Location
+        user_obj, _ = get_user_model().objects.get_or_create(username="tester")
+        loc_obj = Location.objects.select_related("warehouse").get(pk=self.location)
+        item_obj = Item.objects.get(pk=self.item)
+        with transaction.atomic():
+            ledger = ledger_lock()
+            ledger.currency = "SAR"
+            ledger.save(update_fields=["currency"])
+
+            settings = locked_site(loc_obj.warehouse.site_id)
+            move = record(
+                user_obj,
+                settings,
+                item_obj,
+                loc_obj,
+                "opening",
+                Decimal("5"),
+                Decimal("250.00"),
+                {},
+            )
+        self.assertEqual(move.facts.get("currency"), "SAR")

@@ -90,12 +90,12 @@ def record(user, settings, item, location, kind, quantity, value, facts, *, rece
     date = business_date(settings, now)
     if kind in ("transfer_in", "transfer_back"):
         date = max(date, original.business_date)
-    facts = {**facts, "currency": "AED", "cost_policy": "moving_average", "cost_policy_version": 1,
-             "base_unit_id": item.base_unit_id, "site_timezone": settings.timezone,
-             "day_start": settings.day_start.isoformat(), "movement_unit_cost": str(prorate(value, Decimal(1), quantity, BASE) if quantity else Decimal(0))}
     from accounting.services import ledger_lock, observe
 
     ledger = ledger_lock()
+    facts = {**facts, "currency": ledger.currency, "cost_policy": "moving_average", "cost_policy_version": 1,
+             "base_unit_id": item.base_unit_id, "site_timezone": settings.timezone,
+             "day_start": settings.day_start.isoformat(), "movement_unit_cost": str(prorate(value, Decimal(1), quantity, BASE) if quantity else Decimal(0))}
     movement = Movement.objects.create(site_id=settings.site_id, item=item, location=location, kind=kind,
         quantity=quantity, value=value, receipt=receipt, original=original, actor=user.get_username(),
         actor_id=user.pk, occurred_at=now, business_date=date, facts=facts)

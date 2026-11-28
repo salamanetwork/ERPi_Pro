@@ -30,7 +30,7 @@ def sales_lines(ledger, doc):
             (originating_rule(doc.allocations[int(line["invoice_id"])]).offset, -Decimal(line["amount"]))
             for line in doc.lines]]
     if doc.kind == "credit":
-        delivery = originating_rule(doc.source.source)
+        delivery = originating_rule(doc.source.source if doc.source.source_id else doc.source)
         return rule, [(delivery.revenue, amount), (original.offset, -amount)]
     shipped = doc.source.source.source if doc.source.kind == "credit" else doc.source
     original = originating_rule(shipped)

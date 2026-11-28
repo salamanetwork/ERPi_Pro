@@ -54,21 +54,19 @@ def _resolve_gl_accounts(terminal):
     )
     tax_acc = (
         terminal.tax_account
-        or Account.objects.filter(ledger=ledger, kind="liability", active=True, detail=True).order_by("code").first()
-        or Account.objects.filter(ledger=ledger, kind="liability", active=True).order_by("code").first()
-        or rev_acc
+        or Account.objects.filter(ledger=ledger, kind="liability", active=True, detail=True, code__icontains="VAT").order_by("code").first()
+        or Account.objects.filter(ledger=ledger, kind="liability", active=True, detail=True, code__icontains="TAX").order_by("code").first()
     )
     cogs_acc = (
         terminal.cogs_account
+        or Account.objects.filter(ledger=ledger, kind="expense", active=True, detail=True, code__icontains="COGS").order_by("code").first()
         or Account.objects.filter(ledger=ledger, kind="expense", active=True, detail=True).order_by("code").first()
-        or Account.objects.filter(ledger=ledger, kind="expense", active=True).order_by("code").first()
     )
     inv_acc = (
         terminal.inventory_account
-        or Account.objects.filter(ledger=ledger, kind="asset", active=True, detail=True).exclude(pk=cash_acc.pk).order_by("code").first()
-        or cash_acc
+        or Account.objects.filter(ledger=ledger, kind="asset", active=True, detail=True, code__icontains="INV").exclude(pk=cash_acc.pk).order_by("code").first()
     )
-    over_short_acc = terminal.over_short_account or cogs_acc or rev_acc
+    over_short_acc = terminal.over_short_account or cogs_acc
     if not rev_acc:
         raise Problem("pos_revenue_account_missing", 409)
     return ledger, cash_acc, card_acc, rev_acc, tax_acc, cogs_acc, inv_acc, over_short_acc
@@ -299,8 +297,14 @@ def checkout_sale(
 
             line_cost = _q2(qty * unit_cost)
             if val_row:
-                val_row.quantity = max(Decimal("0"), val_row.quantity - qty)
-                val_row.value = max(Decimal("0.00"), _q2(val_row.value - line_cost))
+                new_val_qty = max(Decimal("0"), val_row.quantity - qty)
+                if new_val_qty == Decimal("0"):
+                    line_cost = _q2(val_row.value)
+                    new_val_value = Decimal("0.00")
+                else:
+                    new_val_value = max(Decimal("0.00"), _q2(val_row.value - line_cost))
+                val_row.quantity = new_val_qty
+                val_row.value = new_val_value
                 val_row.save(update_fields=["quantity", "value"])
 
             Movement.objects.create(
@@ -422,8 +426,15 @@ def checkout_sale(
     else:
         customer_party, sales_customer = _get_or_create_walkin_customer(site)
 
-    seq = PosSale.objects.filter(terminal=terminal, sale_date=today).count() + 1
-    receipt_number = f"{terminal.code}-{today.strftime('%Y%m%d')}-{seq:04d}"
+    prefix = f"{terminal.code}-{today.strftime('%Y%m%d')}-"
+    last_receipt = (
+        PosSale.objects.filter(terminal=terminal, sale_date=today, receipt_number__startswith=prefix)
+        .order_by("-receipt_number")
+        .values_list("receipt_number", flat=True)
+        .first()
+    )
+    last_seq = int(last_receipt.rsplit("-", 1)[-1]) if last_receipt and last_receipt.rsplit("-", 1)[-1].isdigit() else 0
+    receipt_number = f"{prefix}{last_seq + 1:04d}"
 
     sales_doc = SalesDocument.objects.create(
         kind="receipt",
@@ -474,9 +485,13 @@ def checkout_sale(
         gl_lines.append((card_acc, _q2(card_paid + manual_paid), site.id, None))
     if net_revenue > Decimal("0.00"):
         gl_lines.append((rev_acc, -net_revenue, site.id, None))
-    if tax_total > Decimal("0.00") and tax_acc:
+    if tax_total > Decimal("0.00"):
+        if not tax_acc:
+            raise Problem("pos_tax_account_missing", 409)
         gl_lines.append((tax_acc, -tax_total, site.id, None))
-    if total_cogs > Decimal("0.00") and cogs_acc and inv_acc and cogs_acc.pk != inv_acc.pk:
+    if total_cogs > Decimal("0.00"):
+        if not cogs_acc or not inv_acc or cogs_acc.pk == inv_acc.pk:
+            raise Problem("pos_inventory_account_missing", 409)
         gl_lines.append((cogs_acc, total_cogs, site.id, None))
         gl_lines.append((inv_acc, -total_cogs, site.id, None))
     if gl_lines:

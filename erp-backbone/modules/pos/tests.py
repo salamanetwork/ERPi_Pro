@@ -712,3 +712,83 @@ class PosModuleTestSuite(TestCase):
         with self.assertRaises(Problem) as ctx:
             void_or_refund_sale(sale=refunded, actor_user=self.user, reason="Duplicate refund attempt")
         self.assertEqual(ctx.exception.code, "pos_sale_already_reversed")
+
+
+    def test_49_rejects_missing_tax_or_inventory_account_without_wrong_fallback(self):
+        from accounting.models import Account
+        from backbone.http import Problem
+        from inventory.models import Location, Position, Valuation
+
+        loc = self.terminal.location or Location.objects.filter(warehouse=self.terminal.warehouse).first()
+        Position.objects.filter(site=self.site, item=self.item1, location=loc).update(quantity=Decimal("5"))
+        Valuation.objects.update_or_create(site=self.site, item=self.item1, defaults={"quantity": Decimal("5"), "value": Decimal("50.00")})
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+
+        self.terminal.tax_account = None
+        self.terminal.save(update_fields=["tax_account"])
+        Account.objects.filter(ledger=self.ledger, kind="liability").update(active=False)
+
+        with self.assertRaises(Problem) as ctx_tax:
+            checkout_sale(
+                shift=shift,
+                cashier=self.user,
+                lines_data=[{"item_id": self.item1.id, "quantity": "1", "tax_rate": "0.05"}],
+                payments_data=[{"method": "cash", "amount": "52.50"}],
+            )
+        self.assertEqual(ctx_tax.exception.code, "pos_tax_account_missing")
+
+        Account.objects.filter(ledger=self.ledger, kind="liability").update(active=True)
+        self.terminal.tax_account = self.tax_acc
+        self.terminal.inventory_account = None
+        self.terminal.save(update_fields=["tax_account", "inventory_account"])
+        Account.objects.filter(ledger=self.ledger, kind="asset").exclude(pk=self.cash_acc.pk).update(active=False)
+
+        with self.assertRaises(Problem) as ctx_inv:
+            checkout_sale(
+                shift=shift,
+                cashier=self.user,
+                lines_data=[{"item_id": self.item1.id, "quantity": "1", "tax_rate": "0.00"}],
+                payments_data=[{"method": "cash", "amount": "50.00"}],
+            )
+        self.assertEqual(ctx_inv.exception.code, "pos_inventory_account_missing")
+
+
+    def test_50_valuation_zero_out_on_full_stock_depletion(self):
+        from inventory.models import Location, Position, Valuation
+
+        loc = self.terminal.location or Location.objects.filter(warehouse=self.terminal.warehouse).first()
+        Position.objects.filter(site=self.site, item=self.item1, location=loc).update(quantity=Decimal("3"))
+        Valuation.objects.update_or_create(site=self.site, item=self.item1, defaults={"quantity": Decimal("3"), "value": Decimal("10.00")})
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "3", "tax_rate": "0.00"}],
+            payments_data=[{"method": "cash", "amount": "150.00"}],
+        )
+        val = Valuation.objects.get(site=self.site, item=self.item1)
+        self.assertEqual(val.quantity, Decimal("0"))
+        self.assertEqual(val.value, Decimal("0.00"))
+        self.assertEqual(sum(ln.amount for ln in sale.gl_entry.lines.all()), Decimal("0.00"))
+        self.assertEqual(sale.gl_entry.lines.get(account=self.inv_acc).amount, Decimal("-10.00"))
+
+
+    def test_51_monotonic_receipt_numbering_from_last_sequence(self):
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        s1 = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "1", "tax_rate": "0.00"}],
+            payments_data=[{"method": "cash", "amount": "50.00"}],
+        )
+        s2 = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "1", "tax_rate": "0.00"}],
+            payments_data=[{"method": "cash", "amount": "50.00"}],
+        )
+        seq1 = int(s1.receipt_number.rsplit("-", 1)[-1])
+        seq2 = int(s2.receipt_number.rsplit("-", 1)[-1])
+        self.assertEqual(seq2, seq1 + 1)

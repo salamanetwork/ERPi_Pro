@@ -210,7 +210,7 @@ def projection(run):
 def ledger_day(data, run):
     day = day_field(data, "posting_date")
     ledger = ledger_lock()
-    if ledger.currency != "AED" or not ledger.activated_at or not ledger.cutoff or day < ledger.cutoff or day < run.month:
+    if not ledger.currency or not ledger.activated_at or not ledger.cutoff or day < ledger.cutoff or day < run.month:
         raise Problem("payroll_period_unavailable", 409)
     return ledger, period_for(ledger, day), day
 
