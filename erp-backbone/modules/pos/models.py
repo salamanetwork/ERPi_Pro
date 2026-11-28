@@ -78,6 +78,7 @@ class PosSale(models.Model):
 
     terminal = models.ForeignKey(PosTerminal, on_delete=models.PROTECT, related_name="sales")
     shift = models.ForeignKey(PosShift, on_delete=models.PROTECT, related_name="sales")
+    refund_shift = models.ForeignKey(PosShift, on_delete=models.PROTECT, null=True, blank=True, related_name="refunded_sales")
     receipt_number = models.CharField(max_length=48)
     sale_date = models.DateField(default=timezone.localdate)
     customer = models.ForeignKey("parties.Party", on_delete=models.PROTECT, null=True, blank=True)

@@ -8,7 +8,13 @@ from backbone.http import Problem
 
 
 def originating_rule(document):
-    return document.postingevent.posting.entry.rule
+    try:
+        rule = document.postingevent.posting.entry.rule
+    except AttributeError:
+        rule = None
+    if rule is None:
+        raise Problem("sales_originating_rule_missing", 409)
+    return rule
 
 
 def cost_on_source(doc):
@@ -57,7 +63,11 @@ def process_sales(row, actor, override, note):
             if doc.kind == "receipt":
                 from .models import Document
 
-                doc.allocations = Document.objects.in_bulk([line["invoice_id"] for line in doc.lines])
+                invoice_ids = [int(line["invoice_id"]) for line in doc.lines]
+                allocations = Document.objects.in_bulk(invoice_ids)
+                if len(allocations) != len(set(invoice_ids)):
+                    raise Problem("sales_receipt_invalid_allocation", 409)
+                doc.allocations = allocations
             rule, values = sales_lines(row.ledger, doc)
             if not any(amount for _, amount in values):
                 row.state, row.error = "zero", ""

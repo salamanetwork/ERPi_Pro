@@ -65,7 +65,8 @@ def record(user, settings, item, location, kind, quantity, value, facts, *, rece
     ).exists():
         raise Problem("invalid_location", 409)
     position, valuation = balance_rows(settings.site_id, item, location)
-    if kind in ("maint_issue", "maint_return"):
+    from django.db import connection
+    if connection.in_atomic_block:
         position = Position.objects.select_for_update().get(pk=position.pk)
         valuation = Valuation.objects.select_for_update().get(pk=valuation.pk)
     if quantity < 0:

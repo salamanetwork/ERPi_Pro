@@ -331,6 +331,10 @@ class PosModuleTestSuite(TestCase):
         self.assertEqual(sale.gl_entry.lines.get(account=self.rev_acc).amount, Decimal("-100.00"))
 
     def test_22_cogs_and_inventory_gl_posting(self):
+        from inventory.models import Location, Position, Valuation
+        loc = self.terminal.location or Location.objects.filter(warehouse=self.terminal.warehouse).first()
+        Position.objects.filter(site=self.site, item=self.item1, location=loc).update(quantity=Decimal("10"))
+        Valuation.objects.update_or_create(site=self.site, item=self.item1, defaults={"quantity": Decimal("10"), "value": Decimal("300.00")})
         shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
         sale = checkout_sale(
             shift=shift,
@@ -792,3 +796,79 @@ class PosModuleTestSuite(TestCase):
         seq1 = int(s1.receipt_number.rsplit("-", 1)[-1])
         seq2 = int(s2.receipt_number.rsplit("-", 1)[-1])
         self.assertEqual(seq2, seq1 + 1)
+
+
+    def test_52_refund_in_subsequent_shift_updates_active_shift_report(self):
+        from pos.services import compute_shift_report, void_or_refund_sale
+
+        shift_a = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("100.00"))
+        sale = checkout_sale(
+            shift=shift_a,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "2", "tax_rate": "0.00"}],
+            payments_data=[{"method": "cash", "amount": "100.00"}],
+        )
+        close_shift(shift=shift_a, closing_balance=Decimal("200.00"), actor="cashier@test")
+
+        shift_b = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("200.00"))
+        refunded = void_or_refund_sale(sale=sale, actor_user=self.user, reason="Return in shift B")
+        self.assertEqual(refunded.refund_shift_id, shift_b.id)
+
+        rep_a = compute_shift_report(shift_a)
+        rep_b = compute_shift_report(shift_b)
+        self.assertEqual(rep_a["payments"]["cash"], "100.00")
+        self.assertEqual(rep_a["cash_refunds"], "0.00")
+        self.assertEqual(rep_a["expected_closing"], "200.00")
+        self.assertEqual(rep_b["cash_refunds"], "100.00")
+        self.assertEqual(rep_b["expected_closing"], "100.00")
+
+
+    def test_53_ignores_client_supplied_unit_cost_override(self):
+        from inventory.models import Location, Position, Valuation
+
+        loc = self.terminal.location or Location.objects.filter(warehouse=self.terminal.warehouse).first()
+        Position.objects.filter(site=self.site, item=self.item1, location=loc).update(quantity=Decimal("5"))
+        Valuation.objects.update_or_create(site=self.site, item=self.item1, defaults={"quantity": Decimal("5"), "value": Decimal("100.00")})
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        sale = checkout_sale(
+            shift=shift,
+            cashier=self.user,
+            lines_data=[{"item_id": self.item1.id, "quantity": "1", "unit_cost": "0.01", "tax_rate": "0.00"}],
+            payments_data=[{"method": "cash", "amount": "50.00"}],
+        )
+        line = sale.lines.first()
+        self.assertEqual(line.unit_cost, Decimal("20.0000"))
+        self.assertEqual(sale.gl_entry.lines.get(account=self.inv_acc).amount, Decimal("-20.00"))
+
+
+    def test_54_rejects_card_payment_without_card_account(self):
+        from backbone.http import Problem
+
+        self.terminal.card_account = None
+        self.terminal.save(update_fields=["card_account"])
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("0.00"))
+        with self.assertRaises(Problem) as ctx:
+            checkout_sale(
+                shift=shift,
+                cashier=self.user,
+                lines_data=[{"item_id": self.item1.id, "quantity": "1", "tax_rate": "0.00"}],
+                payments_data=[{"method": "card", "amount": "50.00"}],
+            )
+        self.assertEqual(ctx.exception.code, "pos_card_account_missing")
+
+
+    def test_55_close_shift_with_variance_requires_overshort_account(self):
+        from accounting.models import Account
+        from backbone.http import Problem
+
+        self.terminal.over_short_account = None
+        self.terminal.cogs_account = None
+        self.terminal.save(update_fields=["over_short_account", "cogs_account"])
+        Account.objects.filter(kind="expense").update(active=False)
+
+        shift = open_shift(terminal=self.terminal, cashier=self.user, opening_balance=Decimal("100.00"))
+        with self.assertRaises(Problem) as ctx:
+            close_shift(shift=shift, closing_balance=Decimal("90.00"), actor="cashier@test")
+        self.assertEqual(ctx.exception.code, "pos_overshort_account_missing")

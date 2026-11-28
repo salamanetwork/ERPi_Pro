@@ -46,7 +46,7 @@ def _get_or_create_walkin_customer(site):
 def _resolve_gl_accounts(terminal):
     ledger = ledger_lock()
     cash_acc = terminal.cash_account
-    card_acc = terminal.card_account or cash_acc
+    card_acc = terminal.card_account
     rev_acc = (
         terminal.revenue_account
         or Account.objects.filter(ledger=ledger, kind="revenue", active=True, detail=True).order_by("code").first()
@@ -91,16 +91,23 @@ def open_shift(*, terminal: PosTerminal, cashier, opening_balance=Decimal("0.00"
 
 
 def compute_shift_report(shift: PosShift) -> dict:
+    from django.db.models import Q
+
     valid_sales = shift.sales.filter(payment_status__in=[PosSale.STATUS_PAID, PosSale.STATUS_PARTIAL])
     void_sales = shift.sales.filter(payment_status=PosSale.STATUS_VOID)
-    refunded_sales = shift.sales.filter(payment_status=PosSale.STATUS_REFUNDED)
+    collected_sales = shift.sales.exclude(payment_status=PosSale.STATUS_VOID)
+    refunded_sales = PosSale.objects.filter(
+        payment_status=PosSale.STATUS_REFUNDED
+    ).filter(
+        Q(refund_shift=shift) | Q(refund_shift__isnull=True, shift=shift)
+    )
 
     gross_sales = _q2(valid_sales.aggregate(s=Sum("total"))["s"])
     total_tax = _q2(valid_sales.aggregate(s=Sum("tax"))["s"])
     total_discount = _q2(valid_sales.aggregate(s=Sum("discount"))["s"])
     subtotal = _q2(valid_sales.aggregate(s=Sum("subtotal"))["s"])
 
-    payments_qs = PosPayment.objects.filter(sale__in=valid_sales)
+    payments_qs = PosPayment.objects.filter(sale__in=collected_sales)
     cash_sales = _q2(payments_qs.filter(method=PosPayment.METHOD_CASH).aggregate(s=Sum("amount"))["s"])
     card_sales = _q2(payments_qs.filter(method=PosPayment.METHOD_CARD).aggregate(s=Sum("amount"))["s"])
     manual_sales = _q2(payments_qs.filter(method=PosPayment.METHOD_MANUAL).aggregate(s=Sum("amount"))["s"])
@@ -182,7 +189,9 @@ def close_shift(*, shift: PosShift, closing_balance, actor: str, notes: str = ""
 
     if variance != Decimal("0.00"):
         ledger, cash_acc, _, _, _, _, _, over_short_acc = _resolve_gl_accounts(shift.terminal)
-        if over_short_acc and over_short_acc.pk != cash_acc.pk:
+        if not over_short_acc or over_short_acc.pk == cash_acc.pk:
+            raise Problem("pos_overshort_account_missing", 409)
+        if True:
             day = timezone.localdate()
             period = period_for(ledger, day)
             entry = Entry.objects.create(
@@ -290,9 +299,7 @@ def checkout_sale(
             pos_row.save(update_fields=["quantity"])
 
             val_row = Valuation.objects.select_for_update(of=("self",)).filter(site=site, item=item).first()
-            if raw.get("unit_cost") is not None:
-                unit_cost = _q4(raw.get("unit_cost"))
-            elif val_row and val_row.quantity > Decimal("0") and val_row.value > Decimal("0"):
+            if val_row and val_row.quantity > Decimal("0") and val_row.value > Decimal("0"):
                 unit_cost = _q4(val_row.value / val_row.quantity)
 
             line_cost = _q2(qty * unit_cost)
@@ -321,9 +328,7 @@ def checkout_sale(
                 facts={"terminal": terminal.code, "shift_id": shift.id},
             )
         else:
-            if raw.get("unit_cost") is not None:
-                unit_cost = _q4(raw.get("unit_cost"))
-            line_cost = _q2(qty * unit_cost)
+            line_cost = Decimal("0.00")
 
         subtotal += gross_line
         line_discounts += l_disc
@@ -482,6 +487,8 @@ def checkout_sale(
     if net_cash_paid > Decimal("0.00"):
         gl_lines.append((cash_acc, net_cash_paid, site.id, None))
     if (card_paid + manual_paid) > Decimal("0.00"):
+        if not card_acc:
+            raise Problem("pos_card_account_missing", 409)
         gl_lines.append((card_acc, _q2(card_paid + manual_paid), site.id, None))
     if net_revenue > Decimal("0.00"):
         gl_lines.append((rev_acc, -net_revenue, site.id, None))
@@ -650,8 +657,11 @@ def void_or_refund_sale(*, sale: PosSale, actor_user, reason: str) -> PosSale:
             )
             sale.refund_document = cn
 
+    if sale.payment_status == PosSale.STATUS_REFUNDED:
+        active_shift = PosShift.objects.filter(terminal=terminal, status=PosShift.STATUS_OPEN).order_by("-id").first()
+        sale.refund_shift = active_shift or sale.shift
     sale.void_reason = reason[:500]
     sale.reversal_entry = rev_entry
     sale.revision += 1
-    sale.save(update_fields=["payment_status", "void_reason", "reversal_entry", "refund_document", "revision"])
+    sale.save(update_fields=["payment_status", "refund_shift", "void_reason", "reversal_entry", "refund_document", "revision"])
     return sale
