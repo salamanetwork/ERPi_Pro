@@ -93,7 +93,10 @@ def open_shift(*, terminal: PosTerminal, cashier, opening_balance=Decimal("0.00"
 def compute_shift_report(shift: PosShift) -> dict:
     from django.db.models import Q
 
-    valid_sales = shift.sales.filter(payment_status__in=[PosSale.STATUS_PAID, PosSale.STATUS_PARTIAL])
+    valid_sales = shift.sales.filter(
+        Q(payment_status__in=[PosSale.STATUS_PAID, PosSale.STATUS_PARTIAL])
+        | (Q(payment_status=PosSale.STATUS_REFUNDED, refund_shift__isnull=False) & ~Q(refund_shift=shift))
+    )
     void_sales = shift.sales.filter(payment_status=PosSale.STATUS_VOID)
     collected_sales = shift.sales.exclude(payment_status=PosSale.STATUS_VOID)
     refunded_sales = PosSale.objects.filter(
